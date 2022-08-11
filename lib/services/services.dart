@@ -1,0 +1,1 @@
+export 'package:huertapp/services/auth_service.dart';
