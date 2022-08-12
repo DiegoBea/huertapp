@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:huertapp/themes/app_theme.dart';
 
 class InputDecorations {
   static InputDecoration authInputDecorations(
       {required String hintText, required String labelText, IconData? prefixIcon}) {
     return InputDecoration(
-        enabledBorder: const UnderlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Color.fromARGB(169, 180, 254, 219),
+            color: AppTheme.primary,
           ),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide:
-              BorderSide(color: Color.fromARGB(169, 180, 254, 219), width: 2),
+              BorderSide(color: AppTheme.primary, width: 2),
         ),
         hintText: hintText,
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.grey),
         prefixIcon: prefixIcon != null ?  Icon(
           prefixIcon,
-          color: const Color.fromARGB(169, 180, 254, 219),
+          color: AppTheme.primary,
         ) : null);
   }
 }

@@ -22,8 +22,6 @@ class ChechAuthScreen extends StatelessWidget {
               return const Text('Espere...');
             }
 
-            print(snapshot.data);
-
             if (snapshot.data == '') {
               Future.microtask(() {
                 Navigator.pushReplacement(

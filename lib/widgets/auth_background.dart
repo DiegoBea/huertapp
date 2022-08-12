@@ -7,17 +7,11 @@ class AuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color.fromARGB(169, 180, 254, 219),
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        children: [
-          const _BackgroundImage(),
-          child,
-        ],
-      ),
-    );
+    return SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: child,
+      );
   }
 }
 
@@ -30,10 +24,10 @@ class _BackgroundImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return SizedBox(
+    return const SizedBox(
       width: double.infinity,
-      height: size.height * 0.35,
-      child: const Image(
+      height: double.infinity,
+      child: Image(
           image: AssetImage("assets/images/background_login.jpg"),
           fit: BoxFit.cover),
     );

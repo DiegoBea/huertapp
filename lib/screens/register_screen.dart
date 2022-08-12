@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
 import 'package:huertapp/services/auth_service.dart';
+import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -10,49 +11,56 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AuthBackground(
-          child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 250),
-            CardContainer(
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    'Registrarse',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  const SizedBox(height: 30),
-                  ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(),
-                    child: const _LoginForm(),
-                  )
-                ],
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/background_login.jpg"),
+              fit: BoxFit.cover)),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: AuthBackground(
+            child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 250),
+              CardContainer(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'Registrarse',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    const SizedBox(height: 30),
+                    ChangeNotifierProvider(
+                      create: (_) => LoginFormProvider(),
+                      child: const _LoginForm(),
+                    )
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/login'),
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
-                      Colors.greenAccent.withOpacity(0.1)),
-                  shape: MaterialStateProperty.all(const StadiumBorder())),
-              child: const Text(
-                '¿Ya tienes cuenta? Inicia sesión',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+              const SizedBox(
+                height: 50,
               ),
-            ),
-          ],
-        ),
-      )),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/login'),
+                style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(
+                        Colors.greenAccent.withOpacity(0.1)),
+                    shape: MaterialStateProperty.all(const StadiumBorder())),
+                child: const Text(
+                  '¿Ya tienes cuenta? Inicia sesión',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
+              ),
+            ],
+          ),
+        )),
+      ),
     );
   }
 }
@@ -131,7 +139,7 @@ class _LoginForm extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10)),
                   elevation: 0,
                   disabledColor: Colors.grey,
-                  color: Colors.green,
+                  color: AppTheme.primary,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 80, vertical: 15),
