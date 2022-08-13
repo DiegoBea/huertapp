@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/themes/app_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/checkLogin',
       routes: {
         '/checkLogin': (_) => const ChechAuthScreen(),
-        '/home': (_) => const HomeScreen(),
+        '/main': (_) => const MainScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
       },

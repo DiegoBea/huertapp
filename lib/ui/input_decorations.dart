@@ -3,7 +3,7 @@ import 'package:huertapp/themes/app_theme.dart';
 
 class InputDecorations {
   static InputDecoration authInputDecorations(
-      {required String hintText, required String labelText, IconData? prefixIcon}) {
+      {required String hintText, required String labelText, IconData? prefixIcon, IconButton? suffixIcon}) {
     return InputDecoration(
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
@@ -17,6 +17,7 @@ class InputDecorations {
         hintText: hintText,
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.grey),
+        suffixIcon: suffixIcon,
         prefixIcon: prefixIcon != null ?  Icon(
           prefixIcon,
           color: AppTheme.primary,

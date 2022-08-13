@@ -8,6 +8,9 @@ class AppTheme {
     appBarTheme: AppBarTheme(color: primary, elevation: 0),
     textButtonTheme:
         TextButtonThemeData(style: TextButton.styleFrom(primary: primary)),
+         textTheme: TextTheme(
+          headline4: TextStyle(color: primary),
+        ),
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: primary),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -28,7 +31,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(20),
       ),
       border: OutlineInputBorder(
-        // borderSide: const BorderSide(color: primary),
+        borderSide: BorderSide(color: primary),
         borderRadius: BorderRadius.circular(20),
       ),
     ),
@@ -39,6 +42,9 @@ class AppTheme {
     appBarTheme: AppBarTheme(color: primary, elevation: 0),
     textButtonTheme:
         TextButtonThemeData(style: TextButton.styleFrom(primary: primary)),
+         textTheme: TextTheme(
+          headline4: TextStyle(color: primary),
+        ),
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: primary),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -59,7 +65,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(20),
       ),
       border: OutlineInputBorder(
-        // borderSide: const BorderSide(color: primary),
+        borderSide: BorderSide(color: primary),
         borderRadius: BorderRadius.circular(20),
       ),
     ),

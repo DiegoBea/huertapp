@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:huertapp/helpers/toast.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
 import 'package:huertapp/services/auth_service.dart';
 import 'package:huertapp/themes/app_theme.dart';
@@ -54,7 +57,7 @@ class RegisterScreen extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87),
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -112,42 +115,37 @@ class _LoginForm extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              MaterialButton(
-                  onPressed: loginForm.isLoading
-                      ? null
-                      : () async {
-                          final authService =
-                              Provider.of<AuthService>(context, listen: false);
+              SizedBox(
+                width: 270,
+                child: SignInButton(Buttons.Email,
+                    text: 'Registrarse con email',
+                    onPressed: loginForm.isLoading
+                        ? () {}
+                        : () async {
+                            final authService = Provider.of<AuthService>(
+                                context,
+                                listen: false);
 
-                          FocusScope.of(context).unfocus();
+                            FocusScope.of(context).unfocus();
 
-                          if (!loginForm.isValidForm()) return;
+                            if (!loginForm.isValidForm()) return;
 
-                          final String? errorMsg = await authService.signUp(
-                              loginForm.email, loginForm.password);
+                            final String? errorMsg = await authService.signUp(
+                                loginForm.email, loginForm.password);
 
-                          loginForm.isLoading = true;
+                            loginForm.isLoading = true;
 
-                          if (errorMsg == null) {
-                            // Navigator.pushReplacementNamed(context, '/home');
-                          } else {
-                            print(errorMsg);
-                            loginForm.isLoading = false;
-                          }
-                        },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  elevation: 0,
-                  disabledColor: Colors.grey,
-                  color: AppTheme.primary,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 15),
-                    child: Text(
-                      loginForm.isLoading ? 'Cargando...' : 'Registrarse',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  )),
+                            if (errorMsg == null) {
+                              Navigator.pushReplacementNamed(context, '/main');
+                            } else {
+                              ToastHelper.showToast('La cuenta ya existe');
+                              print(errorMsg);
+                              loginForm.isLoading = false;
+                            }
+                          },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
+              ),
             ],
           )),
     );

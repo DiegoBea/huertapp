@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:huertapp/screens/home_screen.dart';
+import 'package:huertapp/screens/main_screen.dart';
 import 'package:huertapp/screens/login_screen.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +10,6 @@ class ChechAuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-
-    // authService.logOut();
 
     return Scaffold(
       body: Center(
@@ -35,7 +33,7 @@ class ChechAuthScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                     context,
                     PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const HomeScreen(),
+                        pageBuilder: (_, __, ___) => const MainScreen(),
                         transitionDuration: const Duration(seconds: 0)));
               });
             }

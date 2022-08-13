@@ -1,16 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:huertapp/helpers/toast.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
+
+  // TODO: Recuperar contraseña
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +71,15 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends StatefulWidget {
   const _LoginForm({Key? key}) : super(key: key);
+
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
+  bool hidePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +113,20 @@ class _LoginForm extends StatelessWidget {
               const SizedBox(height: 30),
               TextFormField(
                 autocorrect: false,
-                obscureText: true,
+                obscureText: hidePassword,
                 decoration: InputDecorations.authInputDecorations(
                     hintText: '******',
                     labelText: 'Contraseña',
-                    prefixIcon: Icons.lock),
+                    prefixIcon: Icons.lock,
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          hidePassword = !hidePassword;
+                          setState(() {});
+                        },
+                        color: AppTheme.primary,
+                        icon: Icon(hidePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off))),
                 onChanged: (value) => loginForm.password = value,
                 validator: (value) {
                   if (value != null && value.length >= 8) return null;
@@ -137,8 +155,9 @@ class _LoginForm extends StatelessWidget {
                             loginForm.isLoading = true;
 
                             if (errorMsg == null) {
-                              Navigator.pushReplacementNamed(context, '/home');
+                              Navigator.pushReplacementNamed(context, '/main');
                             } else {
+                              ToastHelper.showToast("Datos inválidos");
                               print(errorMsg);
                               loginForm.isLoading = false;
                             }
@@ -161,8 +180,10 @@ class _LoginForm extends StatelessWidget {
                             user.then((value) {
                               if (value != null) {
                                 Navigator.pushReplacementNamed(
-                                    context, '/home');
+                                    context, '/main');
                               } else {
+                                ToastHelper.showToast(
+                                    'No se ha podido iniciar con Google');
                                 loginForm.isLoading = false;
                               }
                             });

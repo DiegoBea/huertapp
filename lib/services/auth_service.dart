@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:huertapp/helpers/toast.dart';
 
 class AuthService extends ChangeNotifier {
   final String _baseUrl = 'identitytoolkit.googleapis.com';
@@ -80,39 +81,41 @@ class AuthService extends ChangeNotifier {
 
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
 
-    if (googleSignInAccount != null) {
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
 
-      try {
-        final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
+        try {
+          final UserCredential userCredential =
+              await auth.signInWithCredential(credential);
 
-        user = userCredential.user;
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'account-exists-with-different-credential') {
-          print(e.code);
-        } else if (e.code == 'invalid-credential') {
-          print(e.code);
+          user = userCredential.user;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            print(e.code);
+          } else if (e.code == 'invalid-credential') {
+            print(e.code);
+          }
+        } catch (e) {
+          print(e);
         }
-      } catch (e) {
-        print(e);
       }
-    }
 
-    // print(user);
-
-    if (user != null) {
-      // print(user.uid);
-      storage.write(key: 'userUid', value: user.uid);
+      if (user != null) {
+        storage.write(key: 'userUid', value: user.uid);
+      }
+    } catch (e) {
+      ToastHelper.showToast('No se ha podido iniciar con Google');
+      print(e);
     }
 
     // User(displayName: Diego Bea, email: diegobeagomez1@gmail.com, emailVerified: true,
