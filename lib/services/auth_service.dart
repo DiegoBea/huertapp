@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService extends ChangeNotifier {
@@ -26,8 +29,8 @@ class AuthService extends ChangeNotifier {
 
     print(decodedResp);
 
-    if (decodedResp.containsKey('idToken')) {
-      await storage.write(key: 'idToken', value: decodedResp['idToken']);
+    if (decodedResp.containsKey('userUid')) {
+      await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
     } else {
       return decodedResp['error']['message'];
@@ -49,7 +52,7 @@ class AuthService extends ChangeNotifier {
     final Map<String, dynamic> decodedResp = json.decode(response.body);
 
     if (decodedResp.containsKey('idToken')) {
-      await storage.write(key: 'idToken', value: decodedResp['idToken']);
+      await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
     } else {
       return decodedResp['error']['message'];
@@ -57,10 +60,74 @@ class AuthService extends ChangeNotifier {
   }
 
   Future logOut() async {
-    storage.delete(key: 'idToken');
+    storage.delete(key: 'userUid');
+    await signOut();
   }
 
   Future<String> readToken() async {
-    return await storage.read(key: 'idToken') ?? '';
+    return await storage.read(key: 'userUid') ?? '';
+  }
+
+  // static Future<FirebaseApp> initializeFirebase() async {
+  //   FirebaseApp firebaseApp = await Firebase.initializeApp();
+
+  //   return firebaseApp;
+  // }
+
+  Future<User?> signInWithGoogle() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      try {
+        final UserCredential userCredential =
+            await auth.signInWithCredential(credential);
+
+        user = userCredential.user;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'account-exists-with-different-credential') {
+          print(e.code);
+        } else if (e.code == 'invalid-credential') {
+          print(e.code);
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    // print(user);
+
+    if (user != null) {
+      // print(user.uid);
+      storage.write(key: 'userUid', value: user.uid);
+    }
+
+    // User(displayName: Diego Bea, email: diegobeagomez1@gmail.com, emailVerified: true,
+    // isAnonymous: false, metadata: UserMetadata(creationTime: 2022-08-13 08:36:56.050Z,
+    // lastSignInTime: 2022-08-13 08:39:46.183Z), phoneNumber: null,
+    // photoURL: https://lh3.googleusercontent.com/a/AItbvmkDr7Cl2ZC3avHwoO-VLf0N39_mJIqp80_m-nUa=s96-c,
+    // providerData, [UserInfo(displayName: Diego Bea, email: diegobeagomez1@gmail.com, phoneNumber: null,
+    // photoURL: https://lh3.googleusercontent.com/a/AItbvmkDr7Cl2ZC3avHwoO-VLf0N39_mJIqp80_m-nUa=s96-c,
+    // providerId: google.com, uid: 104860667456916370509)], refreshToken: , tenantId: null, uid: QeII2HQW7xboszKNjxlYbMepXRd2)
+
+    return user;
+  }
+
+  Future<void> signOut() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
   }
 }

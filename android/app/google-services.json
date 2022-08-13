@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "797729754017",
+    "project_id": "huertapp-609ed",
+    "storage_bucket": "huertapp-609ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797729754017:android:7b0670b1461d0d7ed899e0",
+        "android_client_info": {
+          "package_name": "com.example.huertapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797729754017-4lj3bvkn0oktv298m1dno6omqinc9rap.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.huertapp",
+            "certificate_hash": "8a27891807653a1273221d34db2a122ec12b06be"
+          }
+        },
+        {
+          "client_id": "797729754017-p0hclt1em7orkf5mui5vbntncsh2reh1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFGWM28Qh23av0n5N1IE_0Z7OAwjM0Xk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797729754017-p0hclt1em7orkf5mui5vbntncsh2reh1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

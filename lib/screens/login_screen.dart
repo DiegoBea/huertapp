@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
 import 'package:huertapp/services/services.dart';
@@ -115,70 +116,33 @@ class _LoginForm extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              MaterialButton(
-                  onPressed: loginForm.isLoading
-                      ? null
-                      : () async {
-                          final authService =
-                              Provider.of<AuthService>(context, listen: false);
-
-                          FocusScope.of(context).unfocus();
-
-                          if (!loginForm.isValidForm()) return;
-
-                          final String? errorMsg = await authService.signIn(
-                              loginForm.email, loginForm.password);
-
-                          loginForm.isLoading = true;
-
-                          if (errorMsg == null) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          } else {
-                            print(errorMsg);
-                            loginForm.isLoading = false;
-                          }
-                        },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  elevation: 0,
-                  disabledColor: Colors.grey,
-                  color: AppTheme.primary,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 15),
-                    child: Text(
-                      loginForm.isLoading ? 'Cargando...' : 'Iniciar sesión',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  )),
-              const SizedBox(height: 30),
-              // GoogleAuthButton(onPressed: (){}, text: 'Iniciar con google', isLoading: false,),
               SizedBox(
                 width: 270,
                 child: SignInButton(Buttons.Email,
                     text: 'Iniciar sesión con Email',
                     onPressed: loginForm.isLoading
-                      ? (){}
-                      : () async {
-                          final authService =
-                              Provider.of<AuthService>(context, listen: false);
+                        ? () {}
+                        : () async {
+                            final authService = Provider.of<AuthService>(
+                                context,
+                                listen: false);
 
-                          FocusScope.of(context).unfocus();
+                            FocusScope.of(context).unfocus();
 
-                          if (!loginForm.isValidForm()) return;
+                            if (!loginForm.isValidForm()) return;
 
-                          final String? errorMsg = await authService.signIn(
-                              loginForm.email, loginForm.password);
+                            final String? errorMsg = await authService.signIn(
+                                loginForm.email, loginForm.password);
 
-                          loginForm.isLoading = true;
+                            loginForm.isLoading = true;
 
-                          if (errorMsg == null) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          } else {
-                            print(errorMsg);
-                            loginForm.isLoading = false;
-                          }
-                        },
+                            if (errorMsg == null) {
+                              Navigator.pushReplacementNamed(context, '/home');
+                            } else {
+                              print(errorMsg);
+                              loginForm.isLoading = false;
+                            }
+                          },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
               ),
@@ -186,7 +150,23 @@ class _LoginForm extends StatelessWidget {
                 width: 270,
                 child: SignInButton(Buttons.Google,
                     text: 'Iniciar sesión con google',
-                    onPressed: () {},
+                    onPressed: loginForm.isLoading
+                        ? () {}
+                        : () async {
+                            final authService = Provider.of<AuthService>(
+                                context,
+                                listen: false);
+                            Future<User?> user = authService.signInWithGoogle();
+                            loginForm.isLoading = true;
+                            user.then((value) {
+                              if (value != null) {
+                                Navigator.pushReplacementNamed(
+                                    context, '/home');
+                              } else {
+                                loginForm.isLoading = false;
+                              }
+                            });
+                          },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
               ),

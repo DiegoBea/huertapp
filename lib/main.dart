@@ -1,13 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();  
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]); // Bloquear rotación de pantalla
+
+  await Firebase.initializeApp(); // Iniciar Firebase
   runApp(const AppState());
 }
 
@@ -17,9 +20,7 @@ class AppState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthService())
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => AuthService())],
       child: const MyApp(),
     );
   }
