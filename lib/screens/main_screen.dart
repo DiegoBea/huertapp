@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:huertapp/pages/settings_page.dart';
-import 'package:huertapp/services/auth_service.dart';
+import 'package:huertapp/pages/pages.dart';
 import 'package:huertapp/themes/app_theme.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -16,20 +15,17 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home',
-      style: optionStyle,
-    ),
-    Text(
+  static final List<Widget> _widgetOptions = <Widget>[
+    const CropsPage(),
+    const Text(
       'Likes',
       style: optionStyle,
     ),
-    Text(
+    const Text(
       'Search',
       style: optionStyle,
     ),
-    SettingsPage(),
+    const SettingsPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -55,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
               rippleColor: Colors.grey[300]!,
               hoverColor: Colors.grey[100]!,
               gap: 8,
-              activeColor: AppTheme.primary,
+              activeColor: Colors.green,
               iconSize: 24,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               duration: const Duration(milliseconds: 400),
@@ -63,19 +59,19 @@ class _MainScreenState extends State<MainScreen> {
               color: AppTheme.primary,
               tabs: const [
                 GButton(
-                  icon: Icons.home,
+                  icon: FontAwesomeIcons.carrot,
                   text: 'Cultivos',
                 ),
                 GButton(
-                  icon: Icons.heart_broken,
+                  icon: FontAwesomeIcons.seedling,
                   text: 'Huertos',
                 ),
                 GButton(
-                  icon: Icons.cloud,
+                  icon: FontAwesomeIcons.cloudSun,
                   text: 'Tiempo',
                 ),
                 GButton(
-                  icon: Icons.emergency_outlined,
+                  icon: FontAwesomeIcons.cog,
                   text: 'Ajustes',
                 ),
               ],
