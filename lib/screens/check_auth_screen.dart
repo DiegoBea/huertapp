@@ -29,6 +29,9 @@ class ChechAuthScreen extends StatelessWidget {
                         transitionDuration: const Duration(seconds: 0)));
               });
             } else {
+              authService
+                  .readToken()
+                  .then((value) => AuthService.userToken = value);
               Future.microtask(() {
                 Navigator.pushReplacement(
                     context,

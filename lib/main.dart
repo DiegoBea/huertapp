@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/crops_services.dart';
 import 'package:huertapp/services/services.dart';
-import 'package:huertapp/themes/app_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,7 +25,8 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
-        ChangeNotifierProvider(create: (_) => CropsService())
+        ChangeNotifierProvider(create: (_) => CropsService()),
+        ChangeNotifierProvider(create: (_) => VegetablePatchService()),
       ],
       child: const MyApp(),
     );

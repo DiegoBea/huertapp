@@ -1,16 +1,18 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:huertapp/helpers/toast.dart';
+import 'package:huertapp/helpers/helpers.dart';
 
 class AuthService extends ChangeNotifier {
   final String _baseUrl = 'identitytoolkit.googleapis.com';
   final String _firebaseToken = 'AIzaSyAhy3yJYFfoqPO12n4QqN-fFyfNz7ytmLc';
+  // TODO: Mejorar
+  static late String userToken;
 
   final storage = const FlutterSecureStorage();
 
@@ -30,7 +32,9 @@ class AuthService extends ChangeNotifier {
 
     print(decodedResp);
 
-    if (decodedResp.containsKey('userUid')) {
+    if (decodedResp.containsKey('idToken')) {
+      print("Token: ${decodedResp['idToken']}");
+      checkUser(decodedResp['idToken'], email);
       await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
     } else {
@@ -53,6 +57,8 @@ class AuthService extends ChangeNotifier {
     final Map<String, dynamic> decodedResp = json.decode(response.body);
 
     if (decodedResp.containsKey('idToken')) {
+      print("Token: ${decodedResp['idToken']}");
+      checkUser(decodedResp['idToken'], email);
       await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
     } else {
@@ -68,12 +74,6 @@ class AuthService extends ChangeNotifier {
   Future<String> readToken() async {
     return await storage.read(key: 'userUid') ?? '';
   }
-
-  // static Future<FirebaseApp> initializeFirebase() async {
-  //   FirebaseApp firebaseApp = await Firebase.initializeApp();
-
-  //   return firebaseApp;
-  // }
 
   Future<User?> signInWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -111,7 +111,9 @@ class AuthService extends ChangeNotifier {
       }
 
       if (user != null) {
+        print("Token: ${user.uid}");
         storage.write(key: 'userUid', value: user.uid);
+        checkUser(user.uid, user.email ?? '');
       }
     } catch (e) {
       ToastHelper.showToast('No se ha podido iniciar con Google');
@@ -132,5 +134,28 @@ class AuthService extends ChangeNotifier {
   Future<void> signOut() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
+  }
+
+  // TODO: Refactorizar
+  void checkUser(String token, String email) async {
+    userToken = token;
+
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('users')
+        .where(
+          'token',
+          isEqualTo: token,
+        )
+        .get();
+
+    if (result.docs.isEmpty) {
+      setUser(token, email);
+    }
+  }
+
+  void setUser(String token, String email) async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .add({"token": token, "email": email, "vegetable_patch": []});
   }
 }

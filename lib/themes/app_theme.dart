@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static Color primary = Colors.green.shade300;
+  // TODO: Eliminar
+  static TextStyle title1 = const TextStyle(fontWeight: FontWeight.bold, fontSize: 30);
+  static TextStyle title2 = const TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
 
   static final ThemeData lightTheme = ThemeData.light().copyWith(
     primaryColor: primary,
     appBarTheme: AppBarTheme(color: primary, elevation: 0),
     textButtonTheme:
         TextButtonThemeData(style: TextButton.styleFrom(primary: primary)),
-         textTheme: TextTheme(
-          headline4: TextStyle(color: primary),
-        ),
+    textTheme: TextTheme(
+      headline4: TextStyle(color: primary),
+    ),
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: primary),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -42,9 +45,9 @@ class AppTheme {
     appBarTheme: AppBarTheme(color: primary, elevation: 0),
     textButtonTheme:
         TextButtonThemeData(style: TextButton.styleFrom(primary: primary)),
-         textTheme: TextTheme(
-          headline4: TextStyle(color: primary),
-        ),
+    textTheme: TextTheme(
+      headline4: TextStyle(color: primary),
+    ),
     floatingActionButtonTheme:
         FloatingActionButtonThemeData(backgroundColor: primary),
     elevatedButtonTheme: ElevatedButtonThemeData(

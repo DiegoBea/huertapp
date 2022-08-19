@@ -1,10 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/crops_services.dart';
 import 'package:huertapp/themes/app_theme.dart';
+import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';
 
 class CropsPage extends StatelessWidget {
@@ -26,15 +25,30 @@ class CropsPage extends StatelessWidget {
             // const Text('Cultivos personalizados'),
             // for (Crops crop in lstNewCrops)
             //   _cropCard(cropsName: crop.name, cropsIcons: crop.icon),
-            const Center(
-              child: Text('Cultivos',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colors.black54)),
-            ),
+
+            // const Center(
+            //   child: Text('Cultivos',
+            //       style: TextStyle(
+            //           fontWeight: FontWeight.bold,
+            //           fontSize: 25,
+            //           color: Colors.white)),
+            // ),
+            // for (Crop crop in cropsService.crops) _CropCard(crop: crop),
             for (Crop crop in cropsService.crops)
-              _CropCard(crop: crop),
+              CardItem(
+                title: crop.name,
+                onTap: () {
+                  Navigator.pushNamed(context, '/cropInfo', arguments: crop);
+                },
+                leadingIcon: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: FadeInImage(
+                          image: NetworkImage(crop.iconUrl),
+                          placeholder:
+                              const AssetImage('assets/images/icon.png'),
+                        ),
+                ),
+              ),
           ],
         ),
       ),
@@ -62,24 +76,28 @@ class _CropCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: ListTile(
-        title: Text(
-          crop.name,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-        ),
-        onTap: () {
-          Navigator.pushNamed(context, '/cropInfo', arguments: crop);
-        },
-        leading: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: crop.iconUrl != null
-              ? FadeInImage(
-                  image: NetworkImage(crop.iconUrl!),
-                  placeholder: const AssetImage('assets/images/icon.png'),
-                )
-              : const Image(image: AssetImage('assets/images/icon.png')),
+    return Container(
+      padding: const EdgeInsets.all(3),
+      child: Card(
+        elevation: 10,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: ListTile(
+          title: Text(
+            crop.name,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, '/cropInfo', arguments: crop);
+          },
+          leading: CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: crop.iconUrl != null
+                ? FadeInImage(
+                    image: NetworkImage(crop.iconUrl),
+                    placeholder: const AssetImage('assets/images/icon.png'),
+                  )
+                : const Image(image: AssetImage('assets/images/icon.png')),
+          ),
         ),
       ),
     );
