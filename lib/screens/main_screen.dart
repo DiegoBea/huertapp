@@ -17,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static final List<Widget> _widgetOptions = <Widget>[
     const CropsPage(),
-    const VegetablePatchPage(),
+    const OrchardPage(),
     const Text(
       'Search',
       style: optionStyle,

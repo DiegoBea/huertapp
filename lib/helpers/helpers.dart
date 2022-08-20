@@ -20,3 +20,13 @@ class DaysHelper {
     return days ~/ 30;
   }
 }
+
+class PrintHelper {
+  static printInfo(String value) {
+    print("\x1B[33m${value}");
+  }
+
+  static printValue(String value){
+    print("\x1B[32m${value}");
+  }
+}

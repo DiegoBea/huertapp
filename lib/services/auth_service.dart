@@ -68,11 +68,14 @@ class AuthService extends ChangeNotifier {
 
   Future logOut() async {
     storage.delete(key: 'userUid');
+    userToken = '';
     await signOut();
   }
 
   Future<String> readToken() async {
-    return await storage.read(key: 'userUid') ?? '';
+    var token = await storage.read(key: 'userUid');
+    if (token != null) userToken = token;
+    return token ?? '';
   }
 
   Future<User?> signInWithGoogle() async {

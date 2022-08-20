@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,7 +21,7 @@ class CropsService extends ChangeNotifier {
   }
 
   Future<List<Crop>> loadCrops() async {
-    print("Loading crops...");
+    PrintHelper.printInfo("Loading crops...");
     isLoading = true;
     notifyListeners();
 
@@ -33,8 +34,7 @@ class CropsService extends ChangeNotifier {
       final tmpCrop = Crop.fromMap(value);
       tmpCrop.id = key;
       crops.add(tmpCrop);
-      // print(value);
-      print(tmpCrop.toJson());
+      PrintHelper.printValue(tmpCrop.toJson());
     });
 
     crops.sort(

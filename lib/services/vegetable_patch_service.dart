@@ -1,56 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/services/services.dart';
 
-class VegetablePatchService extends ChangeNotifier {
-  final List<VegetablePatch> vegetablePatchs = [];
+class OrchardService extends ChangeNotifier {
+  final List<Orchard> orchards = [];
   bool isLoading = true;
 
-  VegetablePatchService() {
-    loadUserVegetablePatchs().then((value) => loadVegetablePaths(value));
+  OrchardService() {
+    loadOrchards();
   }
 
-  Future<List<String>> loadUserVegetablePatchs() async {
-    print("Loading user vegetable patchs...");
-    List<String> userVegetablePatchs = [];
-    isLoading = true;
-    notifyListeners();
+  loadOrchards() async {
+    PrintHelper.printInfo("Cargando huertos...");
+    String? token;
 
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('users')
-        .where('token', isEqualTo: AuthService.userToken)
-        .get();
-    for (var data in result.docs) {
-      // TODO: Limpiar
-      List vegetablePatchsIds = data.get('vegetable_patch') as List;
-      for (var vegetable_patch in vegetablePatchsIds) {
-        userVegetablePatchs.add(vegetable_patch);
-      }
-    }
-    return userVegetablePatchs;
-  }
+    await AuthService().readToken().then((value) => token = value);
 
-  loadVegetablePaths(List<String> value) async {
-    print("Loading vegetable patchs...");
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('vegetable_patch')
-        .where('uid', whereIn: value)
+    orchards.clear();
+
+    if (token == null) return;
+
+    final QuerySnapshot ownerVegetablePatch = await FirebaseFirestore.instance
+        .collection('orchards')
+        .where('owners', arrayContains: token!)
         .get();
-    for (var element in result.docs) {
-      VegetablePatch vegetable_patch = VegetablePatch(
+    for (var element in ownerVegetablePatch.docs) {
+      Orchard orchard = Orchard(
         uid: element.get('uid'),
         name: element.get('name'),
-        crops: null,
+        lstOwners: List<String>.from(element.get('owners')),
+        onwer: true,
       );
-      vegetablePatchs.add(vegetable_patch);
+      orchards.add(orchard);
     }
-    CropsService cropsService = CropsService();
-    cropsService.crops.forEach((element) {
-      print("${element.name} - ${element.id}");
+
+    final QuerySnapshot guestOrchards = await FirebaseFirestore.instance
+        .collection('orchards')
+        .where('guests', arrayContains: token!)
+        .get();
+    for (var element in guestOrchards.docs) {
+      Orchard orchard = Orchard(
+        uid: element.get('uid'),
+        name: element.get('name'),
+        lstOwners: List<String>.from(element.get('owners')),
+        onwer: false,
+      );
+      orchards.add(orchard);
+    }
+
+    orchards.forEach((element) {
+      PrintHelper.printValue("${element.name}");
     });
 
-    print(cropsService.crops
-        .where((element) => element.id == "-N9R0TmQ6AuHr4jWh0PM").first.name);
+    PrintHelper.printInfo("********Final lectura de huertos********");
   }
 }

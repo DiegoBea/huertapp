@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:huertapp/models/models.dart';
-
-class VegetablePatchCropRelation {
-  VegetablePatchCropRelation({
+class OrchardCropRelation {
+  OrchardCropRelation({
     required this.cropUid,
-    required this.vegetablePatchUid,
+    required this.orchardUid,
     required this.dateSown,
     required this.wateringIntervalDays,
     required this.seedbed,
@@ -15,7 +13,7 @@ class VegetablePatchCropRelation {
   });
 
   String cropUid;
-  String vegetablePatchUid;
+  String orchardUid;
   DateTime dateSown;
 
   int wateringIntervalDays;
@@ -28,15 +26,15 @@ class VegetablePatchCropRelation {
   int germiantionDays;
   int harvestDays;
 
-  factory VegetablePatchCropRelation.fromJson(String str) =>
-      VegetablePatchCropRelation.fromMap(json.decode(str));
+  factory OrchardCropRelation.fromJson(String str) =>
+      OrchardCropRelation.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory VegetablePatchCropRelation.fromMap(Map<String, dynamic> json) =>
-      VegetablePatchCropRelation(
+  factory OrchardCropRelation.fromMap(Map<String, dynamic> json) =>
+      OrchardCropRelation(
         cropUid: json["crop_uid"],
-        vegetablePatchUid: json["vegetable_patch_uid"],
+        orchardUid: json["orchard_uid"],
         dateSown: json["date_sown"],
         wateringIntervalDays: json["watering_interval_days"],
         seedbed: json["seedbed"],
@@ -47,7 +45,7 @@ class VegetablePatchCropRelation {
 
   Map<String, dynamic> toMap() => {
         "crop_uid": cropUid,
-        "vegetable_patch_uid": vegetablePatchUid,
+        "orchard_uid": orchardUid,
         "date_sown": dateSown,
         "watering_interval_days": wateringIntervalDays,
         "seedbed": seedbed,
