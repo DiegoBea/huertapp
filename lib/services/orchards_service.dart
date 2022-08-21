@@ -7,12 +7,13 @@ import 'package:huertapp/services/services.dart';
 class OrchardService extends ChangeNotifier {
   final List<Orchard> orchards = [];
   bool isLoading = true;
+  late Orchard selectedOrchard;
 
   OrchardService() {
     loadOrchards();
   }
 
-  loadOrchards() async {
+  Future<List<Orchard>> loadOrchards() async {
     PrintHelper.printInfo("Cargando huertos...");
     String? token;
 
@@ -20,7 +21,7 @@ class OrchardService extends ChangeNotifier {
 
     orchards.clear();
 
-    if (token == null) return;
+    if (token == null) return [];
 
     final QuerySnapshot ownerVegetablePatch = await FirebaseFirestore.instance
         .collection('orchards')
@@ -50,10 +51,19 @@ class OrchardService extends ChangeNotifier {
       orchards.add(orchard);
     }
 
-    orchards.forEach((element) {
-      PrintHelper.printValue("${element.name}");
-    });
+    for (var element in orchards) {
+      PrintHelper.printValue(element.name);
+    }
+
+    orchards.sort(
+      (a, b) => a.name.compareTo(b.name),
+    );
 
     PrintHelper.printInfo("********Final lectura de huertos********");
+
+    isLoading = false;
+    notifyListeners();
+
+    return orchards;
   }
 }

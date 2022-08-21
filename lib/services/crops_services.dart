@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
 
 class CropsService extends ChangeNotifier {
+  // TODO: Revisar
   static final CropsService _instance = CropsService._internal();
   final String _baseUrl =
       'huertapp-609ed-default-rtdb.europe-west1.firebasedatabase.app';
@@ -21,7 +23,7 @@ class CropsService extends ChangeNotifier {
   }
 
   Future<List<Crop>> loadCrops() async {
-    PrintHelper.printInfo("Loading crops...");
+    PrintHelper.printInfo("Cargando cultivos...");
     isLoading = true;
     notifyListeners();
 
@@ -40,6 +42,8 @@ class CropsService extends ChangeNotifier {
     crops.sort(
       (a, b) => a.name.compareTo(b.name),
     );
+
+    PrintHelper.printInfo("********Final lectura de cultivos********");
 
     isLoading = false;
     notifyListeners();

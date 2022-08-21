@@ -30,10 +30,10 @@ class AuthService extends ChangeNotifier {
 
     final Map<String, dynamic> decodedResp = json.decode(response.body);
 
-    print(decodedResp);
+    PrintHelper.printValue(decodedResp.toString());
 
     if (decodedResp.containsKey('idToken')) {
-      print("Token: ${decodedResp['idToken']}");
+      PrintHelper.printInfo("Token: ${decodedResp['idToken']}");
       checkUser(decodedResp['idToken'], email);
       await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
@@ -57,7 +57,7 @@ class AuthService extends ChangeNotifier {
     final Map<String, dynamic> decodedResp = json.decode(response.body);
 
     if (decodedResp.containsKey('idToken')) {
-      print("Token: ${decodedResp['idToken']}");
+      PrintHelper.printInfo("Token: ${decodedResp['idToken']}");
       checkUser(decodedResp['idToken'], email);
       await storage.write(key: 'userUid', value: decodedResp['idToken']);
       return null;
@@ -114,7 +114,7 @@ class AuthService extends ChangeNotifier {
       }
 
       if (user != null) {
-        print("Token: ${user.uid}");
+        PrintHelper.printInfo("Token: ${user.uid}");
         storage.write(key: 'userUid', value: user.uid);
         checkUser(user.uid, user.email ?? '');
       }
@@ -154,10 +154,12 @@ class AuthService extends ChangeNotifier {
     if (result.docs.isEmpty) {
       setUser(token, email);
     }
+
+    notifyListeners();
   }
 
   void setUser(String token, String email) async {
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .add({"token": token, "email": email, "vegetable_patch": []});
   }

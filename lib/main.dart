@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:huertapp/screens/screens.dart';
-import 'package:huertapp/services/crops_services.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +25,6 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => CropsService()),
-        ChangeNotifierProvider(create: (_) => OrchardService()),
       ],
       child: const MyApp(),
     );
@@ -48,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/cropInfo': (_) => const CropInfoScreen(),
+        '/orchardForm': (_) => const OrchardFormScreen(),
       },
     );
   }

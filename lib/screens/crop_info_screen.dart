@@ -9,7 +9,7 @@ class CropInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Crop crop = ModalRoute.of(context)!.settings.arguments as Crop;
-    print(crop.toMap());
+    PrintHelper.printValue("${crop.toMap()}");
     return Scaffold(
         backgroundColor: Colors.white,
         body: CustomScrollView(
@@ -104,6 +104,7 @@ class _InfoColumn extends StatelessWidget {
         ),
         if (crop.seedbed)
           _InfoCard(title: 'Semillero', rows: [
+            if (crop.seedbedSeedsNumber != null)
             _InfoRow(
                 title: 'Número de semillas',
                 image: 'assets/images/icons/seeds.png',
@@ -113,7 +114,7 @@ class _InfoColumn extends StatelessWidget {
                   title: 'Transplantar',
                   image: 'assets/images/icons/transplant.png',
                   value: crop.seedbedTransplant! > 30
-                      ? "${DaysHelper.daysToMonths(crop.seedbedTransplant!)} meses"
+                      ? "${DaysHelper.daysToMonths(crop.seedbedTransplant!)} ${DaysHelper.daysToMonths(crop.seedbedTransplant!) == 1 ? 'mes' : 'meses'}"
                       : "${crop.seedbedTransplant!} días"),
             if (crop.seedbedDepth != null)
               _InfoRow(
@@ -143,7 +144,6 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         elevation: 15,
-        // color: AppTheme.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
