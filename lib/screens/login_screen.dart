@@ -85,114 +85,117 @@ class _LoginFormState extends State<_LoginForm> {
   Widget build(BuildContext context) {
     final loginForm = Provider.of<LoginFormProvider>(context);
 
-    return Container(
-      child: Form(
-          key: loginForm.formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            children: [
-              TextFormField(
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecorations.authInputDecorations(
-                    hintText: 'usuario@email.com',
-                    labelText: 'Correo electrónico',
-                    prefixIcon: Icons.alternate_email),
-                onChanged: (value) => loginForm.email = value,
-                validator: (value) {
-                  String pattern =
-                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    return Form(
+        key: loginForm.formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            TextFormField(
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecorations.authInputDecorations(
+                  hintText: 'usuario@email.com',
+                  labelText: 'Correo electrónico',
+                  prefixIcon: Icons.alternate_email),
+              onChanged: (value) => loginForm.email = value,
+              validator: (value) {
+                String pattern =
+                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-                  RegExp regExp = RegExp(pattern);
+                RegExp regExp = RegExp(pattern);
 
-                  return regExp.hasMatch(value ?? '')
-                      ? null
-                      : 'Formato de email inválido';
-                },
-              ),
-              const SizedBox(height: 30),
-              TextFormField(
-                autocorrect: false,
-                obscureText: hidePassword,
-                decoration: InputDecorations.authInputDecorations(
-                    hintText: '******',
-                    labelText: 'Contraseña',
-                    prefixIcon: Icons.lock,
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          hidePassword = !hidePassword;
-                          setState(() {});
+                return regExp.hasMatch(value ?? '')
+                    ? null
+                    : 'Formato de email inválido';
+              },
+            ),
+            const SizedBox(height: 30),
+            TextFormField(
+              autocorrect: false,
+              obscureText: hidePassword,
+              decoration: InputDecorations.authInputDecorations(
+                  hintText: '******',
+                  labelText: 'Contraseña',
+                  prefixIcon: Icons.lock,
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        hidePassword = !hidePassword;
+                        setState(() {});
+                      },
+                      color: AppTheme.primary,
+                      icon: Icon(hidePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off))),
+              onChanged: (value) => loginForm.password = value,
+              validator: (value) {
+                if (value != null && value.length >= 8) return null;
+                return 'La contraseña debe tener 8 caracteres';
+              },
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: 270,
+              child: SignInButton(Buttons.Email,
+                  text: 'Iniciar sesión con Email',
+                  onPressed: loginForm.isLoading
+                      ? () {}
+                      : () async {
+                          final authService =
+                              Provider.of<AuthService>(context, listen: false);
+                          final orchardService = Provider.of<OrchardService>(
+                              context,
+                              listen: false);
+
+                          FocusScope.of(context).unfocus();
+
+                          if (!loginForm.isValidForm()) return;
+
+                          final String? errorMsg = await authService.signIn(
+                              loginForm.email, loginForm.password);
+
+                          loginForm.isLoading = true;
+
+                          if (errorMsg == null) {
+                            orchardService.loadOrchards();
+                            Navigator.pushReplacementNamed(context, '/main');
+                          } else {
+                            ToastHelper.showToast("Datos inválidos");
+                            print(errorMsg);
+                            loginForm.isLoading = false;
+                          }
                         },
-                        color: AppTheme.primary,
-                        icon: Icon(hidePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off))),
-                onChanged: (value) => loginForm.password = value,
-                validator: (value) {
-                  if (value != null && value.length >= 8) return null;
-                  return 'La contraseña debe tener 8 caracteres';
-                },
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: 270,
-                child: SignInButton(Buttons.Email,
-                    text: 'Iniciar sesión con Email',
-                    onPressed: loginForm.isLoading
-                        ? () {}
-                        : () async {
-                            final authService = Provider.of<AuthService>(
-                                context,
-                                listen: false);
-
-                            FocusScope.of(context).unfocus();
-
-                            if (!loginForm.isValidForm()) return;
-
-                            final String? errorMsg = await authService.signIn(
-                                loginForm.email, loginForm.password);
-
-                            loginForm.isLoading = true;
-
-                            if (errorMsg == null) {
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+            ),
+            SizedBox(
+              width: 270,
+              child: SignInButton(Buttons.Google,
+                  text: 'Iniciar sesión con google',
+                  onPressed: loginForm.isLoading
+                      ? () {}
+                      : () async {
+                          final authService =
+                              Provider.of<AuthService>(context, listen: false);
+                          final orchardService = Provider.of<OrchardService>(
+                              context,
+                              listen: false);
+                          Future<User?> user = authService.signInWithGoogle();
+                          loginForm.isLoading = true;
+                          user.then((value) {
+                            if (value != null) {
+                              orchardService.loadOrchards();
                               Navigator.pushReplacementNamed(context, '/main');
                             } else {
-                              ToastHelper.showToast("Datos inválidos");
-                              print(errorMsg);
+                              ToastHelper.showToast(
+                                  'No se ha podido iniciar con Google');
                               loginForm.isLoading = false;
                             }
-                          },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-              ),
-              SizedBox(
-                width: 270,
-                child: SignInButton(Buttons.Google,
-                    text: 'Iniciar sesión con google',
-                    onPressed: loginForm.isLoading
-                        ? () {}
-                        : () async {
-                            final authService = Provider.of<AuthService>(
-                                context,
-                                listen: false);
-                            Future<User?> user = authService.signInWithGoogle();
-                            loginForm.isLoading = true;
-                            user.then((value) {
-                              if (value != null) {
-                                Navigator.pushReplacementNamed(
-                                    context, '/main');
-                              } else {
-                                ToastHelper.showToast(
-                                    'No se ha podido iniciar con Google');
-                                loginForm.isLoading = false;
-                              }
-                            });
-                          },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-              ),
-            ],
-          )),
-    );
+                          });
+                        },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+            ),
+          ],
+        ));
   }
 }

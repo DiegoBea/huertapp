@@ -3,7 +3,7 @@ import 'package:huertapp/models/models.dart';
 
 class OrchardFormProvider extends ChangeNotifier {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Orchard? orchard;
+  late Orchard orchard;
 
   OrchardFormProvider(this.orchard);
 

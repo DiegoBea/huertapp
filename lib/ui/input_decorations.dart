@@ -33,9 +33,9 @@ class InputDecorations {
       required bool isRequired}) {
     return InputDecoration(
       enabledBorder:
-          OutlineInputBorder(borderSide: BorderSide(color: AppTheme.primary), borderRadius: BorderRadius.circular(15)),
-      focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.primary, width: 2), borderRadius: BorderRadius.circular(15)),
+          UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.primary)),
+      focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: AppTheme.primary, width: 2)),
           labelStyle: TextStyle(color: AppTheme.primary),
       hintText: hintText,
       labelText: labelText,

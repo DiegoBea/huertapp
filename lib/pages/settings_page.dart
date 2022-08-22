@@ -16,7 +16,9 @@ class SettingsPage extends StatelessWidget {
 
               await authService.logOut();
 
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.popAndPushNamed(context, '/login');
+
+              // Navigator.pushAndRemoveUntil(context, '/login');
             },
             child: const Text('Log out')),
       ),

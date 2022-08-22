@@ -42,4 +42,12 @@ class Orchard {
         "owner": onwer,
         "guests": lstGuests,
       };
+
+  Orchard copy() => Orchard(
+      lstOwners: lstOwners,
+      name: name,
+      onwer: onwer,
+      description: description,
+      lstGuests: lstGuests,
+      uid: uid);
 }

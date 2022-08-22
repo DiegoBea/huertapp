@@ -16,6 +16,10 @@ class AuthService extends ChangeNotifier {
 
   final storage = const FlutterSecureStorage();
 
+  AuthService() {
+    PrintHelper.printInfo('Instanciando authService');
+  }
+
   Future<String?> signUp(String email, String password) async {
     final Map<String, dynamic> authData = {
       'email': email,
@@ -154,8 +158,6 @@ class AuthService extends ChangeNotifier {
     if (result.docs.isEmpty) {
       setUser(token, email);
     }
-
-    notifyListeners();
   }
 
   void setUser(String token, String email) async {

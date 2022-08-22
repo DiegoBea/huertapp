@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:huertapp/helpers/helpers.dart';
+import 'package:huertapp/models/models.dart';
+import 'package:huertapp/screens/loading_screen.dart';
 import 'package:huertapp/screens/main_screen.dart';
 import 'package:huertapp/screens/login_screen.dart';
 import 'package:huertapp/services/services.dart';
@@ -10,6 +13,7 @@ class ChechAuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+    PrintHelper.printValue('Checkeando usuario');
 
     return Scaffold(
       body: Center(
@@ -17,7 +21,7 @@ class ChechAuthScreen extends StatelessWidget {
           future: authService.readToken(),
           builder: (context, AsyncSnapshot<String> snapshot) {
             if (!snapshot.hasData) {
-              return const Text('Espere...');
+              return const LoadingScreen();
             }
 
             if (snapshot.data == '') {
