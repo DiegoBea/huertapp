@@ -151,7 +151,8 @@ class _LoginFormState extends State<_LoginForm> {
                           if (!loginForm.isValidForm()) return;
 
                           final String? errorMsg = await authService.signIn(
-                              loginForm.email, loginForm.password);
+                              email: loginForm.email,
+                              password: loginForm.password);
 
                           loginForm.isLoading = true;
 

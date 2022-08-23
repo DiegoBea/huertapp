@@ -25,7 +25,7 @@ class OrchardPage extends StatelessWidget {
           onPressed: () {
             orchardService.isEditing = false;
             orchardService.selectedOrchard =
-                Orchard(name: '', lstOwners: [], onwer: true);
+                Orchard(name: '', owners: [], onwer: true);
             Navigator.pushNamed(context, '/orchardForm');
           },
           backgroundColor: Colors.white,

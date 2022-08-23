@@ -34,7 +34,7 @@ class CropsService extends ChangeNotifier {
 
     cropsMap.forEach((key, value) {
       final tmpCrop = Crop.fromMap(value);
-      tmpCrop.id = key;
+      tmpCrop.uid = key;
       crops.add(tmpCrop);
       PrintHelper.printValue(tmpCrop.toJson());
     });

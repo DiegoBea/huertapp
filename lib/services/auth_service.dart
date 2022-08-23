@@ -7,12 +7,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:huertapp/helpers/helpers.dart';
+import 'package:huertapp/models/models.dart';
+import 'package:huertapp/services/services.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthService extends ChangeNotifier {
   final String _baseUrl = 'identitytoolkit.googleapis.com';
   final String _firebaseToken = 'AIzaSyAhy3yJYFfoqPO12n4QqN-fFyfNz7ytmLc';
-  // TODO: Mejorar
-  static late String userToken;
 
   final storage = const FlutterSecureStorage();
 
@@ -20,7 +21,8 @@ class AuthService extends ChangeNotifier {
     PrintHelper.printInfo('Instanciando authService');
   }
 
-  Future<String?> signUp(String email, String password) async {
+  Future<String?> signUp(
+      {required String email, required String password, String? name}) async {
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
@@ -36,17 +38,19 @@ class AuthService extends ChangeNotifier {
 
     PrintHelper.printValue(decodedResp.toString());
 
-    if (decodedResp.containsKey('idToken')) {
-      PrintHelper.printInfo("Token: ${decodedResp['idToken']}");
-      checkUser(decodedResp['idToken'], email);
-      await storage.write(key: 'userUid', value: decodedResp['idToken']);
+    if (decodedResp.containsKey('localId')) {
+      PrintHelper.printInfo("Token: ${decodedResp['localId']}");
+      checkUser(FirestoreUser(
+          email: email, name: name ?? email, uid: decodedResp['localId']));
+      await storage.write(key: 'token', value: decodedResp['localId']);
       return null;
     } else {
       return decodedResp['error']['message'];
     }
   }
 
-  Future<String?> signIn(String email, String password) async {
+  Future<String?> signIn(
+      {required String email, required String password, String? name}) async {
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
@@ -60,10 +64,11 @@ class AuthService extends ChangeNotifier {
 
     final Map<String, dynamic> decodedResp = json.decode(response.body);
 
-    if (decodedResp.containsKey('idToken')) {
-      PrintHelper.printInfo("Token: ${decodedResp['idToken']}");
-      checkUser(decodedResp['idToken'], email);
-      await storage.write(key: 'userUid', value: decodedResp['idToken']);
+    if (decodedResp.containsKey('localId')) {
+      PrintHelper.printInfo("Token: ${decodedResp['localId']}");
+      checkUser(FirestoreUser(
+          email: email, name: name ?? email, uid: decodedResp['localId']));
+      await storage.write(key: 'token', value: decodedResp['localId']);
       return null;
     } else {
       return decodedResp['error']['message'];
@@ -71,15 +76,14 @@ class AuthService extends ChangeNotifier {
   }
 
   Future logOut() async {
-    storage.delete(key: 'userUid');
-    userToken = '';
+    storage.delete(key: 'token');
     await signOut();
   }
 
   Future<String> readToken() async {
-    var token = await storage.read(key: 'userUid');
-    if (token != null) userToken = token;
-    return token ?? '';
+    PrintHelper.printInfo('Leyendo token...');
+    storage.readAll().then((value) => PrintHelper.printValue(value.toString()));
+    return await storage.read(key: 'token') ?? '';
   }
 
   Future<User?> signInWithGoogle() async {
@@ -109,18 +113,25 @@ class AuthService extends ChangeNotifier {
         } on FirebaseAuthException catch (e) {
           if (e.code == 'account-exists-with-different-credential') {
             print(e.code);
+            ToastHelper.showToast('La cuenta ya existe');
           } else if (e.code == 'invalid-credential') {
             print(e.code);
+            ToastHelper.showToast('Datos de inicio de sesión inválidos');
           }
         } catch (e) {
           print(e);
+          ToastHelper.showToast('Ha ocurrido un error desconocido');
         }
       }
 
-      if (user != null) {
+      if (user != null && user.email != null) {
         PrintHelper.printInfo("Token: ${user.uid}");
-        storage.write(key: 'userUid', value: user.uid);
-        checkUser(user.uid, user.email ?? '');
+        checkUser(FirestoreUser(
+            uid: user.uid,
+            email: user.email!,
+            name: user.displayName ?? user.email!,
+            photoURL: user.photoURL));
+        await storage.write(key: 'token', value: user.uid);
       }
     } catch (e) {
       ToastHelper.showToast('No se ha podido iniciar con Google');
@@ -143,26 +154,17 @@ class AuthService extends ChangeNotifier {
     await googleSignIn.signOut();
   }
 
-  // TODO: Refactorizar
-  void checkUser(String token, String email) async {
-    userToken = token;
+  void checkUser(FirestoreUser user) async {
+    PrintHelper.printInfo('Leyendo datos de ${user.name}');
+    UserService userService = UserService();
 
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('users')
-        .where(
-          'token',
-          isEqualTo: token,
-        )
-        .get();
+    await userService.getUser(user.uid).then((value) {
+      // Obtener si el usuario ya existe, si no existe se añade a la BBDD
+      if (value == null) {
+        userService.setUser(user);
+      }
+    });
 
-    if (result.docs.isEmpty) {
-      setUser(token, email);
-    }
-  }
-
-  void setUser(String token, String email) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .add({"token": token, "email": email, "vegetable_patch": []});
+    PrintHelper.printInfo("User_uid: ${user.uid}");
   }
 }

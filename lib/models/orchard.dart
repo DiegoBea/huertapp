@@ -9,17 +9,19 @@ class Orchard {
     this.uid,
     required this.name,
     this.description,
-    required this.lstOwners,
+    required this.owners,
     required this.onwer,
-    this.lstGuests,
+    this.guests,
+    this.imageUrl,
   });
 
   String? uid;
   String name;
   String? description;
-  List<String> lstOwners;
+  List<String> owners;
   bool onwer;
-  List<String>? lstGuests;
+  List<String>? guests;
+  String? imageUrl;
 
   factory Orchard.fromJson(String str) => Orchard.fromMap(json.decode(str));
 
@@ -29,25 +31,28 @@ class Orchard {
         uid: json["uid"],
         name: json["name"],
         description: json["description"],
-        lstOwners: json["owners"],
+        owners: json["owners"],
         onwer: json["owner"],
-        lstGuests: json["guests"],
+        guests: json["guests"],
+        imageUrl: json["imageUrl"],
       );
 
   Map<String, dynamic> toMap() => {
         "uid": uid,
         "name": name,
         "description": description,
-        "owners": lstOwners,
+        "owners": owners,
         "owner": onwer,
-        "guests": lstGuests,
+        "guests": guests,
+        "imageUrl": imageUrl,
       };
 
   Orchard copy() => Orchard(
-      lstOwners: lstOwners,
+      owners: owners,
       name: name,
       onwer: onwer,
       description: description,
-      lstGuests: lstGuests,
+      guests: guests,
+      imageUrl: imageUrl,
       uid: uid);
 }

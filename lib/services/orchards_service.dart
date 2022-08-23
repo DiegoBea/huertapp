@@ -24,23 +24,25 @@ class OrchardService extends ChangeNotifier {
   Future<List<Orchard>> loadOrchards() async {
     PrintHelper.printInfo("Cargando huertos...");
 
-    String? token;
-    await AuthService().readToken().then((value) => token = value);
+    String? uid;
+    await AuthService().readToken().then((value) => uid = value);
+
+    PrintHelper.printInfo("Huertos del user_uid $uid");
 
     orchards.clear();
 
-    if (token == null) return [];
+    if (uid == null) return [];
 
-    final QuerySnapshot ownerVegetablePatch = await FirebaseFirestore.instance
+    final QuerySnapshot ownerOrchards = await FirebaseFirestore.instance
         .collection('orchards')
-        .where('owners', arrayContains: token!)
+        .where('owners', arrayContains: uid!)
         .get();
-    for (var element in ownerVegetablePatch.docs) {
+    for (var element in ownerOrchards.docs) {
       Orchard orchard = Orchard(
         uid: element.get('uid'),
         name: element.get('name'),
         description: element.get('description'),
-        lstOwners: List<String>.from(element.get('owners')),
+        owners: List<String>.from(element.get('owners')),
         onwer: true,
       );
       orchards.add(orchard);
@@ -48,14 +50,14 @@ class OrchardService extends ChangeNotifier {
 
     final QuerySnapshot guestOrchards = await FirebaseFirestore.instance
         .collection('orchards')
-        .where('guests', arrayContains: token!)
+        .where('guests', arrayContains: uid!)
         .get();
     for (var element in guestOrchards.docs) {
       Orchard orchard = Orchard(
         uid: element.get('uid'),
         name: element.get('name'),
         description: element.get('description'),
-        lstOwners: List<String>.from(element.get('owners')),
+        owners: List<String>.from(element.get('owners')),
         onwer: false,
       );
       orchards.add(orchard);
@@ -92,13 +94,14 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future addOrchard(Orchard orchard) async {
-    String? token;
-    await AuthService().readToken().then((value) => token = value);
+    PrintHelper.printInfo('Añadiendo ${orchard.name}...');
+    String? uid;
+    await AuthService().readToken().then((value) => uid = value);
 
-    if (token == null) return;
+    if (uid == null) return;
 
-    orchard.lstOwners.add(token!);
-    orchard.lstGuests = [];
+    orchard.owners.add(uid!);
+    orchard.guests = [];
     orchard.uid = const Uuid().v1();
 
     await FirebaseFirestore.instance
@@ -106,10 +109,12 @@ class OrchardService extends ChangeNotifier {
         .add(orchard.toMap());
     orchards.add(orchard);
     _refreshOrder();
+    PrintHelper.printInfo('${orchard.name} añadido correctamente');
     notifyListeners();
   }
 
   Future updateOrchard(Orchard orchard) async {
+    PrintHelper.printInfo('Actualizando ${orchard.name}...');
     await FirebaseFirestore.instance
         .collection('orchards')
         .where('uid', isEqualTo: orchard.uid)
@@ -120,19 +125,21 @@ class OrchardService extends ChangeNotifier {
         element.reference.update({
           "name": orchard.name,
           "description": orchard.description,
-          "lstOwners": orchard.lstOwners,
-          "lstGuests": orchard.lstGuests
+          "owners": orchard.owners,
+          "guests": orchard.guests
         });
       }
     });
     var index = orchards.indexWhere((element) => element.uid == orchard.uid);
     orchards[index] = orchard;
     _refreshOrder();
+    PrintHelper.printInfo('${orchard.name} actualizado correctamente');
     notifyListeners();
   }
 
   Future deleteOrchard(Orchard orchard) async {
-    if (orchard.lstOwners.length == 1) {
+    PrintHelper.printInfo('Eliminando ${orchard.name}...');
+    if (orchard.owners.length == 1) {
       await FirebaseFirestore.instance
           .collection('orchards')
           .where('uid', isEqualTo: orchard.uid)
@@ -142,9 +149,26 @@ class OrchardService extends ChangeNotifier {
           element.reference.delete();
         }
       });
+    } else {
+      String? uid;
+      await AuthService().readToken().then((value) => uid = value);
+      await FirebaseFirestore.instance
+          .collection('orchards')
+          .where('uid', isEqualTo: orchard.uid)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          var index = orchard.owners.indexOf(uid ?? '');
+          orchard.owners.removeAt(index);
+          element.reference.update({
+            "owners": orchard.owners,
+          });
+        }
+      });
     }
     orchards.remove(orchard);
     _refreshOrder();
+    PrintHelper.printInfo('${orchard.name} eliminado correctamente');
     notifyListeners();
   }
 }

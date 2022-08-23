@@ -53,34 +53,24 @@ class _InfoColumn extends StatelessWidget {
           height: 10,
         ),
         _InfoCard(title: 'Información del cultivo', rows: [
-          if (crop.sown != null)
-            _InfoRow(
-                title: 'Fecha de cultivo',
-                image: 'assets/images/icons/calendar.png',
-                value: crop.sown!),
-          if (crop.sownType != null)
           _InfoRow(
-                title: 'Tipo de siembra',
-                image: 'assets/images/icons/sown_type.png',
-                value: crop.sownType!),
-            _InfoRow(
-                title: 'Recogida',
-                image: 'assets/images/icons/harvest.png',
-                value: crop.harvest > 30
-                    ? "${DaysHelper.daysToMonths(crop.harvest)} ${DaysHelper.daysToMonths(crop.harvest) == 1 ? 'mes' : 'meses'}"
-                    : "${crop.harvest} ${crop.harvest == 1 ? 'día' : 'días'}"),
-            _InfoRow(
-                title: 'Germinación',
-                image: 'assets/images/icons/germination.png',
-                value: crop.germination > 30
-                    ? "${DaysHelper.daysToMonths(crop.germination)} ${DaysHelper.daysToMonths(crop.germination) == 1 ? 'mes' : 'meses'}"
-                    : "${crop.germination} ${crop.germination == 1 ? 'día' : 'días'}"),
-          if (crop.minWatering != null || crop.maxWatering != null)
-            _InfoRow(
-                title: 'Regadío',
-                image: 'assets/images/icons/watered.png',
-                // TODO: Probar en null
-                value: "${crop.minWatering} - ${crop.maxWatering} días"),
+              title: 'Recogida',
+              image: 'assets/images/icons/harvest.png',
+              value: crop.harvest != null
+                  ? crop.harvest!
+                  : crop.harvestNotification > 30
+                      ? "${DaysHelper.daysToMonths(crop.harvestNotification)} ${DaysHelper.daysToMonths(crop.harvestNotification) == 1 ? 'mes' : 'meses'}"
+                      : "${crop.harvestNotification} ${crop.harvestNotification == 1 ? 'día' : 'días'}"),
+          _InfoRow(
+              title: 'Germinación',
+              image: 'assets/images/icons/germination.png',
+              value: crop.germination > 30
+                  ? "${DaysHelper.daysToMonths(crop.germination)} ${DaysHelper.daysToMonths(crop.germination) == 1 ? 'mes' : 'meses'}"
+                  : "${crop.germination} ${crop.germination == 1 ? 'día' : 'días'}"),
+          _InfoRow(
+              title: 'Regadío',
+              image: 'assets/images/icons/watered.png',
+              value: crop.watering),
         ]),
         const SizedBox(
           height: 10,
@@ -102,26 +92,47 @@ class _InfoColumn extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        if (crop.seedbed)
-          _InfoCard(title: 'Semillero', rows: [
-            if (crop.seedbedSeedsNumber != null)
+        _InfoCard(title: 'Sembrado', rows: [
+          if (crop.sown != null)
+            _InfoRow(
+                title: 'Fecha de cultivo',
+                image: 'assets/images/icons/calendar.png',
+                value: crop.sown!),
+          if (crop.sownType != null)
+            _InfoRow(
+                title: 'Tipo de siembra',
+                image: 'assets/images/icons/sown_type.png',
+                value: crop.sownType!),
+          if (crop.seedsNumber != null)
             _InfoRow(
                 title: 'Número de semillas',
                 image: 'assets/images/icons/seeds.png',
-                value: "${crop.seedbedSeedsNumber}"),
-            if (crop.seedbedTransplant != null)
-              _InfoRow(
-                  title: 'Transplantar',
-                  image: 'assets/images/icons/transplant.png',
-                  value: crop.seedbedTransplant! > 30
-                      ? "${DaysHelper.daysToMonths(crop.seedbedTransplant!)} ${DaysHelper.daysToMonths(crop.seedbedTransplant!) == 1 ? 'mes' : 'meses'}"
-                      : "${crop.seedbedTransplant!} días"),
-            if (crop.seedbedDepth != null)
-              _InfoRow(
-                  title: 'Profundidad',
-                  image: 'assets/images/icons/depth.png',
-                  value: "${crop.seedbedDepth} cm"),
-          ]),
+                value: "${crop.seedsNumber}"),
+          if (crop.transplant != null || crop.transplantNotification != null)
+            _InfoRow(
+                title: 'Transplantar',
+                image: 'assets/images/icons/transplant.png',
+                value: crop.transplant != null
+                    ? crop.transplant!
+                    : crop.transplantNotification! > 30
+                        ? "${DaysHelper.daysToMonths(crop.transplantNotification!)} ${DaysHelper.daysToMonths(crop.transplantNotification!) == 1 ? 'mes' : 'meses'}"
+                        : "${crop.transplantNotification!} días"),
+          if (crop.depth != null)
+            _InfoRow(
+                title: 'Profundidad',
+                image: 'assets/images/icons/depth.png',
+                value: "${crop.depth} cm"),
+          if (crop.container != null)
+            _InfoRow(
+                title: 'Recipiente',
+                image: 'assets/images/icons/container.png',
+                value: "${crop.container}l en adelante"),
+          if (crop.plantingFrame != null)
+            _InfoRow(
+                title: 'Marco de plantación',
+                image: 'assets/images/icons/planting_frame.png',
+                value: "${crop.plantingFrame} en adelante"),
+        ]),
         const SizedBox(
           height: 10,
         ),
