@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/models/models.dart';
@@ -84,154 +82,217 @@ class _OrchardFormState extends State<_OrchardForm> {
 
     return SizedBox(
       height: screenSize.height * 0.8,
-      child: Form(
-          key: orchardForm.formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: screenSize.width * 0.9,
-                  child: TextFormField(
-                    decoration: InputDecorations.inputDecoration(
-                        isRequired: true, labelText: 'Nombre'),
-                    maxLines: 1,
-                    initialValue: orchard.name,
-                    onChanged: (name) => orchard.name = name,
-                    validator: (name) {
-                      if (name == null || name.isEmpty) {
-                        return 'El nombre es obligatorio';
-                      }
-                      if (name.length > 32) {
-                        return 'Este campo no debe superar los 32 caracteres';
-                      }
-                      return null;
-                    },
+      child: SingleChildScrollView(
+        child: Form(
+            key: orchardForm.formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: screenSize.width * 0.9,
-                  child: TextFormField(
-                    decoration: InputDecorations.inputDecoration(
-                        isRequired: false, labelText: 'Descripción'),
-                    keyboardType: TextInputType.multiline,
-                    maxLength: 250,
-                    initialValue: orchard.description,
-                    onChanged: (description) => orchard.description = description,
-                    validator: (description) {
-                      if (description != null && description.length > 250) {
-                        return 'Este campo no debe superar los 250 caracteres';
-                      }
-                      return null;
-                    },
+                  _NameInput(screenSize: screenSize, orchard: orchard),
+                  const SizedBox(height: 10),
+                  _DescriptionInput(screenSize: screenSize, orchard: orchard),
+                  const SizedBox(height: 10),
+                  _cropListTitle(context, cropsService, screenSize),
+                  const SizedBox(height: 10),
+                  Container(
+                    constraints: const BoxConstraints(maxHeight: 325),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: AppTheme.primary, width: 2),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: selectedCrops.length,
+                      itemBuilder: (context, index) => Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        child: ExpansionTile(
+                            textColor: AppTheme.primary,
+                            iconColor: AppTheme.primary,
+                            title: ListTile(
+                                leading: FadeInImage(
+                                    placeholder: const AssetImage(
+                                        '/assets/images/icon.png'),
+                                    image: NetworkImage(
+                                        selectedCrops[index].iconUrl),
+                                    fit: BoxFit.cover,
+                                    width: screenSize.width * 0.075,
+                                    height: screenSize.height * 0.035),
+                                title: Text(
+                                  selectedCrops[index].name,
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            children: [
+                              if (selectedCrops[index].seedbed)
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text("Semillero"),
+                                    ),
+                                    Switch.adaptive(
+                                        value: true,
+                                        onChanged: (value) {},
+                                        activeColor: AppTheme.primary),
+                                  ],
+                                ),
+                              MaterialButton(
+                                  onPressed: () => showDatePicker(
+                                    confirmText: "Aceptar",
+                                    cancelText: "Cancelar",
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime.now()),
+                                  child: Icon(Icons.calendar_month)),
+                                  MaterialButton(
+                                  onPressed: () => {},
+                                  child: Icon(Icons.calendar_today)),
+                              const Text("Notificaciones",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold)),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Text("Germinación"),
+                                  ),
+                                  Switch.adaptive(
+                                      value: true,
+                                      onChanged: (value) {},
+                                      activeColor: AppTheme.primary),
+                                ],
+                              ),
+                              if (selectedCrops[index].wateringNotification !=
+                                  null)
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text("Regadío"),
+                                    ),
+                                    Switch.adaptive(
+                                        value: true,
+                                        onChanged: (value) {},
+                                        activeColor: AppTheme.primary),
+                                  ],
+                                ),
+                              if (selectedCrops[index].transplantNotification !=
+                                  null)
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Text("Transplante"),
+                                    ),
+                                    Switch.adaptive(
+                                        value: true,
+                                        onChanged: (value) {},
+                                        activeColor: AppTheme.primary),
+                                  ],
+                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Text("Cosecha"),
+                                  ),
+                                  Switch.adaptive(
+                                      value: true,
+                                      onChanged: (value) {},
+                                      activeColor: AppTheme.primary),
+                                ],
+                              ),
+                            ]),
+                        // child: const SingleChildScrollView(child: ListTile(title: Text('Prueba'))),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                MaterialButton(
-                  color: AppTheme.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return _AddCropDialog(
-                            size: screenSize,
-                            lstCrops: cropsService.crops,
-                          );
-                        });
-                    // TODO: Eliminar
-                    selectedCrops.add(cropsService.crops[Random().nextInt(4)]);
-                    setState(() {});
-                  },
-                  child: const Text(
-                    'Añadir cultivo',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        CardItem(title: selectedCrops[index].name),
-                    itemCount: selectedCrops.length,
-                  ),
-                ),
-              ],
-            ),
-          )),
-    );
-  }
-}
-
-class _DescriptionInput extends StatelessWidget {
-  const _DescriptionInput({
-    Key? key,
-    required this.screenSize,
-    this.value,
-  }) : super(key: key);
-
-  final String? value;
-  final Size screenSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: screenSize.width * 0.9,
-      child: TextFormField(
-        decoration: InputDecorations.inputDecoration(
-            isRequired: false, labelText: 'Descripción'),
-        keyboardType: TextInputType.multiline,
-        maxLength: 250,
-        initialValue: value,
+                ],
+              ),
+            )),
       ),
     );
   }
-}
 
-class _NameInput extends StatelessWidget {
-  const _NameInput({
-    Key? key,
-    required this.screenSize,
-    required this.name,
-  }) : super(key: key);
-
-  final Size screenSize;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: screenSize.width * 0.9,
-      child: TextFormField(
-        decoration: InputDecorations.inputDecoration(
-            isRequired: true, labelText: 'Nombre'),
-        maxLines: 1,
-        initialValue: name,
+  Container _selectedCropsList() {
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 325),
+      decoration: BoxDecoration(
+          border: Border.all(color: AppTheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(15)),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemBuilder: (context, index) => SingleChildScrollView(
+          child: CardItem(
+              title: selectedCrops[index].name,
+              trailingIcon: IconButton(
+                icon: const Icon(
+                  Icons.remove,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  selectedCrops.removeAt(index);
+                  setState(() {});
+                },
+              )),
+        ),
+        itemCount: selectedCrops.length,
       ),
     );
   }
-}
 
-class _AddCropDialog extends StatelessWidget {
-  final List<Crop> lstCrops;
-  final Size? size;
+  Row _cropListTitle(
+      BuildContext context, CropsService cropsService, Size screenSize) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Lista de cultivos',
+          style: AppTheme.title2,
+        ),
+        MaterialButton(
+          color: AppTheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return _showCropsDialog(context, cropsService, screenSize);
+                });
+            setState(() {});
+          },
+          child: const Text(
+            'Añadir',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
 
-  const _AddCropDialog({
-    Key? key,
-    required this.lstCrops,
-    this.size,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  AlertDialog _showCropsDialog(
+      BuildContext context, CropsService cropsService, Size screenSize) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       scrollable: true,
@@ -245,32 +306,97 @@ class _AddCropDialog extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: const Text('Cancelar', style: TextStyle(color: Colors.white)),
         ),
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(),
-          color: Colors.blue,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: const Text('Añadir', style: TextStyle(color: Colors.white)),
-        ),
       ],
       content: SizedBox(
-        height: 300,
+        height: 400,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              for (Crop crop in lstCrops)
+              for (Crop crop in cropsService.crops)
                 CardItem(
                   title: crop.name,
                   trailingIcon: FadeInImage(
                       placeholder: const AssetImage('/assets/images/icon.png'),
                       image: NetworkImage(crop.iconUrl),
                       fit: BoxFit.cover,
-                      width: size != null ? size!.width * 0.075 : 30,
-                      height: size != null ? size!.height * 0.035 : 30),
+                      width: screenSize.width * 0.075,
+                      height: screenSize.height * 0.035),
+                  onTap: () {
+                    selectedCrops.add(cropsService.crops
+                        .firstWhere((element) => element.uid == crop.uid));
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
                 ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DescriptionInput extends StatelessWidget {
+  const _DescriptionInput({
+    Key? key,
+    required this.screenSize,
+    required this.orchard,
+  }) : super(key: key);
+
+  final Size screenSize;
+  final Orchard orchard;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: screenSize.width * 0.9,
+      child: TextFormField(
+        decoration: InputDecorations.inputDecoration(
+            isRequired: false, labelText: 'Descripción'),
+        keyboardType: TextInputType.multiline,
+        maxLength: 250,
+        initialValue: orchard.description,
+        onChanged: (description) => orchard.description = description,
+        validator: (description) {
+          if (description != null && description.length > 250) {
+            return 'Este campo no debe superar los 250 caracteres';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+}
+
+class _NameInput extends StatelessWidget {
+  const _NameInput({
+    Key? key,
+    required this.screenSize,
+    required this.orchard,
+  }) : super(key: key);
+
+  final Size screenSize;
+  final Orchard orchard;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: screenSize.width * 0.9,
+      child: TextFormField(
+        decoration: InputDecorations.inputDecoration(
+            isRequired: true, labelText: 'Nombre'),
+        maxLines: 1,
+        initialValue: orchard.name,
+        onChanged: (name) => orchard.name = name,
+        validator: (name) {
+          if (name == null || name.isEmpty) {
+            return 'El nombre es obligatorio';
+          }
+          if (name.length > 32) {
+            return 'Este campo no debe superar los 32 caracteres';
+          }
+          return null;
+        },
       ),
     );
   }
