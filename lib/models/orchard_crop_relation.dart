@@ -2,9 +2,11 @@ import 'dart:convert';
 
 class OrchardCropRelation {
   OrchardCropRelation({
+    this.uid,
     required this.cropUid,
-    required this.orchardUid,
-    required this.dateSown,
+    this.orchardUid,
+    required this.sownDate,
+    required this.wateringNotification,
     required this.wateringIntervalDays,
     required this.seedbed,
     this.transplantDays,
@@ -15,11 +17,13 @@ class OrchardCropRelation {
     required this.harvestNotification,
   });
 
+  String? uid;
   String cropUid;
-  String orchardUid;
-  DateTime dateSown;
+  String? orchardUid;
+  DateTime sownDate;
 
-  int wateringIntervalDays;
+  bool wateringNotification;
+  int? wateringIntervalDays;
 
   bool seedbed;
 
@@ -39,9 +43,11 @@ class OrchardCropRelation {
 
   factory OrchardCropRelation.fromMap(Map<String, dynamic> json) =>
       OrchardCropRelation(
+          uid: json["uid"],
           cropUid: json["crop_uid"],
           orchardUid: json["orchard_uid"],
-          dateSown: json["date_sown"],
+          sownDate: DateTime.parse(json["sown_date"]),
+          wateringNotification: json["watering_notification"],
           wateringIntervalDays: json["watering_interval_days"],
           seedbed: json["seedbed"],
           transplantDays: json["transplant_days"],
@@ -52,23 +58,27 @@ class OrchardCropRelation {
           harvestNotification: json["harvest_notification"]);
 
   Map<String, dynamic> toMap() => {
+        "uid": uid,
         "crop_uid": cropUid,
         "orchard_uid": orchardUid,
-        "date_sown": dateSown,
+        "sown_date": sownDate.toString(),
+        "watering_notification": wateringNotification,
         "watering_interval_days": wateringIntervalDays,
         "seedbed": seedbed,
         "transplant_days": transplantDays,
-        "transplantNotification": transplantNotification,
+        "transplant_notification": transplantNotification,
         "germination_days": germinationDays,
-        "germiantionNotification": germiantionNotification,
+        "germiantion_notification": germiantionNotification,
         "harvest_days": harvestDays,
-        "harvestNotification": harvestNotification,
+        "harvest_notification": harvestNotification,
       };
 
   OrchardCropRelation copy() => OrchardCropRelation(
+        uid: uid,
         cropUid: cropUid,
         orchardUid: orchardUid,
-        dateSown: dateSown,
+        sownDate: sownDate,
+        wateringNotification: wateringNotification,
         wateringIntervalDays: wateringIntervalDays,
         seedbed: seedbed,
         transplantDays: transplantDays,

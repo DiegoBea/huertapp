@@ -8,11 +8,6 @@ class OrchardFormProvider extends ChangeNotifier {
 
   OrchardFormProvider(this.orchard);
 
-  // updateAvailability(bool value) {
-  //   product.available = value;
-  //   notifyListeners();
-  // }
-
   bool isValidForm() {
     return formKey.currentState?.validate() ?? false;
   }

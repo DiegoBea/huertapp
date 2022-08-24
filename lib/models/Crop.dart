@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class Crop {
   Crop({
-    this.uid,
+    required this.uid,
     required this.name,
     required this.description,
     required this.iconUrl,
@@ -31,8 +31,9 @@ class Crop {
     this.sown,
     this.sownType,
   });
+  // TODO: Añadir late a uid
 
-  String? uid;
+  late String uid;
 
   String name;
   String description;
@@ -70,7 +71,7 @@ class Crop {
   String toJson() => json.encode(toMap());
 
   factory Crop.fromMap(Map<String, dynamic> json) => Crop(
-        uid: json["uid"],
+        uid: json["uid"] ?? '',
         name: json["name"],
         description: json["description"],
         iconUrl: json["icon_url"],

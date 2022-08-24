@@ -50,4 +50,8 @@ class CropsService extends ChangeNotifier {
 
     return crops;
   }
+
+  Crop getCropByUid(String uid) {
+    return crops.firstWhere((element) => element.uid == uid);
+  }
 }

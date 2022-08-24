@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class OrchardService extends ChangeNotifier {
   final List<Orchard> orchards = [];
+  final List<OrchardCropRelation> relations = [];
   late Orchard selectedOrchard;
 
   bool isLoading = true;
@@ -52,6 +53,7 @@ class OrchardService extends ChangeNotifier {
         .collection('orchards')
         .where('guests', arrayContains: uid!)
         .get();
+
     for (var element in guestOrchards.docs) {
       Orchard orchard = Orchard(
         uid: element.get('uid'),
@@ -63,9 +65,13 @@ class OrchardService extends ChangeNotifier {
       orchards.add(orchard);
     }
 
-    for (var element in orchards) {
-      PrintHelper.printValue(element.name);
+    for (Orchard orchard in orchards) {
+      PrintHelper.printValue(orchard.name);
+      await loadRelations(orchard.uid ?? '');
     }
+    PrintHelper.printValue("Cultivos utilizados ${relations.toString()}");
+    PrintHelper.printInfo(
+        "********Final lectura de cultivos relacionados********");
 
     orchards.sort(
       (a, b) => a.name.compareTo(b.name),
@@ -79,12 +85,39 @@ class OrchardService extends ChangeNotifier {
     return orchards;
   }
 
-  Future saveOrchard(Orchard orchard) async {
+  loadRelations(String orchardUid) async {
+    final QuerySnapshot relations = await FirebaseFirestore.instance
+        .collection('orchard_crop_relations')
+        .where('orchard_uid', isEqualTo: orchardUid)
+        .get();
+    relations.docs.forEach((relation) {
+      PrintHelper.printValue(relation.data().toString());
+      OrchardCropRelation cropRelation = OrchardCropRelation(
+          cropUid: relation.get('crop_uid'),
+          sownDate: DateTime.parse(relation.get('sown_date')),
+          wateringNotification: relation.get('watering_notification'),
+          wateringIntervalDays: relation.get('watering_interval_days'),
+          seedbed: relation.get('seedbed'),
+          transplantNotification: relation.get('transplant_notification'),
+          germinationDays: relation.get('germination_days'),
+          germiantionNotification: relation.get('germiantion_notification'),
+          harvestDays: relation.get('harvest_days'),
+          harvestNotification: relation.get('harvest_notification'),
+          orchardUid: relation.get('orchard_uid'),
+          transplantDays: relation.get('transplant_days'),
+          uid: relation.get('uid'));
+
+      this.relations.add(cropRelation);
+    });
+  }
+
+  Future saveOrchard(
+      Orchard orchard, List<OrchardCropRelation> relations) async {
     isSaving = true;
     notifyListeners();
 
     if (orchard.uid == null) {
-      await addOrchard(orchard);
+      await addOrchard(orchard, relations);
     } else {
       await updateOrchard(orchard);
     }
@@ -93,7 +126,8 @@ class OrchardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addOrchard(Orchard orchard) async {
+  Future addOrchard(
+      Orchard orchard, List<OrchardCropRelation> relations) async {
     PrintHelper.printInfo('Añadiendo ${orchard.name}...');
     String? uid;
     await AuthService().readToken().then((value) => uid = value);
@@ -108,6 +142,11 @@ class OrchardService extends ChangeNotifier {
         .collection('orchards')
         .add(orchard.toMap());
     orchards.add(orchard);
+
+    for (var relation in relations) {
+      relation.orchardUid = orchard.uid;
+      await saveCropRelations(relation);
+    }
     _refreshOrder();
     PrintHelper.printInfo('${orchard.name} añadido correctamente');
     notifyListeners();
@@ -170,5 +209,40 @@ class OrchardService extends ChangeNotifier {
     _refreshOrder();
     PrintHelper.printInfo('${orchard.name} eliminado correctamente');
     notifyListeners();
+  }
+
+  Future saveCropRelations(OrchardCropRelation relation) async {
+    PrintHelper.printInfo('Guardando relaciones...');
+    // TODO: Actualizar lista de relaciones
+    if (relation.uid != null) {
+      // Actualizar
+    } else {
+      // Añadir
+      relation.uid = const Uuid().v1();
+      await FirebaseFirestore.instance
+          .collection('orchard_crop_relations')
+          .add(relation.toMap());
+      PrintHelper.printInfo('Relación añadida correctamente');
+      notifyListeners();
+    }
+    PrintHelper.printValue(relation.toJson());
+    PrintHelper.printInfo('Relaciones guardadas correctamente');
+    // PrintHelper.printInfo('Añadiendo ${relations.}...');
+    // String? uid;
+    // await AuthService().readToken().then((value) => uid = value);
+
+    // if (uid == null) return;
+
+    // orchard.owners.add(uid!);
+    // orchard.guests = [];
+    // orchard.uid = const Uuid().v1();
+
+    // await FirebaseFirestore.instance
+    //     .collection('orchards')
+    //     .add(orchard.toMap());
+    // orchards.add(orchard);
+    // _refreshOrder();
+    // PrintHelper.printInfo('${orchard.name} añadido correctamente');
+    // notifyListeners();
   }
 }
