@@ -9,6 +9,7 @@ class OrchardService extends ChangeNotifier {
   final List<Orchard> orchards = [];
   final List<OrchardCropRelation> relations = [];
   late Orchard selectedOrchard;
+  late List<OrchardCropRelation> selectedRelations = [];
 
   bool isLoading = true;
   bool isEditing = false;
@@ -85,32 +86,6 @@ class OrchardService extends ChangeNotifier {
     return orchards;
   }
 
-  loadRelations(String orchardUid) async {
-    final QuerySnapshot relations = await FirebaseFirestore.instance
-        .collection('orchard_crop_relations')
-        .where('orchard_uid', isEqualTo: orchardUid)
-        .get();
-    relations.docs.forEach((relation) {
-      PrintHelper.printValue(relation.data().toString());
-      OrchardCropRelation cropRelation = OrchardCropRelation(
-          cropUid: relation.get('crop_uid'),
-          sownDate: DateTime.parse(relation.get('sown_date')),
-          wateringNotification: relation.get('watering_notification'),
-          wateringIntervalDays: relation.get('watering_interval_days'),
-          seedbed: relation.get('seedbed'),
-          transplantNotification: relation.get('transplant_notification'),
-          germinationDays: relation.get('germination_days'),
-          germiantionNotification: relation.get('germiantion_notification'),
-          harvestDays: relation.get('harvest_days'),
-          harvestNotification: relation.get('harvest_notification'),
-          orchardUid: relation.get('orchard_uid'),
-          transplantDays: relation.get('transplant_days'),
-          uid: relation.get('uid'));
-
-      this.relations.add(cropRelation);
-    });
-  }
-
   Future saveOrchard(
       Orchard orchard, List<OrchardCropRelation> relations) async {
     isSaving = true;
@@ -119,7 +94,7 @@ class OrchardService extends ChangeNotifier {
     if (orchard.uid == null) {
       await addOrchard(orchard, relations);
     } else {
-      await updateOrchard(orchard);
+      await updateOrchard(orchard, relations);
     }
 
     isSaving = false;
@@ -152,7 +127,8 @@ class OrchardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future updateOrchard(Orchard orchard) async {
+  Future updateOrchard(
+      Orchard orchard, List<OrchardCropRelation> relations) async {
     PrintHelper.printInfo('Actualizando ${orchard.name}...');
     await FirebaseFirestore.instance
         .collection('orchards')
@@ -160,8 +136,8 @@ class OrchardService extends ChangeNotifier {
         .limit(1)
         .get()
         .then((value) {
-      for (var element in value.docs) {
-        element.reference.update({
+      for (var selectedOrchard in value.docs) {
+        selectedOrchard.reference.update({
           "name": orchard.name,
           "description": orchard.description,
           "owners": orchard.owners,
@@ -169,6 +145,11 @@ class OrchardService extends ChangeNotifier {
         });
       }
     });
+
+    for (var relation in relations) {
+      await saveCropRelations(relation);
+    }
+
     var index = orchards.indexWhere((element) => element.uid == orchard.uid);
     orchards[index] = orchard;
     _refreshOrder();
@@ -177,11 +158,22 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future deleteOrchard(Orchard orchard) async {
+    // TODO: Probar multiusuario
     PrintHelper.printInfo('Eliminando ${orchard.name}...');
     if (orchard.owners.length == 1) {
       await FirebaseFirestore.instance
           .collection('orchards')
           .where('uid', isEqualTo: orchard.uid)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          element.reference.delete();
+        }
+      });
+      PrintHelper.printInfo('Eliminando relaciones de ${orchard.name}...');
+      await FirebaseFirestore.instance
+          .collection('orchard_crop_relations')
+          .where('orchard_uid', isEqualTo: orchard.uid)
           .get()
           .then((value) {
         for (var element in value.docs) {
@@ -211,38 +203,96 @@ class OrchardService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future loadRelations(String orchardUid) async {
+    final QuerySnapshot relations = await FirebaseFirestore.instance
+        .collection('orchard_crop_relations')
+        .where('orchard_uid', isEqualTo: orchardUid)
+        .get();
+    for (var relation in relations.docs) {
+      PrintHelper.printValue(relation.data().toString());
+      OrchardCropRelation cropRelation = OrchardCropRelation(
+          cropUid: relation.get('crop_uid'),
+          sownDate: DateTime.parse(relation.get('sown_date')),
+          wateringNotification: relation.get('watering_notification'),
+          wateringIntervalDays: relation.get('watering_interval_days'),
+          seedbed: relation.get('seedbed'),
+          transplantNotification: relation.get('transplant_notification'),
+          germinationDays: relation.get('germination_days'),
+          germinationNotification: relation.get('germination_notification'),
+          harvestDays: relation.get('harvest_days'),
+          harvestNotification: relation.get('harvest_notification'),
+          orchardUid: relation.get('orchard_uid'),
+          transplantDays: relation.get('transplant_days'),
+          uid: relation.get('uid'));
+
+      this.relations.add(cropRelation);
+    }
+  }
+
   Future saveCropRelations(OrchardCropRelation relation) async {
     PrintHelper.printInfo('Guardando relaciones...');
-    // TODO: Actualizar lista de relaciones
-    if (relation.uid != null) {
-      // Actualizar
+    if (relation.uid == null) {
+      await addRelation(relation);
     } else {
-      // Añadir
-      relation.uid = const Uuid().v1();
-      await FirebaseFirestore.instance
-          .collection('orchard_crop_relations')
-          .add(relation.toMap());
-      PrintHelper.printInfo('Relación añadida correctamente');
-      notifyListeners();
+      await updateRelation(relation);
     }
+    notifyListeners();
     PrintHelper.printValue(relation.toJson());
     PrintHelper.printInfo('Relaciones guardadas correctamente');
-    // PrintHelper.printInfo('Añadiendo ${relations.}...');
-    // String? uid;
-    // await AuthService().readToken().then((value) => uid = value);
+  }
 
-    // if (uid == null) return;
+  Future<void> addRelation(OrchardCropRelation relation) async {
+    relation.uid = const Uuid().v1();
+    await FirebaseFirestore.instance
+        .collection('orchard_crop_relations')
+        .add(relation.toMap());
+    relations.add(relation);
+    PrintHelper.printInfo('Relación añadida correctamente');
+  }
 
-    // orchard.owners.add(uid!);
-    // orchard.guests = [];
-    // orchard.uid = const Uuid().v1();
+  Future<void> updateRelation(OrchardCropRelation relation) async {
+    await FirebaseFirestore.instance
+        .collection('orchard_crop_relations')
+        .where('uid', isEqualTo: relation.uid)
+        .limit(1)
+        .get()
+        .then((value) {
+      for (var currentRelation in value.docs) {
+        currentRelation.reference.update({
+          "germiantion_notification": relation.germinationNotification,
+          "sown_date": (relation.sownDate).toString(),
+          "transplant_notification": relation.transplantNotification,
+          "harvest_notification": relation.harvestNotification,
+          "watering_notification": relation.wateringNotification,
+        });
+        PrintHelper.printInfo('Relación actualizada correctamente');
+      }
+      var index =
+          relations.indexWhere((element) => element.uid == relation.uid);
+      relations[index] = relation;
+    });
+  }
 
-    // await FirebaseFirestore.instance
-    //     .collection('orchards')
-    //     .add(orchard.toMap());
-    // orchards.add(orchard);
-    // _refreshOrder();
-    // PrintHelper.printInfo('${orchard.name} añadido correctamente');
-    // notifyListeners();
+  Future<void> deleteRelation(OrchardCropRelation relation) async {
+    await FirebaseFirestore.instance
+        .collection('orchard_crop_relations')
+        .where('uid', isEqualTo: relation.uid)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        element.reference.delete();
+      }
+    });
+    relations.remove(relation);
+    notifyListeners();
+  }
+
+  List<OrchardCropRelation> cloneListRelations(
+      List<OrchardCropRelation> relations) {
+    List<OrchardCropRelation> lstRelations = [];
+    for (OrchardCropRelation element in relations) {
+      lstRelations.add(element.copy());
+    }
+    return lstRelations;
   }
 }

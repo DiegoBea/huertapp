@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/orchard_form_provider.dart';
 import 'package:huertapp/services/services.dart';
@@ -15,8 +16,11 @@ class OrchardFormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OrchardService orchardService = Provider.of<OrchardService>(context);
+    PrintHelper.printInfo(
+        "Relaciones: ${orchardService.selectedRelations.length}");
     return ChangeNotifierProvider(
-      create: (context) => OrchardFormProvider(orchardService.selectedOrchard),
+      create: (context) => OrchardFormProvider(
+          orchardService.selectedOrchard, orchardService.selectedRelations),
       child: _OrchardFormBody(orchardService: orchardService),
     );
   }
@@ -43,7 +47,7 @@ class _OrchardFormBody extends StatelessWidget {
                 : () async {
                     if (!orchardForm.isValidForm()) return;
                     await orchardService.saveOrchard(
-                        orchardForm.orchard, orchardForm.lstRelations);
+                        orchardForm.orchard, orchardForm.relations);
                     Navigator.of(context).pop();
                   },
             backgroundColor: AppTheme.primary,
@@ -76,8 +80,9 @@ class _OrchardFormState extends State<_OrchardForm> {
   @override
   Widget build(BuildContext context) {
     final orchardForm = Provider.of<OrchardFormProvider>(context);
+    final orchardService = Provider.of<OrchardService>(context);
     final orchard = orchardForm.orchard;
-    final orchardCropRelations = orchardForm.lstRelations;
+    final orchardCropRelations = orchardForm.relations;
     final screenSize = MediaQuery.of(context).size;
     final cropsService = Provider.of<CropsService>(context);
 
@@ -105,101 +110,8 @@ class _OrchardFormState extends State<_OrchardForm> {
                         'Lista de cultivos',
                         style: AppTheme.title2,
                       ),
-                      MaterialButton(
-                        color: AppTheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  scrollable: true,
-                                  elevation: 5,
-                                  title: const Text('Selecciona un cultivo'),
-                                  actions: [
-                                    MaterialButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      color: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: const Text('Cancelar',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ),
-                                  ],
-                                  content: SizedBox(
-                                    height: 400,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          for (Crop crop in cropsService.crops)
-                                            CardItem(
-                                              title: crop.name,
-                                              trailingIcon: FadeInImage(
-                                                  placeholder: const AssetImage(
-                                                      '/assets/images/icon.png'),
-                                                  image: NetworkImage(
-                                                      crop.iconUrl),
-                                                  fit: BoxFit.cover,
-                                                  width:
-                                                      screenSize.width * 0.075,
-                                                  height: screenSize.height *
-                                                      0.035),
-                                              onTap: () {
-                                                Crop selectedCrop = cropsService
-                                                    .getCropByUid(crop.uid);
-                                                orchardCropRelations.add(OrchardCropRelation(
-                                                    cropUid: selectedCrop.uid,
-                                                    orchardUid: orchard.uid,
-                                                    sownDate: DateTime.now(),
-                                                    wateringIntervalDays: selectedCrop
-                                                            .wateringNotification ??
-                                                        0,
-                                                    wateringNotification:
-                                                        selectedCrop.wateringNotification !=
-                                                                null
-                                                            ? true
-                                                            : false,
-                                                    seedbed:
-                                                        selectedCrop.seedbed,
-                                                    transplantNotification:
-                                                        selectedCrop.transplantNotification !=
-                                                                null
-                                                            ? true
-                                                            : false,
-                                                    transplantDays: selectedCrop
-                                                        .transplantNotification,
-                                                    germinationDays:
-                                                        selectedCrop
-                                                            .germination,
-                                                    germiantionNotification:
-                                                        true,
-                                                    harvestDays: selectedCrop
-                                                        .harvestNotification,
-                                                    harvestNotification: true));
-                                                setState(() {});
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              });
-                          setState(() {});
-                        },
-                        child: const Text(
-                          'Añadir',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                      _AddCropButton(context, cropsService, screenSize,
+                          orchardCropRelations, orchard),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -219,6 +131,73 @@ class _OrchardFormState extends State<_OrchardForm> {
                             textColor: AppTheme.primary,
                             iconColor: AppTheme.primary,
                             title: ListTile(
+                                trailing: IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25)),
+                                                scrollable: true,
+                                                elevation: 5,
+                                                content: const Text(
+                                                    '¿Deseas eliminar este cultivo?',
+                                                    style: TextStyle(
+                                                        fontSize: 15)),
+                                                title: const Center(
+                                                    child: Text(
+                                                        'Eliminar cultivo')),
+                                                actions: [
+                                                  MaterialButton(
+                                                    onPressed: () {
+                                                      orchardService
+                                                          .deleteRelation(
+                                                              orchardCropRelations[
+                                                                  index]);
+                                                      orchardCropRelations
+                                                          .removeAt(index);
+                                                      setState(() {});
+                                                      Navigator.pop(context);
+                                                    },
+                                                    color: Colors.red,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    child: const Text(
+                                                        'Eliminar',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ),
+                                                  MaterialButton(
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                    color: Colors.blue,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    child: const Text(
+                                                        'Cancelar',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ),
+                                                ],
+                                              ));
+                                    },
+                                    icon: const Icon(
+                                      FontAwesomeIcons.times,
+                                      color: Colors.red,
+                                    )),
                                 leading: FadeInImage(
                                     placeholder: const AssetImage(
                                         '/assets/images/icon.png'),
@@ -307,10 +286,10 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   ),
                                   Switch.adaptive(
                                       value: orchardCropRelations[index]
-                                          .germiantionNotification,
+                                          .germinationNotification,
                                       onChanged: (value) {
                                         orchardCropRelations[index]
-                                            .germiantionNotification = value;
+                                            .germinationNotification = value;
                                         setState(() {});
                                       },
                                       activeColor: AppTheme.primary),
@@ -390,6 +369,98 @@ class _OrchardFormState extends State<_OrchardForm> {
                 ],
               ),
             )),
+      ),
+    );
+  }
+
+  MaterialButton _AddCropButton(
+      BuildContext context,
+      CropsService cropsService,
+      Size screenSize,
+      List<OrchardCropRelation> orchardCropRelations,
+      Orchard orchard) {
+    return MaterialButton(
+      color: AppTheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25)),
+                scrollable: true,
+                elevation: 5,
+                title: const Text('Selecciona un cultivo'),
+                actions: [
+                  MaterialButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    child: const Text('Cancelar',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+                content: SizedBox(
+                  height: 400,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        for (Crop crop in cropsService.crops)
+                          CardItem(
+                            title: crop.name,
+                            trailingIcon: FadeInImage(
+                                placeholder:
+                                    const AssetImage('/assets/images/icon.png'),
+                                image: NetworkImage(crop.iconUrl),
+                                fit: BoxFit.cover,
+                                width: screenSize.width * 0.075,
+                                height: screenSize.height * 0.035),
+                            onTap: () {
+                              Crop selectedCrop =
+                                  cropsService.getCropByUid(crop.uid);
+                              orchardCropRelations.add(OrchardCropRelation(
+                                  cropUid: selectedCrop.uid,
+                                  orchardUid: orchard.uid,
+                                  sownDate: DateTime.now(),
+                                  wateringIntervalDays:
+                                      selectedCrop.wateringNotification ?? 0,
+                                  // wateringNotification:
+                                  //     selectedCrop.wateringNotification !=
+                                  //             null
+                                  //         ? true
+                                  //         : false,
+                                  wateringNotification: false,
+                                  seedbed: selectedCrop.seedbed,
+                                  transplantNotification:
+                                      selectedCrop.transplantNotification !=
+                                              null
+                                          ? true
+                                          : false,
+                                  transplantDays:
+                                      selectedCrop.transplantNotification,
+                                  germinationDays: selectedCrop.germination,
+                                  germinationNotification: true,
+                                  harvestDays: selectedCrop.harvestNotification,
+                                  harvestNotification: true));
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            });
+        setState(() {});
+      },
+      child: const Text(
+        'Añadir',
+        style: TextStyle(color: Colors.white),
       ),
     );
   }

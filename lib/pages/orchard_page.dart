@@ -4,12 +4,12 @@ import 'package:focused_menu/modals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/orchard.dart';
+import 'package:huertapp/models/orchard_crop_relation.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class OrchardPage extends StatelessWidget {
   const OrchardPage({Key? key}) : super(key: key);
@@ -27,6 +27,7 @@ class OrchardPage extends StatelessWidget {
             orchardService.isEditing = false;
             orchardService.selectedOrchard =
                 Orchard(name: '', owners: [], onwer: true);
+            orchardService.selectedRelations = [];
             Navigator.pushNamed(context, '/orchardForm');
           },
           backgroundColor: Colors.white,
@@ -67,6 +68,13 @@ class OrchardPage extends StatelessWidget {
                           Icon(FontAwesomeIcons.edit, color: AppTheme.primary),
                       onPressed: () {
                         orchardService.selectedOrchard = orchard.copy();
+                        List<OrchardCropRelation> relations = orchardService
+                            .relations
+                            .where(
+                                (element) => element.orchardUid == orchard.uid)
+                            .toList();
+                        orchardService.selectedRelations =
+                            orchardService.cloneListRelations(relations);
                         orchardService.isEditing = true;
                         Navigator.pushNamed(context, '/orchardForm');
                       }),

@@ -12,7 +12,7 @@ class OrchardCropRelation {
     this.transplantDays,
     required this.transplantNotification,
     required this.germinationDays,
-    required this.germiantionNotification,
+    required this.germinationNotification,
     required this.harvestDays,
     required this.harvestNotification,
   });
@@ -32,7 +32,7 @@ class OrchardCropRelation {
   bool transplantNotification;
 
   int germinationDays;
-  bool germiantionNotification;
+  bool germinationNotification;
   int harvestDays;
   bool harvestNotification;
 
@@ -53,7 +53,7 @@ class OrchardCropRelation {
           transplantDays: json["transplant_days"],
           transplantNotification: json["transplant_notification"],
           germinationDays: json["germination_days"],
-          germiantionNotification: json["germination_notification"],
+          germinationNotification: json["germination_notification"],
           harvestDays: json["harvest_days"],
           harvestNotification: json["harvest_notification"]);
 
@@ -68,7 +68,7 @@ class OrchardCropRelation {
         "transplant_days": transplantDays,
         "transplant_notification": transplantNotification,
         "germination_days": germinationDays,
-        "germiantion_notification": germiantionNotification,
+        "germination_notification": germinationNotification,
         "harvest_days": harvestDays,
         "harvest_notification": harvestNotification,
       };
@@ -84,7 +84,7 @@ class OrchardCropRelation {
         transplantDays: transplantDays,
         transplantNotification: transplantNotification,
         germinationDays: germinationDays,
-        germiantionNotification: germiantionNotification,
+        germinationNotification: germinationNotification,
         harvestDays: harvestDays,
         harvestNotification: harvestNotification,
       );
