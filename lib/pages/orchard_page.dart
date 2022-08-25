@@ -29,6 +29,7 @@ class OrchardPage extends StatelessWidget {
               owners: [],
               onwer: true,
             );
+            orchardService.selectedImageUrl = null;
             orchardService.selectedRelations = [];
             Navigator.pushNamed(context, '/orchardForm');
           },

@@ -52,6 +52,7 @@ class OrchardService extends ChangeNotifier {
         description: element.get('description'),
         owners: List<String>.from(element.get('owners')),
         onwer: true,
+        imageUrl: element.get('image_url'),
       );
       orchards.add(orchard);
     }
@@ -120,7 +121,7 @@ class OrchardService extends ChangeNotifier {
     orchard.uid = const Uuid().v1();
 
     if (image != null) {
-      imageService
+      await imageService
           .uploadImage(image, orchard.uid!)
           .then((value) => orchard.imageUrl = value);
     }
@@ -143,9 +144,10 @@ class OrchardService extends ChangeNotifier {
   Future updateOrchard(
       Orchard orchard, List<OrchardCropRelation> relations, File? image) async {
     if (image != null) {
-      imageService
-          .uploadImage(image, orchard.uid!)
-          .then((value) => orchard.imageUrl = value);
+      await imageService.uploadImage(image, orchard.uid!).then((value) {
+        print(value);
+        return orchard.imageUrl = value;
+      });
     }
     PrintHelper.printInfo('Actualizando ${orchard.name}...');
     await FirebaseFirestore.instance
@@ -159,7 +161,8 @@ class OrchardService extends ChangeNotifier {
           "name": orchard.name,
           "description": orchard.description,
           "owners": orchard.owners,
-          "guests": orchard.guests
+          "guests": orchard.guests,
+          "image_url": orchard.imageUrl,
         });
       }
     });
@@ -188,7 +191,7 @@ class OrchardService extends ChangeNotifier {
           element.reference.delete();
         }
       });
-      await imageService.removeImage(orchard.uid!);
+      if (orchard.imageUrl != null ) await imageService.removeImage(orchard.uid!);
       PrintHelper.printInfo('Eliminando relaciones de ${orchard.name}...');
       await FirebaseFirestore.instance
           .collection('orchard_crop_relations')

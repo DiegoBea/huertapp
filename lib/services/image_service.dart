@@ -44,7 +44,12 @@ class ImageService extends ChangeNotifier {
   removeImage(String uid) async {
     PrintHelper.printInfo("Eliminando imagen con uid $uid");
     final firebaseStorage = FirebaseStorage.instance;
-    await firebaseStorage.ref().child('orchards/$uid').delete();
+    try {
+      await firebaseStorage.ref().child('orchards/$uid').delete();
+    } catch (e) {
+      print(e);
+    }
+
     PrintHelper.printInfo('Imagen eliminada correctamente');
   }
 

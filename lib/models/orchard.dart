@@ -34,7 +34,7 @@ class Orchard {
         owners: json["owners"],
         onwer: json["owner"],
         guests: json["guests"],
-        imageUrl: json["imageUrl"],
+        imageUrl: json["image_url"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -44,7 +44,7 @@ class Orchard {
         "owners": owners,
         "owner": onwer,
         "guests": guests,
-        "imageUrl": imageUrl,
+        "image_url": imageUrl,
       };
 
   Orchard copy() => Orchard(

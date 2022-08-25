@@ -268,7 +268,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                     )),
                                 leading: FadeInImage(
                                     placeholder: const AssetImage(
-                                        '/assets/images/icon.png'),
+                                        'assets/images/icon.png'),
                                     image: NetworkImage(cropsService
                                         .getCropByUid(
                                             orchardCropRelations[index].cropUid)
@@ -482,7 +482,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                             title: crop.name,
                             trailingIcon: FadeInImage(
                                 placeholder:
-                                    const AssetImage('/assets/images/icon.png'),
+                                    const AssetImage('assets/images/icon.png'),
                                 image: NetworkImage(crop.iconUrl),
                                 fit: BoxFit.cover,
                                 width: screenSize.width * 0.075,
