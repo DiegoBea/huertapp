@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:cross_file_image/cross_file_image.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
@@ -16,38 +19,48 @@ class OrchardFormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OrchardService orchardService = Provider.of<OrchardService>(context);
+    final ImageService imageService = Provider.of<ImageService>(context);
     PrintHelper.printInfo(
         "Relaciones: ${orchardService.selectedRelations.length}");
     return ChangeNotifierProvider(
       create: (context) => OrchardFormProvider(
           orchardService.selectedOrchard, orchardService.selectedRelations),
-      child: _OrchardFormBody(orchardService: orchardService),
+      child: _OrchardFormBody(
+          orchardService: orchardService, imageService: imageService),
     );
   }
 }
 
 class _OrchardFormBody extends StatelessWidget {
   final OrchardService orchardService;
-  const _OrchardFormBody({Key? key, required this.orchardService})
+  final ImageService imageService;
+  const _OrchardFormBody(
+      {Key? key, required this.orchardService, required this.imageService})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final orchardForm = Provider.of<OrchardFormProvider>(context);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppTheme.primary,
-          title: Text(orchardService.isEditing
-              ? 'Editar ${orchardService.selectedOrchard.name}'
-              : 'Añadir'),
-        ),
+        appBar: orchardService.selectedImageUrl == null
+            ? AppBar(
+                backgroundColor: AppTheme.primary,
+                title: Text(orchardService.isEditing
+                    ? 'Editar ${orchardService.selectedOrchard.name}'
+                    : 'Añadir'),
+              )
+            : null,
         floatingActionButton: FloatingActionButton(
             onPressed: orchardService.isSaving
                 ? null
                 : () async {
                     if (!orchardForm.isValidForm()) return;
                     await orchardService.saveOrchard(
-                        orchardForm.orchard, orchardForm.relations);
+                        orchardForm.orchard,
+                        orchardForm.relations,
+                        orchardForm.image != null
+                            ? File(orchardForm.image!.path)
+                            : null);
                     Navigator.of(context).pop();
                   },
             backgroundColor: AppTheme.primary,
@@ -57,10 +70,38 @@ class _OrchardFormBody extends StatelessWidget {
                   )
                 : const Icon(FontAwesomeIcons.save)),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: _OrchardForm(orchard: orchardService.selectedOrchard),
-          ),
-        ));
+            child: orchardService.selectedImageUrl != null
+                ? CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        actions: const [
+                          Padding(
+                            padding: EdgeInsets.only(right: 25),
+                            child: Icon(FontAwesomeIcons.solidImage),
+                          ),
+                        ],
+                        backgroundColor: AppTheme.primary,
+                        flexibleSpace: FlexibleSpaceBar(
+                            background: FadeInImage(
+                          placeholder:
+                              const AssetImage('assets/videos/loading.gif'),
+                          image: NetworkImage(orchardService.selectedImageUrl!),
+                          fit: BoxFit.cover,
+                        )),
+                        expandedHeight: 200,
+                        floating: false,
+                        pinned: true,
+                      ),
+                      SliverList(
+                          delegate: SliverChildListDelegate([
+                        _OrchardForm(orchard: orchardService.selectedOrchard)
+                      ])),
+                    ],
+                  )
+                : SingleChildScrollView(
+                    child:
+                        _OrchardForm(orchard: orchardService.selectedOrchard),
+                  )));
   }
 }
 
@@ -81,6 +122,7 @@ class _OrchardFormState extends State<_OrchardForm> {
   Widget build(BuildContext context) {
     final orchardForm = Provider.of<OrchardFormProvider>(context);
     final orchardService = Provider.of<OrchardService>(context);
+    final imageService = Provider.of<ImageService>(context);
     final orchard = orchardForm.orchard;
     final orchardCropRelations = orchardForm.relations;
     final screenSize = MediaQuery.of(context).size;
@@ -102,6 +144,32 @@ class _OrchardFormState extends State<_OrchardForm> {
                   _NameInput(screenSize: screenSize, orchard: orchard),
                   const SizedBox(height: 10),
                   _DescriptionInput(screenSize: screenSize, orchard: orchard),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Imagen',
+                        style: AppTheme.title2,
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            await imageService
+                                .selectImage()
+                                .then((value) => orchardForm.image = value);
+                            setState(() {});
+                          },
+                          icon: const Icon(FontAwesomeIcons.camera)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  if (orchardForm.image != null)
+                    SizedBox(
+                        height: 200,
+                        child: Image(
+                          image: XFileImage(orchardForm.image!),
+                          fit: BoxFit.cover,
+                        )),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

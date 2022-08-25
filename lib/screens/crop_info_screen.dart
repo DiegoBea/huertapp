@@ -219,19 +219,12 @@ class _Image extends StatelessWidget {
       expandedHeight: 200,
       floating: false,
       pinned: true,
-      // TODO: Buscar gif de carga
       flexibleSpace: FlexibleSpaceBar(
-        background: crop.imageUrl != null
-            ? FadeInImage(
-                placeholder: const NetworkImage(
-                    'https://i.pinimg.com/originals/e8/88/d4/e888d4feff8fd5ff63a965471a94b874.gif'),
+        background: FadeInImage(
+                placeholder: const AssetImage('assets/videos/loading.gif'),
                 image: NetworkImage(crop.imageUrl),
-                fit: BoxFit.cover)
-            : const FadeInImage(
-                placeholder: NetworkImage(
-                    'https://i.pinimg.com/originals/e8/88/d4/e888d4feff8fd5ff63a965471a94b874.gif'),
-                image: AssetImage('assets/images/icon.png'),
-                fit: BoxFit.cover),
+                fit: BoxFit.fill)
+            ,
       ),
     );
   }

@@ -7,18 +7,12 @@ import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
 
 class CropsService extends ChangeNotifier {
-  // TODO: Revisar
-  static final CropsService _instance = CropsService._internal();
   final String _baseUrl =
       'huertapp-609ed-default-rtdb.europe-west1.firebasedatabase.app';
   final List<Crop> crops = [];
   bool isLoading = true;
 
-  factory CropsService() {
-    return _instance;
-  }
-
-  CropsService._internal() {
+  CropsService() {
     loadCrops();
   }
 

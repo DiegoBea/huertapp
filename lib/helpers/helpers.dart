@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:huertapp/themes/app_theme.dart';
 
 class ToastHelper {
   static showToast(String msg) {
@@ -8,9 +7,9 @@ class ToastHelper {
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.grey[350],
+        textColor: Colors.black,
         timeInSecForIosWeb: 1,
-        backgroundColor: AppTheme.primary,
-        textColor: Colors.white,
         fontSize: 15.0);
   }
 }

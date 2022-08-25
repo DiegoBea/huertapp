@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
@@ -8,8 +10,12 @@ import 'package:uuid/uuid.dart';
 class OrchardService extends ChangeNotifier {
   final List<Orchard> orchards = [];
   final List<OrchardCropRelation> relations = [];
+
   late Orchard selectedOrchard;
   late List<OrchardCropRelation> selectedRelations = [];
+  String? selectedImageUrl;
+
+  ImageService imageService = ImageService();
 
   bool isLoading = true;
   bool isEditing = false;
@@ -87,14 +93,14 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future saveOrchard(
-      Orchard orchard, List<OrchardCropRelation> relations) async {
+      Orchard orchard, List<OrchardCropRelation> relations, File? image) async {
     isSaving = true;
     notifyListeners();
 
     if (orchard.uid == null) {
-      await addOrchard(orchard, relations);
+      await addOrchard(orchard, relations, image);
     } else {
-      await updateOrchard(orchard, relations);
+      await updateOrchard(orchard, relations, image);
     }
 
     isSaving = false;
@@ -102,7 +108,7 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future addOrchard(
-      Orchard orchard, List<OrchardCropRelation> relations) async {
+      Orchard orchard, List<OrchardCropRelation> relations, File? image) async {
     PrintHelper.printInfo('Añadiendo ${orchard.name}...');
     String? uid;
     await AuthService().readToken().then((value) => uid = value);
@@ -113,6 +119,12 @@ class OrchardService extends ChangeNotifier {
     orchard.guests = [];
     orchard.uid = const Uuid().v1();
 
+    if (image != null) {
+      imageService
+          .uploadImage(image, orchard.uid!)
+          .then((value) => orchard.imageUrl = value);
+    }
+
     await FirebaseFirestore.instance
         .collection('orchards')
         .add(orchard.toMap());
@@ -122,13 +134,19 @@ class OrchardService extends ChangeNotifier {
       relation.orchardUid = orchard.uid;
       await saveCropRelations(relation);
     }
+
     _refreshOrder();
     PrintHelper.printInfo('${orchard.name} añadido correctamente');
     notifyListeners();
   }
 
   Future updateOrchard(
-      Orchard orchard, List<OrchardCropRelation> relations) async {
+      Orchard orchard, List<OrchardCropRelation> relations, File? image) async {
+    if (image != null) {
+      imageService
+          .uploadImage(image, orchard.uid!)
+          .then((value) => orchard.imageUrl = value);
+    }
     PrintHelper.printInfo('Actualizando ${orchard.name}...');
     await FirebaseFirestore.instance
         .collection('orchards')
@@ -170,6 +188,7 @@ class OrchardService extends ChangeNotifier {
           element.reference.delete();
         }
       });
+      await imageService.removeImage(orchard.uid!);
       PrintHelper.printInfo('Eliminando relaciones de ${orchard.name}...');
       await FirebaseFirestore.instance
           .collection('orchard_crop_relations')

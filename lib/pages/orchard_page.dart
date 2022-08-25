@@ -19,14 +19,16 @@ class OrchardPage extends StatelessWidget {
     final orchardService = Provider.of<OrchardService>(context);
 
     if (orchardService.isLoading) return const LoadingScreen();
-
     return SafeArea(
         child: Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             orchardService.isEditing = false;
-            orchardService.selectedOrchard =
-                Orchard(name: '', owners: [], onwer: true);
+            orchardService.selectedOrchard = Orchard(
+              name: '',
+              owners: [],
+              onwer: true,
+            );
             orchardService.selectedRelations = [];
             Navigator.pushNamed(context, '/orchardForm');
           },
@@ -67,7 +69,6 @@ class OrchardPage extends StatelessWidget {
                       trailingIcon:
                           Icon(FontAwesomeIcons.edit, color: AppTheme.primary),
                       onPressed: () {
-                        orchardService.selectedOrchard = orchard.copy();
                         List<OrchardCropRelation> relations = orchardService
                             .relations
                             .where(
@@ -75,7 +76,9 @@ class OrchardPage extends StatelessWidget {
                             .toList();
                         orchardService.selectedRelations =
                             orchardService.cloneListRelations(relations);
+                        orchardService.selectedOrchard = orchard.copy();
                         orchardService.isEditing = true;
+                        orchardService.selectedImageUrl = orchard.imageUrl;
                         Navigator.pushNamed(context, '/orchardForm');
                       }),
                   FocusedMenuItem(
