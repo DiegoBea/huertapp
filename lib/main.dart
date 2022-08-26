@@ -13,6 +13,7 @@ void main() async {
   ]); // Bloquear rotación de pantalla
 
   await Firebase.initializeApp(); // Iniciar Firebase
+  NotificationService();
   runApp(const AppState());
 }
 

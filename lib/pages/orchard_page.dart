@@ -145,6 +145,8 @@ class OrchardPage extends StatelessWidget {
                 onPressed: () {},
                 child: CardItem(
                   title: orchard.name,
+                  description: orchard.description,
+                  imageUrl: orchard.imageUrl,
                 ),
               ),
           ],

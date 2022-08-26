@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/services/services.dart';
-import 'package:uuid/uuid.dart';
 
 class AuthService extends ChangeNotifier {
   final String _baseUrl = 'identitytoolkit.googleapis.com';
@@ -19,6 +18,12 @@ class AuthService extends ChangeNotifier {
 
   AuthService() {
     PrintHelper.printInfo('Instanciando authService');
+    // readMessagingToken();
+  }
+
+  readMessagingToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    PrintHelper.printValue("Token: $token");
   }
 
   Future<String?> signUp(
@@ -73,17 +78,6 @@ class AuthService extends ChangeNotifier {
     } else {
       return decodedResp['error']['message'];
     }
-  }
-
-  Future logOut() async {
-    storage.delete(key: 'token');
-    await signOut();
-  }
-
-  Future<String> readToken() async {
-    PrintHelper.printInfo('Leyendo token...');
-    storage.readAll().then((value) => PrintHelper.printValue(value.toString()));
-    return await storage.read(key: 'token') ?? '';
   }
 
   Future<User?> signInWithGoogle() async {
@@ -152,6 +146,17 @@ class AuthService extends ChangeNotifier {
   Future<void> signOut() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
+  }
+
+  Future logOut() async {
+    storage.delete(key: 'token');
+    await signOut();
+  }
+
+  Future<String> readToken() async {
+    PrintHelper.printInfo('Leyendo token...');
+    storage.readAll().then((value) => PrintHelper.printValue(value.toString()));
+    return await storage.read(key: 'token') ?? '';
   }
 
   void checkUser(FirestoreUser user) async {
