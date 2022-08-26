@@ -11,6 +11,7 @@ import 'package:huertapp/services/services.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrchardFormScreen extends StatelessWidget {
@@ -74,12 +75,6 @@ class _OrchardFormBody extends StatelessWidget {
                 ? CustomScrollView(
                     slivers: [
                       SliverAppBar(
-                        actions: const [
-                          Padding(
-                            padding: EdgeInsets.only(right: 25),
-                            child: Icon(FontAwesomeIcons.solidImage),
-                          ),
-                        ],
                         backgroundColor: AppTheme.primary,
                         flexibleSpace: FlexibleSpaceBar(
                             background: FadeInImage(
@@ -145,22 +140,25 @@ class _OrchardFormState extends State<_OrchardForm> {
                   const SizedBox(height: 10),
                   _DescriptionInput(screenSize: screenSize, orchard: orchard),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Imagen',
-                        style: AppTheme.title2,
-                      ),
-                      IconButton(
-                          onPressed: () async {
-                            await imageService
-                                .selectImage()
-                                .then((value) => orchardForm.image = value);
-                            setState(() {});
-                          },
-                          icon: const Icon(FontAwesomeIcons.camera)),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Imagen',
+                          style: AppTheme.title2,
+                        ),
+                        IconButton(
+                            onPressed: () async {
+                              await imageService
+                                  .selectImage()
+                                  .then((value) => orchardForm.image = value);
+                              setState(() {});
+                            },
+                            icon: const Icon(FontAwesomeIcons.camera)),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   if (orchardForm.image != null)
@@ -171,16 +169,19 @@ class _OrchardFormState extends State<_OrchardForm> {
                           fit: BoxFit.cover,
                         )),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Lista de cultivos',
-                        style: AppTheme.title2,
-                      ),
-                      _AddCropButton(context, cropsService, screenSize,
-                          orchardCropRelations, orchard),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Lista de cultivos',
+                          style: AppTheme.title2,
+                        ),
+                        _AddCropButton(context, cropsService, screenSize,
+                            orchardCropRelations, orchard),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -224,6 +225,11 @@ class _OrchardFormState extends State<_OrchardForm> {
                                                           .deleteRelation(
                                                               orchardCropRelations[
                                                                   index]);
+                                                      orchardService.relations
+                                                          .removeWhere((element) =>
+                                                              element.uid ==
+                                                              orchardCropRelations[
+                                                                  index].uid);
                                                       orchardCropRelations
                                                           .removeAt(index);
                                                       setState(() {});
@@ -333,7 +339,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Fecha de sembrado'),
+                                      Text('Fecha de sembrado: ${DateFormat("dd/MM/yy").format(orchardCropRelations[index].sownDate)}'),
                                       Icon(
                                         FontAwesomeIcons.calendarAlt,
                                         color: AppTheme.primary,

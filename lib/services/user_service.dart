@@ -21,35 +21,37 @@ class UserService extends ChangeNotifier {
     return FirestoreUser(
         name: result.docs[0].get('name'),
         email: result.docs[0].get('email'),
-        photoURL: result.docs[0].get('photoURL'),
-        uid: result.docs[0].get('uid'));
-  }
-
-  checkUser(FirestoreUser user) async {
-    final QuerySnapshot result = await FirebaseFirestore.instance
-        .collection('users')
-        .limit(1)
-        .where(
-          'email',
-          isEqualTo: user.email,
-        )
-        .get();
-
-    if (result.docs.isEmpty) {
-      setUser(user);
-      return;
-    }
+        photoUrl: result.docs[0].get('photo_url'),
+        uid: result.docs[0].get('uid'),
+        devicesTokens: List<String>.from(result.docs[0].get('devices_tokens')));
   }
 
   void setUser(FirestoreUser user) async {
     PrintHelper.printInfo('Añadiendo ${user.name}...');
+    PrintHelper.printInfo('Token de ${user.name}: ${user.devicesTokens}');
     await FirebaseFirestore.instance.collection("users").add(user.toMap());
     PrintHelper.printInfo('${user.name} añadido correctamente');
   }
 
   Future updateUser(FirestoreUser user) async {
     PrintHelper.printInfo('Actualizando ${user.name}...');
-    // PrintHelper.printInfo('${user.name} actualizado correctamente');
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: user.uid)
+        .limit(1)
+        .get()
+        .then((value) {
+      for (var selectedUser in value.docs) {
+        selectedUser.reference.update(
+          {
+            "name": user.name,
+            "photo_url": user.photoUrl,
+            "devices_tokens": user.devicesTokens,
+          }
+        );
+      }
+    });
+    PrintHelper.printInfo('${user.name} actualizado correctamente');
     notifyListeners();
   }
 }

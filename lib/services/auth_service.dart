@@ -45,7 +45,7 @@ class AuthService extends ChangeNotifier {
 
     if (decodedResp.containsKey('localId')) {
       PrintHelper.printInfo("Token: ${decodedResp['localId']}");
-      checkUser(FirestoreUser(
+      await checkUser(FirestoreUser(
           email: email, name: name ?? email, uid: decodedResp['localId']));
       await storage.write(key: 'token', value: decodedResp['localId']);
       return null;
@@ -71,7 +71,7 @@ class AuthService extends ChangeNotifier {
 
     if (decodedResp.containsKey('localId')) {
       PrintHelper.printInfo("Token: ${decodedResp['localId']}");
-      checkUser(FirestoreUser(
+      await checkUser(FirestoreUser(
           email: email, name: name ?? email, uid: decodedResp['localId']));
       await storage.write(key: 'token', value: decodedResp['localId']);
       return null;
@@ -120,11 +120,11 @@ class AuthService extends ChangeNotifier {
 
       if (user != null && user.email != null) {
         PrintHelper.printInfo("Token: ${user.uid}");
-        checkUser(FirestoreUser(
+        await checkUser(FirestoreUser(
             uid: user.uid,
             email: user.email!,
             name: user.displayName ?? user.email!,
-            photoURL: user.photoURL));
+            photoUrl: user.photoURL));
         await storage.write(key: 'token', value: user.uid);
       }
     } catch (e) {
@@ -149,6 +149,23 @@ class AuthService extends ChangeNotifier {
   }
 
   Future logOut() async {
+    // Obtener el uid del usuario para eliminar la relación con el dispositivo
+    String? uid = await storage.read(key: 'token');
+    if (uid != null) {
+      UserService userService = UserService();
+      userService.getUser(uid).then((value) {
+        if (value == null) return;
+        if (value.devicesTokens == null) return;
+
+        // Si se ha obtenido un usuario, se elimina y actualiza sus dispositivos
+        value.devicesTokens!.removeWhere((element) {
+          return element == NotificationService.token;
+        });
+
+        userService.updateUser(value);
+      });
+    }
+
     storage.delete(key: 'token');
     await signOut();
   }
@@ -159,17 +176,32 @@ class AuthService extends ChangeNotifier {
     return await storage.read(key: 'token') ?? '';
   }
 
-  void checkUser(FirestoreUser user) async {
+  Future checkUser(FirestoreUser user) async {
     PrintHelper.printInfo('Leyendo datos de ${user.name}');
     UserService userService = UserService();
 
     await userService.getUser(user.uid).then((value) {
       // Obtener si el usuario ya existe, si no existe se añade a la BBDD
       if (value == null) {
+        user.devicesTokens = [NotificationService.token];
         userService.setUser(user);
+        return;
+      }
+
+      if (value.devicesTokens == null) {
+        user.devicesTokens = [NotificationService.token];
+        userService.updateUser(value);
+        return;
+      }
+
+      if (!value.devicesTokens!.contains(NotificationService.token)) {
+        value.devicesTokens!.add(NotificationService.token);
+        userService.updateUser(value);
+        return;
       }
     });
 
+    PrintHelper.printInfo('Token de ${user.name}: ${user.devicesTokens}');
     PrintHelper.printInfo("User_uid: ${user.uid}");
   }
 }
