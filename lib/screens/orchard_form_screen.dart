@@ -224,7 +224,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                                       orchardService
                                                           .deleteRelation(
                                                               orchardCropRelations[
-                                                                  index]);
+                                                                  index].uid ?? '');
                                                       orchardService.relations
                                                           .removeWhere((element) =>
                                                               element.uid ==
@@ -292,29 +292,6 @@ class _OrchardFormState extends State<_OrchardForm> {
                                       fontWeight: FontWeight.bold),
                                 )),
                             children: [
-                              if (cropsService
-                                  .getCropByUid(
-                                      orchardCropRelations[index].cropUid)
-                                  .seedbed)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text("Semillero"),
-                                    ),
-                                    Switch.adaptive(
-                                        value:
-                                            orchardCropRelations[index].seedbed,
-                                        onChanged: (value) {
-                                          orchardCropRelations[index].seedbed =
-                                              value;
-                                          setState(() {});
-                                        },
-                                        activeColor: AppTheme.primary),
-                                  ],
-                                ),
                               MaterialButton(
                                   onPressed: () async {
                                     var datePicked =
@@ -508,7 +485,6 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   //         ? true
                                   //         : false,
                                   wateringNotification: false,
-                                  seedbed: selectedCrop.seedbed,
                                   transplantNotification:
                                       selectedCrop.transplantNotification !=
                                               null

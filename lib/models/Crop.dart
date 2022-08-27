@@ -31,7 +31,6 @@ class Crop {
     this.sown,
     this.sownType,
   });
-  // TODO: Añadir late a uid
 
   late String uid;
 

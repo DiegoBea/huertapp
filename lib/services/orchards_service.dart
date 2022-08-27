@@ -16,6 +16,7 @@ class OrchardService extends ChangeNotifier {
   String? selectedImageUrl;
 
   ImageService imageService = ImageService();
+  NotificationService notificationService = NotificationService();
 
   bool isLoading = true;
   bool isEditing = false;
@@ -51,7 +52,6 @@ class OrchardService extends ChangeNotifier {
         name: element.get('name'),
         description: element.get('description'),
         owners: List<String>.from(element.get('owners')),
-        onwer: true,
         imageUrl: element.get('image_url'),
       );
       orchards.add(orchard);
@@ -68,8 +68,8 @@ class OrchardService extends ChangeNotifier {
         name: element.get('name'),
         description: element.get('description'),
         owners: List<String>.from(element.get('owners')),
-        onwer: false,
       );
+      orchard.owner = false;
       orchards.add(orchard);
     }
 
@@ -191,7 +191,11 @@ class OrchardService extends ChangeNotifier {
           element.reference.delete();
         }
       });
-      if (orchard.imageUrl != null ) await imageService.removeImage(orchard.uid!);
+
+      if (orchard.imageUrl != null) {
+        await imageService.removeImage(orchard.uid!);
+      }
+
       PrintHelper.printInfo('Eliminando relaciones de ${orchard.name}...');
       await FirebaseFirestore.instance
           .collection('orchard_crop_relations')
@@ -199,7 +203,7 @@ class OrchardService extends ChangeNotifier {
           .get()
           .then((value) {
         for (var element in value.docs) {
-          element.reference.delete();
+          deleteRelation(element.get('uid'));
         }
       });
     } else {
@@ -237,7 +241,6 @@ class OrchardService extends ChangeNotifier {
           sownDate: DateTime.parse(relation.get('sown_date')),
           wateringNotification: relation.get('watering_notification'),
           wateringIntervalDays: relation.get('watering_interval_days'),
-          seedbed: relation.get('seedbed'),
           transplantNotification: relation.get('transplant_notification'),
           germinationDays: relation.get('germination_days'),
           germinationNotification: relation.get('germination_notification'),
@@ -269,6 +272,7 @@ class OrchardService extends ChangeNotifier {
         .collection('orchard_crop_relations')
         .add(relation.toMap());
     relations.add(relation);
+    notificationService.saveNotifications(relation);
     PrintHelper.printInfo('Relación añadida correctamente');
   }
 
@@ -288,6 +292,7 @@ class OrchardService extends ChangeNotifier {
           "watering_notification": relation.wateringNotification,
         });
         PrintHelper.printInfo('Relación actualizada correctamente');
+        notificationService.saveNotifications(relation);
       }
       var index =
           relations.indexWhere((element) => element.uid == relation.uid);
@@ -295,17 +300,18 @@ class OrchardService extends ChangeNotifier {
     });
   }
 
-  Future<void> deleteRelation(OrchardCropRelation relation) async {
+  Future<void> deleteRelation(String relationUid) async {
+    notificationService.deleteNotifications(relationUid);
     await FirebaseFirestore.instance
         .collection('orchard_crop_relations')
-        .where('uid', isEqualTo: relation.uid)
+        .where('uid', isEqualTo: relationUid)
         .get()
         .then((value) {
       for (var element in value.docs) {
         element.reference.delete();
       }
     });
-    relations.remove(relation);
+    relations.removeWhere((element) => element.uid == relationUid);
     notifyListeners();
   }
 

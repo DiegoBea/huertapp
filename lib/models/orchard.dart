@@ -10,7 +10,6 @@ class Orchard {
     required this.name,
     this.description,
     required this.owners,
-    required this.onwer,
     this.guests,
     this.imageUrl,
   });
@@ -19,9 +18,10 @@ class Orchard {
   String name;
   String? description;
   List<String> owners;
-  bool onwer;
   List<String>? guests;
   String? imageUrl;
+
+  bool owner = true;
 
   factory Orchard.fromJson(String str) => Orchard.fromMap(json.decode(str));
 
@@ -32,7 +32,6 @@ class Orchard {
         name: json["name"],
         description: json["description"],
         owners: json["owners"],
-        onwer: json["owner"],
         guests: json["guests"],
         imageUrl: json["image_url"],
       );
@@ -42,7 +41,6 @@ class Orchard {
         "name": name,
         "description": description,
         "owners": owners,
-        "owner": onwer,
         "guests": guests,
         "image_url": imageUrl,
       };
@@ -50,7 +48,6 @@ class Orchard {
   Orchard copy() => Orchard(
       owners: owners,
       name: name,
-      onwer: onwer,
       description: description,
       guests: guests,
       imageUrl: imageUrl,

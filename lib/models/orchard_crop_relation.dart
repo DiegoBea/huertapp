@@ -8,7 +8,6 @@ class OrchardCropRelation {
     required this.sownDate,
     required this.wateringNotification,
     required this.wateringIntervalDays,
-    required this.seedbed,
     this.transplantDays,
     required this.transplantNotification,
     required this.germinationDays,
@@ -25,9 +24,7 @@ class OrchardCropRelation {
   bool wateringNotification;
   int? wateringIntervalDays;
 
-  bool seedbed;
-
-  // TODO: Utilizar días o datetime?
+  // TODO: Utilizar int o datetime?
   int? transplantDays;
   bool transplantNotification;
 
@@ -49,7 +46,6 @@ class OrchardCropRelation {
           sownDate: DateTime.parse(json["sown_date"]),
           wateringNotification: json["watering_notification"],
           wateringIntervalDays: json["watering_interval_days"],
-          seedbed: json["seedbed"],
           transplantDays: json["transplant_days"],
           transplantNotification: json["transplant_notification"],
           germinationDays: json["germination_days"],
@@ -64,7 +60,6 @@ class OrchardCropRelation {
         "sown_date": sownDate.toString(),
         "watering_notification": wateringNotification,
         "watering_interval_days": wateringIntervalDays,
-        "seedbed": seedbed,
         "transplant_days": transplantDays,
         "transplant_notification": transplantNotification,
         "germination_days": germinationDays,
@@ -80,7 +75,6 @@ class OrchardCropRelation {
         sownDate: sownDate,
         wateringNotification: wateringNotification,
         wateringIntervalDays: wateringIntervalDays,
-        seedbed: seedbed,
         transplantDays: transplantDays,
         transplantNotification: transplantNotification,
         germinationDays: germinationDays,

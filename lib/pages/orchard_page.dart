@@ -19,6 +19,7 @@ class OrchardPage extends StatelessWidget {
     final orchardService = Provider.of<OrchardService>(context);
 
     if (orchardService.isLoading) return const LoadingScreen();
+
     return SafeArea(
         child: Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -27,7 +28,6 @@ class OrchardPage extends StatelessWidget {
             orchardService.selectedOrchard = Orchard(
               name: '',
               owners: [],
-              onwer: true,
             );
             orchardService.selectedImageUrl = null;
             orchardService.selectedRelations = [];
@@ -65,6 +65,7 @@ class OrchardPage extends StatelessWidget {
                       onPressed: () {
                         PrintHelper.printInfo("TODO: Añadir infoView");
                       }),
+                      if (orchard.owner)
                   FocusedMenuItem(
                       title: const Text("Editar"),
                       trailingIcon:
@@ -82,6 +83,7 @@ class OrchardPage extends StatelessWidget {
                         orchardService.selectedImageUrl = orchard.imageUrl;
                         Navigator.pushNamed(context, '/orchardForm');
                       }),
+                      if (orchard.owner)
                   FocusedMenuItem(
                       title: const Text("Compartir"),
                       trailingIcon: Icon(
