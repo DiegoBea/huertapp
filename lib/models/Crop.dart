@@ -8,6 +8,7 @@ class Crop {
   Crop({
     required this.uid,
     required this.name,
+    required this.notificationName,
     required this.description,
     required this.iconUrl,
     required this.imageUrl,
@@ -35,6 +36,7 @@ class Crop {
   late String uid;
 
   String name;
+  String notificationName;
   String description;
 
   String iconUrl;
@@ -71,6 +73,7 @@ class Crop {
 
   factory Crop.fromMap(Map<String, dynamic> json) => Crop(
         uid: json["uid"] ?? '',
+        notificationName: json["notification_name"],
         name: json["name"],
         description: json["description"],
         iconUrl: json["icon_url"],
@@ -99,6 +102,7 @@ class Crop {
   Map<String, dynamic> toMap() => {
         "uid": uid,
         "name": name,
+        "notification_name": notificationName,
         "description": description,
         "icon_url": iconUrl,
         "image_url": imageUrl,

@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class OrchardNotification {
   OrchardNotification(
       {required this.uid,
@@ -13,10 +11,10 @@ class OrchardNotification {
 
   String uid;
   String relationUid;
-  Timestamp? dateHarvest;
-  Timestamp? dateGermination;
-  Timestamp? dateTransplant;
-  Timestamp? nextWatering;
+  String? dateHarvest;
+  String? dateGermination;
+  String? dateTransplant;
+  String? nextWatering;
 
   factory OrchardNotification.fromJson(String str) =>
       OrchardNotification.fromMap(json.decode(str));

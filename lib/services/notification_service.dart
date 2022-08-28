@@ -26,6 +26,7 @@ class NotificationService extends ChangeNotifier {
     ToastHelper.showToast("Message ID: ${message.messageId}");
   }
 
+  // TODO: Revisar bug al editar notificaciones
   Future<DateTime> _getNextWatering(DateTime sownDate, int interval) async {
     DateTime now = DateTime.now();
     int difference = now.difference(sownDate).inDays;
@@ -37,6 +38,11 @@ class NotificationService extends ChangeNotifier {
     PrintHelper.printInfo("Siguiente regado: $nextWatering");
 
     return nextWatering;
+  }
+
+  bool _isFutureDate(DateTime date) {
+    DateTime now = DateTime.now();
+    return now.difference(date).inDays > 0;
   }
 
   NotificationService() {
@@ -52,41 +58,41 @@ class NotificationService extends ChangeNotifier {
     FirebaseMessaging.onMessageOpenedApp.listen(_onOpenHandler);
   }
 
-  Future saveNotifications(OrchardCropRelation relation) async {
+  Future saveNotification(OrchardCropRelation relation) async {
+    if (!relation.harvestNotification &&
+        !relation.wateringNotification &&
+        !relation.germinationNotification &&
+        !relation.transplantNotification) {
+      deleteNotification(relation.uid ?? '');
+      return;
+    }
+
+    final DateFormat formatter = DateFormat("yyyy-MM-dd");
+
+// TODO: Si la fecha es anterior a la actual, no se guarda la notificación
     OrchardNotification orchardNotification = OrchardNotification(
         uid: const Uuid().v1(),
         relationUid: relation.uid!,
-        dateHarvest: relation.harvestNotification
-            ? Timestamp.fromDate(
+        dateHarvest: relation.harvestNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.harvestDays)))
+            ? formatter.format(
                 relation.sownDate.add(Duration(days: relation.harvestDays)))
             : null,
-        dateGermination: relation.germinationNotification
-            ? Timestamp.fromDate(
+        dateGermination: relation.germinationNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.germinationDays)))
+            ? formatter.format(
                 relation.sownDate.add(Duration(days: relation.germinationDays)))
             : null,
         // En principio, si se puede activar la notificación de transplante, los días de transplante no son nulos
-        dateTransplant: relation.transplantNotification &&
-                relation.transplantDays != null
-            ? Timestamp.fromDate(
+        dateTransplant: relation.transplantNotification && 
+                relation.transplantDays != null && _isFutureDate(relation.sownDate.add(Duration(days: relation.transplantDays!)))
+            ? formatter.format(
                 relation.sownDate.add(Duration(days: relation.transplantDays!)))
             : null,
         nextWatering: relation.wateringNotification &&
                 relation.wateringIntervalDays != null &&
                 relation.wateringIntervalDays != 0
-            ? Timestamp.fromDate(await _getNextWatering(
+            ? formatter.format(await _getNextWatering(
                 relation.sownDate, relation.wateringIntervalDays!))
             : null);
-
-    // Si ya ha pasado la fecha de cosecha, no se añade o se elimina la notificación
-    if (orchardNotification.dateHarvest != null &&
-        orchardNotification.dateHarvest!
-                .toDate()
-                .difference(DateTime.now())
-                .inDays <
-            0) {
-      deleteNotifications(relation.uid ?? '');
-      return;
-    }
 
     await getNotification(relation.uid!).then((notification) async {
       if (notification != null) {
@@ -113,7 +119,7 @@ class NotificationService extends ChangeNotifier {
     });
   }
 
-  deleteNotifications(String relationUid) async {
+  deleteNotification(String relationUid) async {
     PrintHelper.printInfo("Eliminando notificaciones de $relationUid");
     final QuerySnapshot notifications = await FirebaseFirestore.instance
         .collection('notifications')

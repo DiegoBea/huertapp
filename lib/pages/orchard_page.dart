@@ -63,36 +63,37 @@ class OrchardPage extends StatelessWidget {
                       trailingIcon:
                           Icon(FontAwesomeIcons.info, color: AppTheme.primary),
                       onPressed: () {
-                        PrintHelper.printInfo("TODO: Añadir infoView");
+                        Navigator.pushNamed(context, '/orchardInfo',
+                            arguments: orchard);
                       }),
-                      if (orchard.owner)
-                  FocusedMenuItem(
-                      title: const Text("Editar"),
-                      trailingIcon:
-                          Icon(FontAwesomeIcons.edit, color: AppTheme.primary),
-                      onPressed: () {
-                        List<OrchardCropRelation> relations = orchardService
-                            .relations
-                            .where(
-                                (element) => element.orchardUid == orchard.uid)
-                            .toList();
-                        orchardService.selectedRelations =
-                            orchardService.cloneListRelations(relations);
-                        orchardService.selectedOrchard = orchard.copy();
-                        orchardService.isEditing = true;
-                        orchardService.selectedImageUrl = orchard.imageUrl;
-                        Navigator.pushNamed(context, '/orchardForm');
-                      }),
-                      if (orchard.owner)
-                  FocusedMenuItem(
-                      title: const Text("Compartir"),
-                      trailingIcon: Icon(
-                        Icons.share,
-                        color: AppTheme.primary,
-                      ),
-                      onPressed: () {
-                        PrintHelper.printInfo("TODO: Añadir shareView");
-                      }),
+                  if (orchard.owner)
+                    FocusedMenuItem(
+                        title: const Text("Editar"),
+                        trailingIcon: Icon(FontAwesomeIcons.edit,
+                            color: AppTheme.primary),
+                        onPressed: () {
+                          List<OrchardCropRelation> relations = orchardService
+                              .relations
+                              .where((element) =>
+                                  element.orchardUid == orchard.uid)
+                              .toList();
+                          orchardService.selectedRelations =
+                              orchardService.cloneListRelations(relations);
+                          orchardService.selectedOrchard = orchard.copy();
+                          orchardService.isEditing = true;
+                          orchardService.selectedImageUrl = orchard.imageUrl;
+                          Navigator.pushNamed(context, '/orchardForm');
+                        }),
+                  if (orchard.owner)
+                    FocusedMenuItem(
+                        title: const Text("Compartir"),
+                        trailingIcon: Icon(
+                          Icons.share,
+                          color: AppTheme.primary,
+                        ),
+                        onPressed: () {
+                          PrintHelper.printInfo("TODO: Añadir shareView");
+                        }),
                   FocusedMenuItem(
                       title: const Text(
                         "Eliminar",

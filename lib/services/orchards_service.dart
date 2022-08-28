@@ -272,7 +272,7 @@ class OrchardService extends ChangeNotifier {
         .collection('orchard_crop_relations')
         .add(relation.toMap());
     relations.add(relation);
-    notificationService.saveNotifications(relation);
+    notificationService.saveNotification(relation);
     PrintHelper.printInfo('Relación añadida correctamente');
   }
 
@@ -292,7 +292,7 @@ class OrchardService extends ChangeNotifier {
           "watering_notification": relation.wateringNotification,
         });
         PrintHelper.printInfo('Relación actualizada correctamente');
-        notificationService.saveNotifications(relation);
+        notificationService.saveNotification(relation);
       }
       var index =
           relations.indexWhere((element) => element.uid == relation.uid);
@@ -301,7 +301,7 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future<void> deleteRelation(String relationUid) async {
-    notificationService.deleteNotifications(relationUid);
+    notificationService.deleteNotification(relationUid);
     await FirebaseFirestore.instance
         .collection('orchard_crop_relations')
         .where('uid', isEqualTo: relationUid)

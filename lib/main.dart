@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
         '/register': (_) => const RegisterScreen(),
         '/cropInfo': (_) => const CropInfoScreen(),
         '/orchardForm': (_) => const OrchardFormScreen(),
+        '/orchardInfo': (_) => const OrchardInfoScreen(),
       },
     );
   }
