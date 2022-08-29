@@ -22,10 +22,14 @@ class DaysHelper {
 
 class PrintHelper {
   static printInfo(String value) {
-    print("\x1B[33m${value}");
+    print("\x1B[33m$value");
   }
 
   static printValue(String value){
-    print("\x1B[32m${value}");
+    print("\x1B[32m$value");
+  }
+  
+  static printError(String value){
+    print("\x1B[31m$value");
   }
 }

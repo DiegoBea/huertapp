@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/screens/screens.dart';
-import 'package:huertapp/services/crops_services.dart';
+import 'package:huertapp/services/crops_service.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';

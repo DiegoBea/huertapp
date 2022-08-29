@@ -15,15 +15,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static final List<Widget> _widgetOptions = <Widget>[
     const CropsPage(),
     const OrchardPage(),
-    const Text(
-      'Search',
-      style: optionStyle,
-    ),
+    const WeatherPage(),
     const SettingsPage(),
   ];
   @override
