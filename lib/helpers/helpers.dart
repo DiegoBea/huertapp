@@ -25,11 +25,34 @@ class PrintHelper {
     print("\x1B[33m$value");
   }
 
-  static printValue(String value){
+  static printValue(String value) {
     print("\x1B[32m$value");
   }
-  
-  static printError(String value){
+
+  static printError(String value) {
     print("\x1B[31m$value");
+  }
+}
+
+class DateHelper {
+  static String getDynamicDayName(int weekDay) {
+    switch (weekDay) {
+      case 1:
+        return "Lunes";
+      case 2:
+        return "Martes";
+      case 3:
+        return "Miércoles";
+      case 4:
+        return "Jueves";
+      case 5:
+        return "Viernes";
+      case 6:
+        return "Sábado";
+      case 7:
+        return "Domingo";
+      default:
+        return "";
+    }
   }
 }
