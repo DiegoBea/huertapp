@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 
 class WeatherService extends ChangeNotifier {
   final List<Province> provinces = [];
-  final List<Aemet> predictions = [];
+  final List<Aemet> dailyPredictions = [];
+  final List<Aemet> hourlyPredictions = [];
   final String _baseUrlProvinces = "www.el-tiempo.net";
   final String _baseUrlAemet = "opendata.aemet.es";
   final String _token =
@@ -16,10 +17,12 @@ class WeatherService extends ChangeNotifier {
 
   WeatherService() {
     getProvinces();
-    // getWeather("01001");
-    getWeather("44240");
-    getWeather("44192");
-    getWeather("44001");
+    getWeatherDaily("01001");
+    getWeatherDaily("44240");
+    getWeatherHourly("01001");
+    getWeatherHourly("44240");
+    // getWeatherHourly("44192");
+    // getWeatherHourly("44001");
   }
 
   Future<List<Province>> getProvinces() async {
@@ -82,7 +85,7 @@ class WeatherService extends ChangeNotifier {
     return townships;
   }
 
-  Future getWeather(String code) async {
+  Future getWeatherDaily(String code) async {
     isloading = true;
     notifyListeners();
     final url = Uri.https(
@@ -98,13 +101,49 @@ class WeatherService extends ChangeNotifier {
 
     final urlData = Uri.https(urlBody["base_url"]!, urlBody["path"]!);
 
+    PrintHelper.printInfo(urlData.toString());
+
     final responseData = await http.get(urlData);
 
     try {
       var body = jsonDecode(responseData.body);
       PrintHelper.printError("${body[0]}");
       Aemet aemet = Aemet.fromMap(body[0]);
-      predictions.add(aemet);
+      dailyPredictions.add(aemet);
+      PrintHelper.printValue(aemet.toJson());
+    } catch (e) {
+      PrintHelper.printError("$e");
+    }
+
+    isloading = false;
+    notifyListeners();
+  }
+
+  Future getWeatherHourly(String code) async {
+    isloading = true;
+    notifyListeners();
+    final url = Uri.https(
+        _baseUrlAemet,
+        '/opendata/api/prediccion/especifica/municipio/diaria/$code/',
+        {'api_key': _token});
+    final response = await http.get(url);
+    if (response.statusCode != 200) return "";
+
+    String urlInfo = json.decode(response.body)["datos"];
+
+    Map<String, String> urlBody = _getAemetUrl(urlInfo);
+
+    final urlData = Uri.https(urlBody["base_url"]!, urlBody["path"]!);
+
+    PrintHelper.printInfo(urlData.toString());
+
+    final responseData = await http.get(urlData);
+
+    try {
+      var body = jsonDecode(responseData.body);
+      PrintHelper.printError("${body[0]}");
+      Aemet aemet = Aemet.fromMap(body[0]);
+      hourlyPredictions.add(aemet);
       PrintHelper.printValue(aemet.toJson());
     } catch (e) {
       PrintHelper.printError("$e");

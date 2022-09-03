@@ -40,43 +40,90 @@ class Aemet {
     return values;
   }
 
-  Map<String, Cielo> get skyStateValues {
-    Map<String, Cielo> values = {};
+  // Map<String, Cielo> get skyStateValues {
+  //   Map<String, Cielo> values = {};
 
-    for (int i = 0; i < prediccion.dia.length; i++) {
-      List<EstadoCielo> estadosCielo = prediccion.dia[i].estadoCielo;
-      // Se inicializa en 11 ya que tomaré el valor "despejado por defecto"
-      List<String> skyValues = List.filled(24, "11");
-      List<String> descriptions = List.filled(24, "Despejado");
-      List<String> imageUrls = List.filled(
-          24, "https://www.aemet.es/imagenes_gcd/_iconos_municipios/11.png");
+  //   for (int i = 0; i < prediccion.dia.length; i++) {
+  //     List<EstadoCielo> estadosCielo = prediccion.dia[i].estadoCielo;
+  //     // Se inicializa en 11 ya que tomaré el valor "despejado" por defecto
+  //     List<String> skyValues = List.filled(24, "11");
+  //     List<String> descriptions = List.filled(24, "Despejado");
+  //     List<String> imageUrls = List.filled(
+  //         24, "https://www.aemet.es/imagenes_gcd/_iconos_municipios/11.png");
 
-      for (EstadoCielo estadoCielo in estadosCielo) {
-        if (estadoCielo.periodo == null) continue;
+  //     for (EstadoCielo estadoCielo in estadosCielo) {
+  //       if (estadoCielo.periodo == null) continue;
 
-        List<String> intervalo = estadoCielo.periodo!.split("-");
-        int min = int.parse(intervalo[0]);
-        int max = int.parse(intervalo[1]);
+  //       List<String> intervalo = estadoCielo.periodo!.split("-");
+  //       int min = int.parse(intervalo[0]);
+  //       int max = int.parse(intervalo[1]);
 
-        for (int i = min; i < max; i++) {
-          String value = estadoCielo.value;
-          skyValues[i] = value;
-          descriptions[i] = estadoCielo.descripcion != "" ? estadoCielo.descripcion : "Despejado";
-          imageUrls[i] =
-              "https://www.aemet.es/imagenes_gcd/_iconos_municipios/${value != "" ? value : 11}.png";
-        }
-      }
+  //       for (int i = min; i < max; i++) {
+  //         String value = estadoCielo.value;
+  //         skyValues[i] = value != "" ? value : "11";
+  //         descriptions[i] = estadoCielo.descripcion != ""
+  //             ? estadoCielo.descripcion
+  //             : "Despejado";
+  //         imageUrls[i] =
+  //             "https://www.aemet.es/imagenes_gcd/_iconos_municipios/${value != "" ? value : 11}.png";
+  //       }
+  //     }
 
-      values[DateHelper.getDynamicDayName(
-              DateTime.now().add(Duration(days: i)).weekday)] =
-          Cielo(
-              values: skyValues,
-              imageUrl: imageUrls,
-              description: descriptions);
-    }
+  //     values[DateHelper.getDynamicDayName(
+  //             DateTime.now().add(Duration(days: i)).weekday)] =
+  //         Cielo(
+  //             values: skyValues,
+  //             imageUrl: imageUrls,
+  //             description: descriptions);
+  //   }
 
-    return values;
-  }
+  //   return values;
+  // }
+
+  // Map<String, Map<int, int>> get tempValues {
+  //   Map<String, Map<int, int>> temps = {};
+  //   Map<int, int> hourValue = {};
+
+  //   for (var i = 0; i < prediccion.dia.length; i++) {
+  //     hourValue.clear();
+  //     for (Dato dato in prediccion.dia[i].temperatura.dato) {
+  //       hourValue[dato.hora] = dato.value;
+  //     }
+  //     var day = DateTime.now().add(Duration(days: i)).weekday;
+  //     temps[DateHelper.getDynamicDayName(day)] = Map<int, int>.from(hourValue);
+  //   }
+
+  //   return temps;
+  // }
+
+  // Map<String, List<int>> get rainProbabilities {
+  //   Map<String, List<int>> values = {};
+
+  //   for (int i = 0; i < prediccion.dia.length; i++) {
+  //     List<ProbPrecipitacion> probPrecipitaciones =
+  //         prediccion.dia[i].probPrecipitacion;
+  //     // Se inicializa en 0 ya que tomaré el valor "0%" por defecto
+  //     List<int> rainValues = List.filled(24, 0);
+
+  //     for (ProbPrecipitacion prob in probPrecipitaciones) {
+  //       if (prob.periodo == null) continue;
+
+  //       List<String> intervalo = prob.periodo!.split("-");
+  //       int min = int.parse(intervalo[0]);
+  //       int max = int.parse(intervalo[1]);
+
+  //       for (int i = min; i < max; i++) {
+  //         int value = prob.value;
+  //         rainValues[i] = (value);
+  //       }
+  //     }
+
+  //     values[DateHelper.getDynamicDayName(
+  //         DateTime.now().add(Duration(days: i)).weekday)] = rainValues;
+  //   }
+
+  //   return values;
+  // }
 
   factory Aemet.fromJson(String str) => Aemet.fromMap(json.decode(str));
 

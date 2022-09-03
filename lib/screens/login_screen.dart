@@ -12,8 +12,6 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
-  // TODO: Recuperar contraseña
-
   @override
   Widget build(BuildContext context) {
     return Container(
