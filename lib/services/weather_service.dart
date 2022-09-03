@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherService extends ChangeNotifier {
   final List<Province> provinces = [];
-  final List<Aemet> dailyPredictions = [];
-  final List<Aemet> hourlyPredictions = [];
+  final Map<String, Map<String, dynamic>> predictions = {};
   final String _baseUrlProvinces = "www.el-tiempo.net";
   final String _baseUrlAemet = "opendata.aemet.es";
   final String _token =
@@ -16,13 +15,11 @@ class WeatherService extends ChangeNotifier {
   bool isloading = false;
 
   WeatherService() {
-    getProvinces();
-    getWeatherDaily("01001");
-    getWeatherDaily("44240");
-    getWeatherHourly("01001");
-    getWeatherHourly("44240");
-    // getWeatherHourly("44192");
-    // getWeatherHourly("44001");
+    // getProvinces();
+    getWeather("44240");
+    getWeather("44192");
+    getWeather("44216");
+    getWeather("01001");
   }
 
   Future<List<Province>> getProvinces() async {
@@ -81,53 +78,40 @@ class WeatherService extends ChangeNotifier {
         }
       }
     }
-
     return townships;
   }
 
-  Future getWeatherDaily(String code) async {
+  Future getWeather(String code) async {
     isloading = true;
     notifyListeners();
-    final url = Uri.https(
-        _baseUrlAemet,
-        '/opendata/api/prediccion/especifica/municipio/diaria/$code/',
-        {'api_key': _token});
-    final response = await http.get(url);
-    if (response.statusCode != 200) return "";
+    Map<String, HourlyPrediction> hourly = {};
+    Map<String, DailyPrediction> daily = {};
+    await getWeatherHourly(code)
+        .then((value) => value != null ? hourly = {"hourly": value} : null);
+    await getWeatherDaily(code)
+        .then((value) => value != null ? daily = {"daily": value} : null);
 
-    String urlInfo = json.decode(response.body)["datos"];
-
-    Map<String, String> urlBody = _getAemetUrl(urlInfo);
-
-    final urlData = Uri.https(urlBody["base_url"]!, urlBody["path"]!);
-
-    PrintHelper.printInfo(urlData.toString());
-
-    final responseData = await http.get(urlData);
-
-    try {
-      var body = jsonDecode(responseData.body);
-      PrintHelper.printError("${body[0]}");
-      Aemet aemet = Aemet.fromMap(body[0]);
-      dailyPredictions.add(aemet);
-      PrintHelper.printValue(aemet.toJson());
-    } catch (e) {
-      PrintHelper.printError("$e");
+    if (hourly.entries.isNotEmpty && daily.entries.isNotEmpty) {
+      predictions[code] = {};
+      for (var map in [hourly, daily]) {
+        for (var entry in map.entries) {
+          predictions[code]!.addAll({entry.key: entry.value});
+        }
+      }
     }
 
+    _sortList();
     isloading = false;
     notifyListeners();
   }
 
-  Future getWeatherHourly(String code) async {
-    isloading = true;
-    notifyListeners();
+  Future<DailyPrediction?> getWeatherDaily(String code) async {
     final url = Uri.https(
         _baseUrlAemet,
         '/opendata/api/prediccion/especifica/municipio/diaria/$code/',
         {'api_key': _token});
     final response = await http.get(url);
-    if (response.statusCode != 200) return "";
+    if (response.statusCode != 200) return null;
 
     String urlInfo = json.decode(response.body)["datos"];
 
@@ -139,18 +123,34 @@ class WeatherService extends ChangeNotifier {
 
     final responseData = await http.get(urlData);
 
-    try {
-      var body = jsonDecode(responseData.body);
-      PrintHelper.printError("${body[0]}");
-      Aemet aemet = Aemet.fromMap(body[0]);
-      hourlyPredictions.add(aemet);
-      PrintHelper.printValue(aemet.toJson());
-    } catch (e) {
-      PrintHelper.printError("$e");
-    }
+    var body = jsonDecode(responseData.body);
+    DailyPrediction aemet = DailyPrediction.fromMap(body[0]);
+    PrintHelper.printValue(aemet.toJson());
+    return aemet;
+  }
 
-    isloading = false;
-    notifyListeners();
+  Future<HourlyPrediction?> getWeatherHourly(String code) async {
+    final url = Uri.https(
+        _baseUrlAemet,
+        '/opendata/api/prediccion/especifica/municipio/horaria/$code/',
+        {'api_key': _token});
+    final response = await http.get(url);
+    if (response.statusCode != 200) return null;
+
+    String urlInfo = json.decode(response.body)["datos"];
+
+    Map<String, String> urlBody = _getAemetUrl(urlInfo);
+
+    final urlData = Uri.https(urlBody["base_url"]!, urlBody["path"]!);
+
+    PrintHelper.printInfo(urlData.toString());
+
+    final responseData = await http.get(urlData);
+
+    var body = jsonDecode(responseData.body);
+    HourlyPrediction aemet = HourlyPrediction.fromMap(body[0]);
+    // aemet.temperaturaActual = aemet.prediccion.dia[0].temperatura.dato.where((element) => element.)
+    return aemet;
   }
 
   Map<String, String> _getAemetUrl(String url) {
@@ -161,6 +161,108 @@ class WeatherService extends ChangeNotifier {
       path += "${tmpUrl[i]}/";
     }
     return {"base_url": tmpUrl[0], "path": path};
+  }
+
+  String getSkyType(String value) {
+    switch (value) {
+      case "11":
+      case "11n":
+        return "Despejado";
+      case "12":
+      case "12n":
+        return "Poco nuboso";
+      case "13":
+      case "13n":
+        return "Intervalos nubosos";
+      case "14":
+      case "14n":
+        return "Nuboso";
+      case "15":
+      case "15n":
+        return "Muy nuboso";
+      case "16":
+      case "16n":
+        return "Cubierto";
+      case "17":
+      case "17n":
+        return "Nubes altas";
+      case "23":
+      case "23n":
+        return "Intervalos nubosos con lluvia escasa";
+      case "24":
+      case "24n":
+        return "Nuboso con lluvia";
+      case "25":
+        return "Cubierto con lluvia";
+      case "26":
+        return "Muy nuboso con lluvia";
+      case "33":
+      case "33n":
+        return "Intervalos nubosos con nieve";
+      case "34":
+      case "34n":
+        return "Nuboso con nieve";
+      case "35":
+        return "Muy nuboso con nieve";
+      case "36":
+        return "Cubierto con nieve";
+      case "43":
+      case "43n":
+        return "Intervalos nubosos con lluvia escasa";
+      case "46":
+        return "Cubierto con lluvia escasa";
+      case "51":
+      case "51n":
+        return "Intervalos nubosos con tormenta";
+      case "52":
+      case "52n":
+        return "Nuboso con tormenta";
+      case "53":
+        return "Muy nuboso con tormenta";
+      case "54":
+        return "Cubierto con tormenta";
+      case "61":
+      case "61n":
+        return "Intervalos nubosos con tormenta y lluvia escasa";
+      case "62":
+      case "62n":
+        return "Nuboso con tormenta y lluvia escasa";
+      case "63":
+        return "Muy nuboso con tormenta y lluvia escasa";
+      case "64":
+        return "Cubierto con tormenta y lluvia escasa";
+      case "71":
+      case "71n":
+        return "Intervalos nubosos con nieve escasa";
+      case "72":
+      case "72n":
+        return "Nubosos con nieve escasa";
+      case "73":
+        return "Muy nuboso con nieve escasa";
+      case "74":
+        return "Cubierto con nieve escasa";
+      case "81":
+        return "Niebla";
+      case "82":
+        return "Bruma";
+      case "83":
+        return "Niebla";
+      default:
+        return "despejado";
+    }
+  }
+
+  _sortList() {
+    var sortedEntries = predictions.entries.toList()
+      ..sort((a, b) {
+        var aValue = a.value["hourly"] as HourlyPrediction;
+        var bValue = b.value["hourly"] as HourlyPrediction;
+        return aValue.nombre.compareTo(bValue.nombre);
+      });
+
+    predictions
+      ..clear()
+      ..addEntries(sortedEntries);
   }
 
   // Comunidades autónomas: https://www.el-tiempo.net/api/json/v2/provincias

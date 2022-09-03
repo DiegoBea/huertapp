@@ -1,4 +1,5 @@
-export 'package:huertapp/models/aemet.dart';
+export 'package:huertapp/models/hourly_prediction.dart';
+export 'package:huertapp/models/daily_prediction.dart';
 export 'package:huertapp/models/township.dart';
 export 'package:huertapp/models/province.dart';
 export 'package:huertapp/models/orchard_notification.dart';
