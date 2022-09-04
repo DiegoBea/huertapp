@@ -2,10 +2,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
+import 'package:huertapp/services/services.dart';
 
 class UserService extends ChangeNotifier {
   bool isLoading = true;
   bool isSaving = false;
+
+  static FirestoreUser? user;
+
+  UserService() {
+    loadUser();
+  }
+
+  Future loadUser() async {
+    isLoading = true;
+    notifyListeners();
+    PrintHelper.printInfo("Cargando usuario...");
+
+    String? uid;
+    await AuthService().readToken().then((value) => uid = value);
+
+    await getUser(uid).then((value) => user = value);
+
+    PrintHelper.printValue("Usuario activo: ${user?.name}");
+
+    PrintHelper.printInfo("********Final lectura del usuario********");
+
+    isLoading = false;
+    notifyListeners();
+  }
 
   Future<FirestoreUser?> getUser(uid) async {
     final QuerySnapshot result = await FirebaseFirestore.instance
@@ -23,7 +48,9 @@ class UserService extends ChangeNotifier {
         email: result.docs[0].get('email'),
         photoUrl: result.docs[0].get('photo_url'),
         uid: result.docs[0].get('uid'),
-        devicesTokens: List<String>.from(result.docs[0].get('devices_tokens')));
+        devicesTokens: List<String>.from(result.docs[0].get('devices_tokens')),
+        weatherLocations: result.docs[0].get('weather_locations') == null ? null :
+            List<String>.from(result.docs[0].get('weather_locations')));
   }
 
   void setUser(FirestoreUser user) async {
@@ -42,13 +69,11 @@ class UserService extends ChangeNotifier {
         .get()
         .then((value) {
       for (var selectedUser in value.docs) {
-        selectedUser.reference.update(
-          {
-            "name": user.name,
-            "photo_url": user.photoUrl,
-            "devices_tokens": user.devicesTokens,
-          }
-        );
+        selectedUser.reference.update({
+          "name": user.name,
+          "photo_url": user.photoUrl,
+          "devices_tokens": user.devicesTokens,
+        });
       }
     });
     PrintHelper.printInfo('${user.name} actualizado correctamente');

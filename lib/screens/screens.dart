@@ -1,3 +1,4 @@
+export 'package:huertapp/screens/no_locations_screen.dart';
 export 'package:huertapp/screens/orchard_info_screen.dart';
 export 'package:huertapp/screens/check_auth_screen.dart';
 export 'package:huertapp/screens/crop_info_screen.dart';

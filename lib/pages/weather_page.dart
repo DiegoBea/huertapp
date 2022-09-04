@@ -1,28 +1,114 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
+import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/themes/app_theme.dart';
+import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';
 
-class WeatherPage extends StatelessWidget {
+class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
 
+  @override
+  State<WeatherPage> createState() => _WeatherPageState();
+}
+
+class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     final weatherService = Provider.of<WeatherService>(context);
     return Scaffold(
-      body: PageView(
-          children: WeatherService.predictions.entries
-              .map((e) => _WeatherBody(
-                    prediction: e.value,
-                    weatherService: weatherService,
-                  ))
-              .toList()),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25)),
+                      scrollable: true,
+                      elevation: 5,
+                      content: SizedBox(
+                        height: 300,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: weatherService.provinces
+                                .map((e) => CardItem(
+                                      title: e.provinceName,
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25)),
+                                                  scrollable: true,
+                                                  elevation: 5,
+                                                  content: SizedBox(
+                                                    height: 300,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Column(
+                                                        children: e.townships
+                                                            .asMap()
+                                                            .entries
+                                                            .map(
+                                                                (e) => CardItem(
+                                                                      title: e
+                                                                          .value
+                                                                          .nombre,
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        weatherService.getWeather(e
+                                                                            .value
+                                                                            .code);
+                                                                      },
+                                                                    ))
+                                                            .toList(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  title: const Center(
+                                                      child: Text(
+                                                          'Selecciona una provincia')),
+                                                ));
+                                      },
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      ),
+                      title:
+                          const Center(child: Text('Selecciona una provincia')),
+                    ));
+          },
+          backgroundColor: Colors.white,
+          child: weatherService.isProvincesloading
+              ? CircularProgressIndicator(color: AppTheme.primary)
+              : Icon(
+                  Icons.add,
+                  color: AppTheme.primary,
+                )),
+      body: weatherService.isloading
+          ? const LoadingScreen()
+          : WeatherService.predictions.isEmpty
+              ? const NoLocationsScreen()
+              : PageView(
+                  children: WeatherService.predictions.entries
+                      .map((e) => _WeatherBody(
+                            prediction: e.value,
+                            weatherService: weatherService,
+                          ))
+                      .toList()),
     );
   }
 }
 
-class _WeatherBody extends StatelessWidget {
+class _WeatherBody extends StatefulWidget {
   const _WeatherBody({
     Key? key,
     required this.prediction,
@@ -33,9 +119,14 @@ class _WeatherBody extends StatelessWidget {
   final WeatherService weatherService;
 
   @override
+  State<_WeatherBody> createState() => _WeatherBodyState();
+}
+
+class _WeatherBodyState extends State<_WeatherBody> {
+  @override
   Widget build(BuildContext context) {
-    HourlyPrediction hourly = prediction["hourly"];
-    DailyPrediction daily = prediction["daily"];
+    HourlyPrediction hourly = widget.prediction["hourly"];
+    DailyPrediction daily = widget.prediction["daily"];
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -59,7 +150,7 @@ class _WeatherBody extends StatelessWidget {
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
-          Text(weatherService.getSkyType(hourly.currentSkyValue),
+          Text(widget.weatherService.getSkyType(hourly.currentSkyValue),
               style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -75,7 +166,7 @@ class _WeatherBody extends StatelessWidget {
                       .asMap()
                       .entries
                       .map((e) => _DailyPredictionCard(
-                        skyValue: daily.skyValue[e.key],
+                            skyValue: daily.skyValue[e.key],
                             prediction: e.value,
                             precipitation: daily.probPrecipitation[e.key],
                             day: e.key == 0
@@ -121,7 +212,8 @@ class _DailyPredictionCard extends StatelessWidget {
     Key? key,
     required this.prediction,
     required this.day,
-    required this.precipitation, required this.skyValue,
+    required this.precipitation,
+    required this.skyValue,
   }) : super(key: key);
 
   final int precipitation;
@@ -149,11 +241,11 @@ class _DailyPredictionCard extends StatelessWidget {
             SizedBox(
                 height: 40,
                 child: Image(
-                  image: AssetImage(
-                      'assets/images/weather/icons/$skyValue.png'),
+                  image:
+                      AssetImage('assets/images/weather/icons/$skyValue.png'),
                   fit: BoxFit.cover,
                 )),
-                const SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -181,8 +273,7 @@ class _DailyPredictionCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Image(
-                      image: AssetImage(
-                          'assets/images/weather/icons/25.png'),
+                      image: AssetImage('assets/images/weather/icons/25.png'),
                       fit: BoxFit.cover,
                     ),
                     Text('$precipitation%',

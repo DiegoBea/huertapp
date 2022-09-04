@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
+import 'package:huertapp/services/services.dart';
 
 class WeatherService extends ChangeNotifier {
   final List<Province> provinces = [];
@@ -13,17 +14,34 @@ class WeatherService extends ChangeNotifier {
   final String _token =
       "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnb2JlYWdvbWV6MUBnbWFpbC5jb20iLCJqdGkiOiJhNzE2OTc1Ni04NmYyLTRkM2UtOTYyOS02MTgwNmRmOGYzZTMiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTY1OTM4MDc4MSwidXNlcklkIjoiYTcxNjk3NTYtODZmMi00ZDNlLTk2MjktNjE4MDZkZjhmM2UzIiwicm9sZSI6IiJ9.tLTSwVvXaY1pn6raX9FA8H72dKvMUMTlk536Yevqz4c";
   bool isloading = false;
+  bool isProvincesloading = false;
+  bool isPredictionsLoading = false;
 
   WeatherService() {
-    // getProvinces();
-    getWeather("44240");
-    getWeather("44192");
-    getWeather("44216");
-    getWeather("01001");
+    loadProvinces();
+    loadLocations();
   }
 
-  Future<List<Province>> getProvinces() async {
-    isloading = true;
+  Future loadLocations() async {
+    PrintHelper.printInfo("Cargando predicciones...");
+
+    predictions.clear();
+
+    await AuthService()
+        .readToken()
+        .then((value) => UserService().getUser(value).then((value) {
+              if (value == null || value.weatherLocations == null) return;
+
+              for (var locationCode in value.weatherLocations!) {
+                getWeather(locationCode);
+              }
+            }));
+
+    PrintHelper.printInfo("Predicciones obtenidas");
+  }
+
+  Future<List<Province>> loadProvinces() async {
+    isProvincesloading = true;
     notifyListeners();
     final url = Uri.https(_baseUrlProvinces, '/api/json/v2/provincias');
     final response = await http.get(url);
@@ -42,7 +60,7 @@ class WeatherService extends ChangeNotifier {
       }
     }
 
-    isloading = false;
+    isProvincesloading = false;
     notifyListeners();
     return provinces;
   }

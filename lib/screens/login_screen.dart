@@ -140,9 +140,13 @@ class _LoginFormState extends State<_LoginForm> {
                       : () async {
                           final authService =
                               Provider.of<AuthService>(context, listen: false);
+                          final userService =
+                              Provider.of<UserService>(context, listen: false);
                           final orchardService = Provider.of<OrchardService>(
                               context,
                               listen: false);
+                          final weatherService =
+                              Provider.of<WeatherService>(context, listen: false);
 
                           FocusScope.of(context).unfocus();
 
@@ -156,6 +160,9 @@ class _LoginFormState extends State<_LoginForm> {
 
                           if (errorMsg == null) {
                             orchardService.loadOrchards();
+                            weatherService.loadLocations();
+                            userService.loadUser();
+
                             Navigator.pushReplacementNamed(context, '/main');
                           } else {
                             ToastHelper.showToast("Datos inválidos");
@@ -175,14 +182,21 @@ class _LoginFormState extends State<_LoginForm> {
                       : () async {
                           final authService =
                               Provider.of<AuthService>(context, listen: false);
+                          final userService =
+                              Provider.of<UserService>(context, listen: false);
                           final orchardService = Provider.of<OrchardService>(
                               context,
                               listen: false);
+                          final weatherService =
+                              Provider.of<WeatherService>(context, listen: false);
+                          
                           Future<User?> user = authService.signInWithGoogle();
                           loginForm.isLoading = true;
                           user.then((value) {
                             if (value != null) {
                               orchardService.loadOrchards();
+                              userService.loadUser();
+                              weatherService.loadLocations();
                               Navigator.pushReplacementNamed(context, '/main');
                             } else {
                               ToastHelper.showToast(

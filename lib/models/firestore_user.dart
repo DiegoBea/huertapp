@@ -6,7 +6,8 @@ class FirestoreUser {
       required this.name,
       required this.email,
       this.devicesTokens,
-      this.photoUrl});
+      this.photoUrl,
+      this.weatherLocations});
 
   // TODO: Cambiar register para añadir name
   String? uid;
@@ -14,8 +15,10 @@ class FirestoreUser {
   String email;
   List<String?>? devicesTokens;
   String? photoUrl;
+  List<String>? weatherLocations;
 
-  factory FirestoreUser.fromJson(String str) => FirestoreUser.fromMap(json.decode(str));
+  factory FirestoreUser.fromJson(String str) =>
+      FirestoreUser.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
@@ -25,6 +28,7 @@ class FirestoreUser {
         email: json["email"],
         devicesTokens: json["devices_tokens"],
         photoUrl: json["photo_url"],
+        weatherLocations: json["weather_locations"]
       );
 
   Map<String, dynamic> toMap() => {
@@ -33,6 +37,7 @@ class FirestoreUser {
         "email": email,
         "devices_tokens": devicesTokens,
         "photo_url": photoUrl,
+        "weather_locations": weatherLocations,
       };
 
   FirestoreUser copy() => FirestoreUser(
@@ -40,5 +45,6 @@ class FirestoreUser {
       name: name,
       email: email,
       devicesTokens: devicesTokens,
-      photoUrl: photoUrl);
+      photoUrl: photoUrl,
+      weatherLocations: weatherLocations);
 }
