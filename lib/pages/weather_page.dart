@@ -11,15 +11,13 @@ class WeatherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final weatherService = Provider.of<WeatherService>(context);
     return Scaffold(
-      body: Container(
-        child: PageView(
-            children: weatherService.predictions.entries
-                .map((e) => _WeatherBody(
-                      prediction: e.value,
-                      weatherService: weatherService,
-                    ))
-                .toList()),
-      ),
+      body: PageView(
+          children: WeatherService.predictions.entries
+              .map((e) => _WeatherBody(
+                    prediction: e.value,
+                    weatherService: weatherService,
+                  ))
+              .toList()),
     );
   }
 }
@@ -42,7 +40,7 @@ class _WeatherBody extends StatelessWidget {
       decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage(
-                  'assets/images/weather/${hourly.isDay ? 'day' : 'night'}.jpg'),
+                  'assets/images/weather/${!hourly.isDay ? 'day' : 'night'}.jpg'),
               fit: BoxFit.cover,
               opacity: 0.9)),
       child: Column(
@@ -109,7 +107,7 @@ class _WeatherBody extends StatelessWidget {
                       .toList()),
             ),
           ),
-          const SizedBox(height: 150),
+          const SizedBox(height: 100),
           const Text('Datos obtenidos de: © AEMET.',
               style: TextStyle(color: Colors.white), textAlign: TextAlign.end),
         ],
@@ -133,19 +131,21 @@ class _DailyPredictionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      width: 130,
+    return Container(
+      margin: const EdgeInsets.all(8),
+      height: 185,
+      width: 150,
       child: Card(
         color: Colors.grey.withOpacity(0.09),
         child: Column(
           children: [
+            const SizedBox(height: 10),
             Text(day,
                 style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white)),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             SizedBox(
                 height: 40,
                 child: Image(
@@ -153,6 +153,7 @@ class _DailyPredictionCard extends StatelessWidget {
                       'assets/images/weather/icons/$skyValue.png'),
                   fit: BoxFit.cover,
                 )),
+                const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -173,15 +174,15 @@ class _DailyPredictionCard extends StatelessWidget {
                         color: Colors.red)),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             SizedBox(
-                height: 40,
+                height: 50,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Image(
-                      image: NetworkImage(
-                          'https://cdn-icons-png.flaticon.com/512/263/263883.png'),
+                      image: AssetImage(
+                          'assets/images/weather/icons/25.png'),
                       fit: BoxFit.cover,
                     ),
                     Text('$precipitation%',
@@ -243,7 +244,7 @@ class _HourCard extends StatelessWidget {
         child: Row(children: [
           SizedBox(
             height: 100,
-            width: 70,
+            width: 80,
             child: Card(
               color: Colors.grey.withOpacity(0.09),
               child: Column(
@@ -263,7 +264,7 @@ class _HourCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                       SizedBox(
-                          height: 20,
+                          height: 25,
                           child: Image(
                             image: AssetImage(
                                 'assets/images/weather/icons/$skyValue.png'),

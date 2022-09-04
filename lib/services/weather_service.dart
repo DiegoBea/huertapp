@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class WeatherService extends ChangeNotifier {
   final List<Province> provinces = [];
-  final Map<String, Map<String, dynamic>> predictions = {};
+  static final Map<String, Map<String, dynamic>> predictions = {};
   final String _baseUrlProvinces = "www.el-tiempo.net";
   final String _baseUrlAemet = "opendata.aemet.es";
   final String _token =
@@ -193,8 +193,10 @@ class WeatherService extends ChangeNotifier {
       case "24n":
         return "Nuboso con lluvia";
       case "25":
+      case "25n":
         return "Cubierto con lluvia";
       case "26":
+      case "26n":
         return "Muy nuboso con lluvia";
       case "33":
       case "33n":
@@ -203,13 +205,16 @@ class WeatherService extends ChangeNotifier {
       case "34n":
         return "Nuboso con nieve";
       case "35":
+      case "35n":
         return "Muy nuboso con nieve";
       case "36":
+      case "36n":
         return "Cubierto con nieve";
       case "43":
       case "43n":
         return "Intervalos nubosos con lluvia escasa";
       case "46":
+      case "46n":
         return "Cubierto con lluvia escasa";
       case "51":
       case "51n":
@@ -218,8 +223,10 @@ class WeatherService extends ChangeNotifier {
       case "52n":
         return "Nuboso con tormenta";
       case "53":
+      case "53n":
         return "Muy nuboso con tormenta";
       case "54":
+      case "54n":
         return "Cubierto con tormenta";
       case "61":
       case "61n":
@@ -228,8 +235,10 @@ class WeatherService extends ChangeNotifier {
       case "62n":
         return "Nuboso con tormenta y lluvia escasa";
       case "63":
+      case "63n":
         return "Muy nuboso con tormenta y lluvia escasa";
       case "64":
+      case "64n":
         return "Cubierto con tormenta y lluvia escasa";
       case "71":
       case "71n":
@@ -238,14 +247,19 @@ class WeatherService extends ChangeNotifier {
       case "72n":
         return "Nubosos con nieve escasa";
       case "73":
+      case "73n":
         return "Muy nuboso con nieve escasa";
       case "74":
+      case "74n":
         return "Cubierto con nieve escasa";
       case "81":
+      case "81n":
         return "Niebla";
       case "82":
+      case "82n":
         return "Bruma";
       case "83":
+      case "83n":
         return "Niebla";
       default:
         return "despejado";
