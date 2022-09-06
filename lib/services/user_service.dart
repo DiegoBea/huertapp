@@ -73,6 +73,7 @@ class UserService extends ChangeNotifier {
           "name": user.name,
           "photo_url": user.photoUrl,
           "devices_tokens": user.devicesTokens,
+          "weather_locations": user.weatherLocations,
         });
       }
     });

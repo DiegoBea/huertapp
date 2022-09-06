@@ -26,8 +26,7 @@ class NotificationService extends ChangeNotifier {
     ToastHelper.showToast("Message ID: ${message.messageId}");
   }
 
-  // TODO: Revisar bug al editar notificaciones
-  Future<DateTime> _getNextWatering(DateTime sownDate, int interval) async {
+  DateTime nextWatering(DateTime sownDate, int interval) {
     DateTime now = DateTime.now();
     int difference = now.difference(sownDate).inDays;
     int wateredCount = difference ~/ interval;
@@ -90,7 +89,7 @@ class NotificationService extends ChangeNotifier {
         nextWatering: relation.wateringNotification &&
                 relation.wateringIntervalDays != null &&
                 relation.wateringIntervalDays != 0
-            ? formatter.format(await _getNextWatering(
+            ? formatter.format(nextWatering(
                 relation.sownDate, relation.wateringIntervalDays!))
             : null);
 

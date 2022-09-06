@@ -24,7 +24,6 @@ class OrchardCropRelation {
   bool wateringNotification;
   int? wateringIntervalDays;
 
-  // TODO: Utilizar int o datetime?
   int? transplantDays;
   bool transplantNotification;
 

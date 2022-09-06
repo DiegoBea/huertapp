@@ -70,33 +70,32 @@ class _OrchardFormBody extends StatelessWidget {
                     color: Colors.white,
                   )
                 : const Icon(FontAwesomeIcons.save)),
-        body: SafeArea(
-            child: orchardService.selectedImageUrl != null
-                ? CustomScrollView(
-                    slivers: [
-                      SliverAppBar(
-                        backgroundColor: AppTheme.primary,
-                        flexibleSpace: FlexibleSpaceBar(
-                            background: FadeInImage(
-                          placeholder:
-                              const AssetImage('assets/videos/loading.gif'),
-                          image: NetworkImage(orchardService.selectedImageUrl!),
-                          fit: BoxFit.cover,
-                        )),
-                        expandedHeight: 200,
-                        floating: false,
-                        pinned: true,
-                      ),
-                      SliverList(
-                          delegate: SliverChildListDelegate([
-                        _OrchardForm(orchard: orchardService.selectedOrchard)
-                      ])),
-                    ],
-                  )
-                : SingleChildScrollView(
-                    child:
-                        _OrchardForm(orchard: orchardService.selectedOrchard),
-                  )));
+        body: orchardService.selectedImageUrl != null
+            ? CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: AppTheme.primary,
+                    flexibleSpace: FlexibleSpaceBar(
+                        background: FadeInImage(
+                      placeholder:
+                          const AssetImage('assets/videos/loading.gif'),
+                      image: NetworkImage(orchardService.selectedImageUrl!),
+                      fit: BoxFit.cover,
+                    )),
+                    expandedHeight: 200,
+                    floating: false,
+                    pinned: true,
+                  ),
+                  SliverList(
+                      delegate: SliverChildListDelegate([
+                    _OrchardForm(orchard: orchardService.selectedOrchard)
+                  ])),
+                ],
+              )
+            : SingleChildScrollView(
+                child:
+                    _OrchardForm(orchard: orchardService.selectedOrchard),
+              ));
   }
 }
 
@@ -178,7 +177,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                           'Lista de cultivos',
                           style: AppTheme.title2,
                         ),
-                        _AddCropButton(context, cropsService, screenSize,
+                        _addCropButton(context, cropsService, screenSize,
                             orchardCropRelations, orchard),
                       ],
                     ),
@@ -424,7 +423,7 @@ class _OrchardFormState extends State<_OrchardForm> {
     );
   }
 
-  MaterialButton _AddCropButton(
+  MaterialButton _addCropButton(
       BuildContext context,
       CropsService cropsService,
       Size screenSize,

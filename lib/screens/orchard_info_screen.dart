@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
+import 'package:huertapp/services/crops_service.dart';
+import 'package:huertapp/services/notification_service.dart';
+import 'package:huertapp/services/orchards_service.dart';
 import 'package:huertapp/themes/app_theme.dart';
+import 'package:huertapp/widgets/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class OrchardInfoScreen extends StatelessWidget {
   const OrchardInfoScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final Orchard orchard = ModalRoute.of(context)!.settings.arguments as Orchard;
+    final Orchard orchard =
+        ModalRoute.of(context)!.settings.arguments as Orchard;
+    final orchardService = Provider.of<OrchardService>(context);
+    final relations = orchardService.relations;
     PrintHelper.printValue("${orchard.toMap()}");
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: orchard.imageUrl == null ? AppBar(
-          title: Text(orchard.name),
-          backgroundColor: AppTheme.primary,
-        ) : null,
-        body: orchard.imageUrl == null ? Padding(
-          padding: const EdgeInsets.all(15),
-          child: _InfoColumn(orchard: orchard),
-        ) : _InfoWithImage(orchard: orchard));
+        appBar: orchard.imageUrl == null
+            ? AppBar(
+                title: Text(orchard.name),
+                backgroundColor: AppTheme.primary,
+              )
+            : null,
+        body: orchard.imageUrl == null
+            ? Padding(
+                padding: const EdgeInsets.all(15),
+                child: _InfoColumn(orchard: orchard),
+              )
+            : _InfoWithImage(orchard: orchard));
   }
 }
 
@@ -58,89 +71,82 @@ class _InfoColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orchardService = Provider.of<OrchardService>(context);
+    final cropsService = Provider.of<CropsService>(context);
+    final orchardNotification = NotificationService();
     return Column(
       children: [
-        _InfoCard(title: 'Información general', rows: [
-          _InfoRow(
-              title: 'Nombre',
-              image: 'assets/images/icons/name.png',
-              value: orchard.name),
-              if (orchard.description != null)
-          _InfoRow(
-              title: 'Descripción',
-              image: 'assets/images/icons/description.png',
-              value: orchard.description!),
+        InfoCard(title: 'Información general', rows: [
+          InfoRow(
+              title: Text(
+                'Nombre',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              image: const Image(
+                  image: AssetImage('assets/images/icons/name.png')),
+              value: Text(orchard.name)),
+          if (orchard.description != null)
+            InfoRow(
+                title: Text(
+                  'Descripción',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                image: const Image(
+                    image: AssetImage('assets/images/icons/description.png')),
+                value: Text(orchard.description!)),
         ]),
         const SizedBox(
           height: 10,
+        ),
+        InfoCard(
+          title: 'Cultivos',
+          rows: orchardService.relations.where((element) => element.orchardUid == orchard.uid).toList().asMap().entries.map((e) {
+            Crop crop = cropsService.crops
+                .firstWhere((element) => element.uid == e.value.cropUid);
+
+            OrchardNotification notification =
+                OrchardNotification(relationUid: e.value.uid!, uid: '');
+
+            DateFormat formatter = DateFormat("dd/MM/yyyy");
+            notification.dateGermination = formatter.format(
+                e.value.sownDate.add(Duration(days: e.value.germinationDays)));
+            notification.dateHarvest = formatter.format(
+                e.value.sownDate.add(Duration(days: e.value.harvestDays)));
+            if (e.value.transplantDays != null) {
+              notification.dateTransplant = formatter.format(e.value.sownDate
+                  .add(Duration(days: e.value.transplantDays!)));
+            }
+            if (e.value.wateringIntervalDays != null) {
+              notification.nextWatering = formatter.format(
+                  orchardNotification.nextWatering(
+                      e.value.sownDate, e.value.wateringIntervalDays!));
+            }
+            // TODO: Convertir en FadeInImage
+            return InfoRow(
+              image:
+                  Image(image: NetworkImage(crop.iconUrl), fit: BoxFit.cover),
+              title: Text(crop.name),
+              value: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Fecha de germinación: ${notification.dateGermination}"),
+                  Text("Fecha de recogida: ${notification.dateHarvest}"),
+                  if (notification.dateTransplant != null)
+                    Text(
+                        "Fecha de transplante: ${notification.dateTransplant}"),
+                  if (notification.nextWatering != null &&
+                      notification.nextWatering!.isNotEmpty)
+                    Text(
+                        'Fecha siguiente regado: ${notification.nextWatering}'),
+                ],
+              ),
+            );
+          }).toList(),
         ),
         const SizedBox(
           height: 10,
         ),
       ],
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final String title;
-  final List<_InfoRow> rows;
-
-  const _InfoCard({
-    Key? key,
-    required this.title,
-    required this.rows,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        elevation: 15,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              for (_InfoRow row in rows)
-                Column(
-                  children: [
-                    const Divider(thickness: 1),
-                    row,
-                  ],
-                ),
-            ],
-          ),
-        ));
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String image;
-  final String title;
-  final String value;
-
-  const _InfoRow({
-    Key? key,
-    required this.image,
-    required this.title,
-    required this.value,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      trailing: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          child: Image(image: AssetImage(image))),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      subtitle: Text(value),
     );
   }
 }
@@ -162,10 +168,9 @@ class _Image extends StatelessWidget {
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         background: FadeInImage(
-                placeholder: const AssetImage('assets/videos/loading.gif'),
-                image: NetworkImage(orchard.imageUrl!),
-                fit: BoxFit.fill)
-            ,
+            placeholder: const AssetImage('assets/videos/loading.gif'),
+            image: NetworkImage(orchard.imageUrl!),
+            fit: BoxFit.fill),
       ),
     );
   }
