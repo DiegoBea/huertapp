@@ -41,7 +41,8 @@ class NotificationService extends ChangeNotifier {
 
   bool _isFutureDate(DateTime date) {
     DateTime now = DateTime.now();
-    return now.difference(date).inDays > 0;
+    var result = date.difference(now).inDays >= 0;
+    return result;
   }
 
   NotificationService() {
@@ -72,25 +73,28 @@ class NotificationService extends ChangeNotifier {
     OrchardNotification orchardNotification = OrchardNotification(
         uid: const Uuid().v1(),
         relationUid: relation.uid!,
-        dateHarvest: relation.harvestNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.harvestDays)))
-            ? formatter.format(
-                relation.sownDate.add(Duration(days: relation.harvestDays)))
-            : null,
-        dateGermination: relation.germinationNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.germinationDays)))
-            ? formatter.format(
-                relation.sownDate.add(Duration(days: relation.germinationDays)))
-            : null,
+        dateHarvest:
+            relation.harvestNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.harvestDays)))
+                ? formatter.format(
+                    relation.sownDate.add(Duration(days: relation.harvestDays)))
+                : null,
+        dateGermination:
+            relation.germinationNotification && _isFutureDate(relation.sownDate.add(Duration(days: relation.germinationDays)))
+                ? formatter.format(relation.sownDate
+                    .add(Duration(days: relation.germinationDays)))
+                : null,
         // En principio, si se puede activar la notificación de transplante, los días de transplante no son nulos
-        dateTransplant: relation.transplantNotification && 
-                relation.transplantDays != null && _isFutureDate(relation.sownDate.add(Duration(days: relation.transplantDays!)))
+        dateTransplant: relation.transplantNotification &&
+                relation.transplantDays != null &&
+                _isFutureDate(relation.sownDate
+                    .add(Duration(days: relation.transplantDays!)))
             ? formatter.format(
                 relation.sownDate.add(Duration(days: relation.transplantDays!)))
             : null,
         nextWatering: relation.wateringNotification &&
                 relation.wateringIntervalDays != null &&
                 relation.wateringIntervalDays != 0
-            ? formatter.format(nextWatering(
-                relation.sownDate, relation.wateringIntervalDays!))
+            ? formatter.format(nextWatering(relation.sownDate, relation.wateringIntervalDays!))
             : null);
 
     await getNotification(relation.uid!).then((notification) async {
