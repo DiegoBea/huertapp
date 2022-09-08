@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -11,6 +12,9 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
   ]); // Bloquear rotación de pantalla
+
+  // Cargar las sharedPreferences
+  await Preferences.init();
 
   await Firebase.initializeApp(); // Iniciar Firebase
   NotificationService();
@@ -28,8 +32,14 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CropsService()),
         ChangeNotifierProvider(create: (_) => OrchardService()),
         ChangeNotifierProvider(create: (_) => ImageService()),
-        ChangeNotifierProvider(create: (_) => WeatherService(), lazy: false,),
-        ChangeNotifierProvider(create: (_) => UserService(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (_) => WeatherService(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UserService(),
+          lazy: false,
+        ),
       ],
       child: const MyApp(),
     );

@@ -4,6 +4,7 @@ import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     final weatherService = Provider.of<WeatherService>(context);
     final userService = Provider.of<UserService>(context);
+    final List<Province> lstProvinces = Preferences.provinces;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -74,7 +76,7 @@ class _ProvinceDialog extends StatelessWidget {
         height: 300,
         child: SingleChildScrollView(
           child: Column(
-            children: weatherService.provinces
+            children: Preferences.provinces
                 .map((e) => CardItem(
                       title: e.provinceName,
                       onTap: () {

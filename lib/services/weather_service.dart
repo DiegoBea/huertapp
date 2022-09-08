@@ -5,9 +5,10 @@ import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 
 class WeatherService extends ChangeNotifier {
-  final List<Province> provinces = [];
+  List<Province> lstProvinces = [];
   static final Map<String, Map<String, dynamic>> predictions = {};
   final String _baseUrlProvinces = "www.el-tiempo.net";
   final String _baseUrlAemet = "opendata.aemet.es";
@@ -18,7 +19,9 @@ class WeatherService extends ChangeNotifier {
   bool isPredictionsLoading = false;
 
   WeatherService() {
-    loadProvinces();
+    if (Preferences.provinces.isEmpty) {
+      loadProvinces();
+    }
     loadLocations();
   }
 
@@ -54,15 +57,17 @@ class WeatherService extends ChangeNotifier {
           await getTownships(tmpProvince.provCod).then((value) {
             tmpProvince.townships.addAll(value);
           });
-          provinces.add(tmpProvince);
+          lstProvinces.add(tmpProvince);
           PrintHelper.printValue(tmpProvince.toJson());
         }
       }
     }
 
+    Preferences.provinces = lstProvinces;
+
     isProvincesloading = false;
     notifyListeners();
-    return provinces;
+    return lstProvinces;
   }
 
   Future<List<Township>> getTownships(String provinceCode) async {
