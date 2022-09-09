@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/orchard_form_provider.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
@@ -45,7 +46,7 @@ class _OrchardFormBody extends StatelessWidget {
     return Scaffold(
         appBar: orchardService.selectedImageUrl == null
             ? AppBar(
-                backgroundColor: AppTheme.primary,
+                backgroundColor: ThemeProvider.primary,
                 title: Text(orchardService.isEditing
                     ? 'Editar ${orchardService.selectedOrchard.name}'
                     : 'Añadir'),
@@ -64,7 +65,7 @@ class _OrchardFormBody extends StatelessWidget {
                             : null);
                     Navigator.of(context).pop();
                   },
-            backgroundColor: AppTheme.primary,
+            backgroundColor: ThemeProvider.primary,
             child: orchardService.isSaving
                 ? const CircularProgressIndicator(
                     color: Colors.white,
@@ -74,7 +75,7 @@ class _OrchardFormBody extends StatelessWidget {
             ? CustomScrollView(
                 slivers: [
                   SliverAppBar(
-                    backgroundColor: AppTheme.primary,
+                    backgroundColor: ThemeProvider.primary,
                     flexibleSpace: FlexibleSpaceBar(
                         background: FadeInImage(
                       placeholder:
@@ -186,7 +187,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                   Container(
                     constraints: const BoxConstraints(maxHeight: 325),
                     decoration: BoxDecoration(
-                        border: Border.all(color: AppTheme.primary, width: 2),
+                        border: Border.all(color: ThemeProvider.primary, width: 2),
                         borderRadius: BorderRadius.circular(15)),
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -196,8 +197,8 @@ class _OrchardFormState extends State<_OrchardForm> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
                         child: ExpansionTile(
-                            textColor: AppTheme.primary,
-                            iconColor: AppTheme.primary,
+                            textColor: ThemeProvider.primary,
+                            iconColor: ThemeProvider.primary,
                             title: ListTile(
                                 trailing: IconButton(
                                     onPressed: () {
@@ -318,7 +319,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                       Text('Fecha de sembrado: ${DateFormat("dd/MM/yy").format(orchardCropRelations[index].sownDate)}'),
                                       Icon(
                                         FontAwesomeIcons.calendarAlt,
-                                        color: AppTheme.primary,
+                                        color: ThemeProvider.primary,
                                       ),
                                     ],
                                   )),
@@ -342,7 +343,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                             .germinationNotification = value;
                                         setState(() {});
                                       },
-                                      activeColor: AppTheme.primary),
+                                      activeColor: ThemeProvider.primary),
                                 ],
                               ),
                               if (cropsService
@@ -366,7 +367,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                               .wateringNotification = value;
                                           setState(() {});
                                         },
-                                        activeColor: AppTheme.primary),
+                                        activeColor: ThemeProvider.primary),
                                   ],
                                 ),
                               if (cropsService
@@ -390,7 +391,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                               .transplantNotification = value;
                                           setState(() {});
                                         },
-                                        activeColor: AppTheme.primary),
+                                        activeColor: ThemeProvider.primary),
                                   ],
                                 ),
                               Row(
@@ -409,7 +410,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                             .harvestNotification = value;
                                         setState(() {});
                                       },
-                                      activeColor: AppTheme.primary),
+                                      activeColor: ThemeProvider.primary),
                                 ],
                               ),
                             ]),
@@ -430,7 +431,7 @@ class _OrchardFormState extends State<_OrchardForm> {
       List<OrchardCropRelation> orchardCropRelations,
       Orchard orchard) {
     return MaterialButton(
-      color: AppTheme.primary,
+      color: ThemeProvider.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),

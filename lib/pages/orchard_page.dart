@@ -5,8 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/orchard.dart';
 import 'package:huertapp/models/orchard_crop_relation.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +35,12 @@ class OrchardPage extends StatelessWidget {
             orchardService.selectedRelations = [];
             Navigator.pushNamed(context, '/orchardForm');
           },
-          backgroundColor: Colors.white,
+          backgroundColor: ThemeProvider.withoutColor,
           child: Icon(
             Icons.add,
-            color: AppTheme.primary,
+            color: ThemeProvider.primary,
           )),
-      backgroundColor: AppTheme.primary,
+      backgroundColor: ThemeProvider.primary,
       body: Container(
         margin: const EdgeInsets.all(10),
         child: ListView(
@@ -48,9 +50,9 @@ class OrchardPage extends StatelessWidget {
                 menuWidth: MediaQuery.of(context).size.width * 0.50,
                 blurSize: 5.0,
                 menuItemExtent: 45,
-                menuBoxDecoration: const BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                menuBoxDecoration: BoxDecoration(
+                    color: ThemeProvider.withoutColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(25.0))),
                 duration: const Duration(milliseconds: 300),
                 animateMenuItems: true,
                 blurBackgroundColor: Colors.black54,
@@ -59,18 +61,20 @@ class OrchardPage extends StatelessWidget {
                 bottomOffsetHeight: 80.0,
                 menuItems: [
                   FocusedMenuItem(
-                      title: const Text("Información"),
+                      backgroundColor: ThemeProvider.withoutColor,
+                      title: Text("Información", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black)),
                       trailingIcon:
-                          Icon(FontAwesomeIcons.info, color: AppTheme.primary),
+                          Icon(FontAwesomeIcons.info, color: ThemeProvider.primary),
                       onPressed: () {
                         Navigator.pushNamed(context, '/orchardInfo',
                             arguments: orchard);
                       }),
                   if (orchard.owner)
                     FocusedMenuItem(
-                        title: const Text("Editar"),
+                      backgroundColor: ThemeProvider.withoutColor,
+                        title: Text("Editar", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black),),
                         trailingIcon: Icon(FontAwesomeIcons.edit,
-                            color: AppTheme.primary),
+                            color: ThemeProvider.primary),
                         onPressed: () {
                           List<OrchardCropRelation> relations = orchardService
                               .relations
@@ -86,15 +90,17 @@ class OrchardPage extends StatelessWidget {
                         }),
                   if (orchard.owner)
                     FocusedMenuItem(
-                        title: const Text("Compartir"),
+                      backgroundColor: ThemeProvider.withoutColor,
+                        title: Text("Compartir", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black),),
                         trailingIcon: Icon(
                           Icons.share,
-                          color: AppTheme.primary,
+                          color: ThemeProvider.primary,
                         ),
                         onPressed: () {
                           PrintHelper.printInfo("TODO: Añadir shareView");
                         }),
                   FocusedMenuItem(
+                      backgroundColor: ThemeProvider.withoutColor,
                       title: const Text(
                         "Eliminar",
                         style: TextStyle(color: Colors.redAccent),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/themes/app_theme.dart';
 
 class CardItem extends StatelessWidget {
@@ -80,9 +81,9 @@ class _CardWithImage extends StatelessWidget {
                 left: 7.2,
                 right: 7,
                 child: Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                        color: ThemeProvider.withoutColor,
+                        borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(25),
                             bottomRight: Radius.circular(25))),
                     child: ListTile(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/themes/app_theme.dart';
 
 class InputDecorations {
@@ -8,12 +9,12 @@ class InputDecorations {
     return InputDecoration(
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: AppTheme.primary,
+            color: ThemeProvider.primary,
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide:
-              BorderSide(color: AppTheme.primary, width: 2),
+              BorderSide(color: ThemeProvider.primary, width: 2),
         ),
         hintText: hintText,
         labelText: labelText,
@@ -21,7 +22,7 @@ class InputDecorations {
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon != null ?  Icon(
           prefixIcon,
-          color: AppTheme.primary,
+          color: ThemeProvider.primary,
         ) : null);
   }
 
@@ -33,10 +34,10 @@ class InputDecorations {
       required bool isRequired}) {
     return InputDecoration(
       enabledBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: AppTheme.primary)),
+          UnderlineInputBorder(borderSide: BorderSide(color: ThemeProvider.primary)),
       focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.primary, width: 2)),
-          labelStyle: TextStyle(color: AppTheme.primary),
+          borderSide: BorderSide(color: ThemeProvider.primary, width: 2)),
+          labelStyle: TextStyle(color: ThemeProvider.primary),
       hintText: hintText,
       labelText: labelText,
       prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
@@ -44,7 +45,7 @@ class InputDecorations {
       suffix: isRequired
           ? Icon(
               FontAwesomeIcons.asterisk,
-              color: AppTheme.primary,
+              color: ThemeProvider.primary,
               size: 15,
             )
           : null,

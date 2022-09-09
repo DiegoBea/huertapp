@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
@@ -22,7 +24,9 @@ class LoginScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
-        body: AuthBackground(
+        body: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
             child: SingleChildScrollView(
           child: Column(
             children: [
@@ -120,7 +124,7 @@ class _LoginFormState extends State<_LoginForm> {
                         hidePassword = !hidePassword;
                         setState(() {});
                       },
-                      color: AppTheme.primary,
+                      color: ThemeProvider.primary,
                       icon: Icon(hidePassword
                           ? Icons.visibility
                           : Icons.visibility_off))),

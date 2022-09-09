@@ -21,7 +21,9 @@ class RegisterScreen extends StatelessWidget {
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: AuthBackground(
+        body: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
             child: SingleChildScrollView(
           child: Column(
             children: [

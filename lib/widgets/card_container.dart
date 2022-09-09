@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 
 class CardContainer extends StatelessWidget {
   final Widget child;
@@ -19,7 +20,7 @@ class CardContainer extends StatelessWidget {
   }
 
   BoxDecoration _createCardShape() => BoxDecoration(
-          color: Colors.white,
+          color: ThemeProvider.withoutColor,
           borderRadius: BorderRadius.circular(25),
           boxShadow: const [
             BoxShadow(

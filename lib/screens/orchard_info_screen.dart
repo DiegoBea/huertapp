@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/crops_service.dart';
 import 'package:huertapp/services/notification_service.dart';
 import 'package:huertapp/services/orchards_service.dart';
@@ -16,15 +17,12 @@ class OrchardInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Orchard orchard =
         ModalRoute.of(context)!.settings.arguments as Orchard;
-    final orchardService = Provider.of<OrchardService>(context);
-    final relations = orchardService.relations;
     PrintHelper.printValue("${orchard.toMap()}");
     return Scaffold(
-        backgroundColor: Colors.white,
         appBar: orchard.imageUrl == null
             ? AppBar(
                 title: Text(orchard.name),
-                backgroundColor: AppTheme.primary,
+                backgroundColor: ThemeProvider.primary,
               )
             : null,
         body: orchard.imageUrl == null
@@ -162,7 +160,7 @@ class _Image extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: AppTheme.primary,
+      backgroundColor: ThemeProvider.primary,
       expandedHeight: 200,
       floating: false,
       pinned: true,

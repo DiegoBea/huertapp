@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/themes/app_theme.dart';
 
 class NoLocationsScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class NoLocationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.primary,
+      backgroundColor: ThemeProvider.primary,
       body:Center(
          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/shared_preferences/preferences.dart';
-import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +21,6 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     final weatherService = Provider.of<WeatherService>(context);
     final userService = Provider.of<UserService>(context);
-    final List<Province> lstProvinces = Preferences.provinces;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -32,10 +31,10 @@ class _WeatherPageState extends State<WeatherPage> {
           },
           backgroundColor: Colors.white,
           child: weatherService.isProvincesloading
-              ? CircularProgressIndicator(color: AppTheme.primary)
+              ? CircularProgressIndicator(color: ThemeProvider.primary)
               : Icon(
                   Icons.add,
-                  color: AppTheme.primary,
+                  color: ThemeProvider.primary,
                 )),
       body: weatherService.isloading
           ? const LoadingScreen()

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/models/firestore_user.dart';
+import 'package:huertapp/providers/theme_provider.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
@@ -18,9 +20,10 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     FirestoreUser user = UserService.user!.copy();
+    final ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.primary,
+      backgroundColor: ThemeProvider.primary,
       body: SafeArea(
         child: SizedBox(
           height: double.infinity,
@@ -66,9 +69,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         value: Preferences.isDarkMode,
                         onChanged: (value) {
                           Preferences.isDarkMode = value;
+
+                          value ? themeProvider.setDarkMode() : themeProvider.setLightMode();
+
                           setState(() {});
                         },
-                        activeColor: AppTheme.primary,
+                        activeColor: ThemeProvider.primary,
                       )
                     ],
                   ),

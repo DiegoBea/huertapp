@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:huertapp/pages/pages.dart';
-import 'package:huertapp/services/services.dart';
-import 'package:huertapp/themes/app_theme.dart';
-import 'package:provider/provider.dart';
+import 'package:huertapp/providers/theme_provider.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Preferences.isDarkMode ? Colors.black45 : Colors.white,
           boxShadow: [
             BoxShadow(
               blurRadius: 20,
@@ -42,31 +42,31 @@ class _MainScreenState extends State<MainScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
-              rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
+              rippleColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[200]!,
+              hoverColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[100]!,
               gap: 8,
-              activeColor: Colors.green,
+              activeColor: Preferences.isDarkMode ? Colors.green.shade700 : Colors.green,
               iconSize: 24,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: AppTheme.primary,
-              tabs: const [
+              tabBackgroundColor: Preferences.isDarkMode ? Colors.grey[500]! : Colors.grey[100]!,
+              color: ThemeProvider.primary,
+              tabs: [
                 GButton(
                   icon: FontAwesomeIcons.carrot,
-                  text: 'Cultivos',
+                  text: translate('gnav.crops'),
                 ),
                 GButton(
                   icon: FontAwesomeIcons.seedling,
-                  text: 'Huertos',
+                  text: translate('gnav.orchards')
                 ),
                 GButton(
                   icon: FontAwesomeIcons.cloudSun,
-                  text: 'Tiempo',
+                  text: translate('gnav.weather')
                 ),
                 GButton(
                   icon: FontAwesomeIcons.cog,
-                  text: 'Ajustes',
+                  text: translate('gnav.settings')
                 ),
               ],
               selectedIndex: _selectedIndex,
@@ -79,18 +79,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      // body: Center(
-      //   child: MaterialButton(
-      //       onPressed: () async {
-      //         final authService =
-      //             Provider.of<AuthService>(context, listen: false);
-
-      //         await authService.logOut();
-
-      //         Navigator.pushReplacementNamed(context, '/login');
-      //       },
-      //       child: const Text('Log out')),
-      // ),
     );
   }
 }

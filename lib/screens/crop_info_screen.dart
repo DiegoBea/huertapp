@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
-import 'package:huertapp/themes/app_theme.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/widgets/widgets.dart';
 
 class CropInfoScreen extends StatelessWidget {
@@ -12,7 +12,6 @@ class CropInfoScreen extends StatelessWidget {
     final Crop crop = ModalRoute.of(context)!.settings.arguments as Crop;
     PrintHelper.printValue("${crop.toMap()}");
     return Scaffold(
-        backgroundColor: Colors.white,
         body: CustomScrollView(
           slivers: [
             _Image(crop: crop),
@@ -153,7 +152,7 @@ class _Image extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: AppTheme.primary,
+      backgroundColor: ThemeProvider.primary,
       expandedHeight: 200,
       floating: false,
       pinned: true,

@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_translate/flutter_translate.dart';
+import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/shared_preferences/preferences.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -16,9 +19,15 @@ void main() async {
   // Cargar las sharedPreferences
   await Preferences.init();
 
+  // Inicializar i18n
+  var delegate = await LocalizationDelegate.create(
+      fallbackLocale: 'es', supportedLocales: ['es']);
+
+  initializeDateFormatting('es');
+
   await Firebase.initializeApp(); // Iniciar Firebase
   NotificationService();
-  runApp(const AppState());
+  runApp(LocalizedApp(delegate, const AppState()));
 }
 
 class AppState extends StatelessWidget {
@@ -40,6 +49,7 @@ class AppState extends StatelessWidget {
           create: (_) => UserService(),
           lazy: false,
         ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider(isDarkMode: Preferences.isDarkMode))
       ],
       child: const MyApp(),
     );
@@ -69,6 +79,7 @@ class _MyAppState extends State<MyApp> {
         '/orchardForm': (_) => const OrchardFormScreen(),
         '/orchardInfo': (_) => const OrchardInfoScreen(),
       },
+      theme: Provider.of<ThemeProvider>(context).currentTheme,
     );
   }
 }
