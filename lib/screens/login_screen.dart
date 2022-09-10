@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
 import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
-import 'package:huertapp/shared_preferences/preferences.dart';
-import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +35,7 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 10),
                     Text(
-                      'Iniciar sesión',
+                      translate('titles.login'),
                       style: Theme.of(context).textTheme.headline4,
                     ),
                     const SizedBox(height: 30),
@@ -57,9 +56,9 @@ class LoginScreen extends StatelessWidget {
                     overlayColor: MaterialStateProperty.all(
                         Colors.greenAccent.withOpacity(0.1)),
                     shape: MaterialStateProperty.all(const StadiumBorder())),
-                child: const Text(
-                  'Crear nueva cuenta',
-                  style: TextStyle(
+                child: Text(
+                  translate('titles.createNewAccount'),
+                  style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
@@ -96,8 +95,8 @@ class _LoginFormState extends State<_LoginForm> {
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecorations.authInputDecorations(
-                  hintText: 'usuario@email.com',
-                  labelText: 'Correo electrónico',
+                  hintText: 'demo@email.com',
+                  labelText: translate('titles.email'),
                   prefixIcon: Icons.alternate_email),
               onChanged: (value) => loginForm.email = value,
               validator: (value) {
@@ -108,7 +107,8 @@ class _LoginFormState extends State<_LoginForm> {
 
                 return regExp.hasMatch(value ?? '')
                     ? null
-                    : 'Formato de email inválido';
+                    : translate(
+                        'validation.emailFormat');
               },
             ),
             const SizedBox(height: 30),
@@ -117,7 +117,7 @@ class _LoginFormState extends State<_LoginForm> {
               obscureText: hidePassword,
               decoration: InputDecorations.authInputDecorations(
                   hintText: '******',
-                  labelText: 'Contraseña',
+                  labelText: translate('titles.password'),
                   prefixIcon: Icons.lock,
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -131,14 +131,14 @@ class _LoginFormState extends State<_LoginForm> {
               onChanged: (value) => loginForm.password = value,
               validator: (value) {
                 if (value != null && value.length >= 8) return null;
-                return 'La contraseña debe tener 8 caracteres';
+                return translate('feedback.minChars', args: {"value": 8}); // 'La contraseña debe tener 8 caracteres'
               },
             ),
             const SizedBox(height: 30),
             SizedBox(
               width: 270,
               child: SignInButton(Buttons.Email,
-                  text: 'Iniciar sesión con Email',
+                  text: translate('titles.loginWithEmail'),
                   onPressed: loginForm.isLoading
                       ? () {}
                       : () async {
@@ -169,7 +169,7 @@ class _LoginFormState extends State<_LoginForm> {
 
                             Navigator.pushReplacementNamed(context, '/main');
                           } else {
-                            ToastHelper.showToast("Datos inválidos");
+                            ToastHelper.showToast(translate('feedback.wrongData'));
                             print(errorMsg);
                             loginForm.isLoading = false;
                           }
@@ -180,7 +180,7 @@ class _LoginFormState extends State<_LoginForm> {
             SizedBox(
               width: 270,
               child: SignInButton(Buttons.Google,
-                  text: 'Iniciar sesión con google',
+                  text: translate('titles.loginWithGoogle'),
                   onPressed: loginForm.isLoading
                       ? () {}
                       : () async {

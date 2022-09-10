@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cross_file_image/cross_file_image.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
@@ -48,8 +49,9 @@ class _OrchardFormBody extends StatelessWidget {
             ? AppBar(
                 backgroundColor: ThemeProvider.primary,
                 title: Text(orchardService.isEditing
-                    ? 'Editar ${orchardService.selectedOrchard.name}'
-                    : 'Añadir'),
+                    ? translate('feedback.edit',
+                        args: {"name": orchardService.selectedOrchard.name})
+                    : translate('titles.add')),
               )
             : null,
         floatingActionButton: FloatingActionButton(
@@ -94,8 +96,7 @@ class _OrchardFormBody extends StatelessWidget {
                 ],
               )
             : SingleChildScrollView(
-                child:
-                    _OrchardForm(orchard: orchardService.selectedOrchard),
+                child: _OrchardForm(orchard: orchardService.selectedOrchard),
               ));
   }
 }
@@ -146,7 +147,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Imagen',
+                          translate('titles.image'),
                           style: AppTheme.title2,
                         ),
                         IconButton(
@@ -175,7 +176,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Lista de cultivos',
+                          translate('titles.cropList'),
                           style: AppTheme.title2,
                         ),
                         _addCropButton(context, cropsService, screenSize,
@@ -187,7 +188,8 @@ class _OrchardFormState extends State<_OrchardForm> {
                   Container(
                     constraints: const BoxConstraints(maxHeight: 325),
                     decoration: BoxDecoration(
-                        border: Border.all(color: ThemeProvider.primary, width: 2),
+                        border:
+                            Border.all(color: ThemeProvider.primary, width: 2),
                         borderRadius: BorderRadius.circular(15)),
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -211,25 +213,28 @@ class _OrchardFormState extends State<_OrchardForm> {
                                                             25)),
                                                 scrollable: true,
                                                 elevation: 5,
-                                                content: const Text(
-                                                    '¿Deseas eliminar este cultivo?',
-                                                    style: TextStyle(
+                                                content: Text(
+                                                    translate('crop.remove'),
+                                                    style: const TextStyle(
                                                         fontSize: 15)),
-                                                title: const Center(
-                                                    child: Text(
-                                                        'Eliminar cultivo')),
+                                                title: Center(
+                                                    child: Text(translate(
+                                                        'crop.removeTitle'))),
                                                 actions: [
                                                   MaterialButton(
                                                     onPressed: () {
                                                       orchardService
                                                           .deleteRelation(
                                                               orchardCropRelations[
-                                                                  index].uid ?? '');
+                                                                          index]
+                                                                      .uid ??
+                                                                  '');
                                                       orchardService.relations
                                                           .removeWhere((element) =>
                                                               element.uid ==
                                                               orchardCropRelations[
-                                                                  index].uid);
+                                                                      index]
+                                                                  .uid);
                                                       orchardCropRelations
                                                           .removeAt(index);
                                                       setState(() {});
@@ -242,9 +247,10 @@ class _OrchardFormState extends State<_OrchardForm> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         15)),
-                                                    child: const Text(
-                                                        'Eliminar',
-                                                        style: TextStyle(
+                                                    child: Text(
+                                                        translate(
+                                                            'titles.delete'),
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.white)),
                                                   ),
@@ -259,9 +265,10 @@ class _OrchardFormState extends State<_OrchardForm> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         15)),
-                                                    child: const Text(
-                                                        'Cancelar',
-                                                        style: TextStyle(
+                                                    child: Text(
+                                                        translate(
+                                                            'titles.cancel'),
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.white)),
                                                   ),
@@ -303,9 +310,12 @@ class _OrchardFormState extends State<_OrchardForm> {
                                             dateFormat: "dd-MMMM-yyyy",
                                             locale: DateTimePickerLocale.es,
                                             looping: true,
-                                            titleText: "Selecciona una fecha",
-                                            confirmText: "Aceptar",
-                                            cancelText: "Cancelar");
+                                            titleText: translate(
+                                                'feedback.chooseDate'),
+                                            confirmText:
+                                                translate('titles.confirm'),
+                                            cancelText:
+                                                translate('titles.cancel'));
                                     if (datePicked != null) {
                                       orchardCropRelations[index].sownDate =
                                           datePicked;
@@ -316,24 +326,28 @@ class _OrchardFormState extends State<_OrchardForm> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Fecha de sembrado: ${DateFormat("dd/MM/yy").format(orchardCropRelations[index].sownDate)}'),
+                                      Text(translate('crop.sownDate', args: {
+                                        "value": DateFormat("dd/MM/yy").format(
+                                            orchardCropRelations[index]
+                                                .sownDate)
+                                      })), //Fecha de sembrado: ${DateFormat("dd/MM/yy").format(orchardCropRelations[index].sownDate)}
                                       Icon(
                                         FontAwesomeIcons.calendarAlt,
                                         color: ThemeProvider.primary,
                                       ),
                                     ],
                                   )),
-                              const Text("Notificaciones",
-                                  style: TextStyle(
+                              Text(translate('titles.notifications'),
+                                  style: const TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.bold)),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text("Germinación"),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Text(translate('crop.germination')),
                                   ),
                                   Switch.adaptive(
                                       value: orchardCropRelations[index]
@@ -355,9 +369,9 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text("Regadío"),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: Text(translate('crop.watering')),
                                     ),
                                     Switch.adaptive(
                                         value: orchardCropRelations[index]
@@ -379,9 +393,9 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 15),
-                                      child: Text("Transplante"),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: Text(translate('crop.transplant')),
                                     ),
                                     Switch.adaptive(
                                         value: orchardCropRelations[index]
@@ -398,9 +412,9 @@ class _OrchardFormState extends State<_OrchardForm> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text("Cosecha"),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15),
+                                    child: Text(translate('crop.harvest')),
                                   ),
                                   Switch.adaptive(
                                       value: orchardCropRelations[index]
@@ -444,15 +458,15 @@ class _OrchardFormState extends State<_OrchardForm> {
                     borderRadius: BorderRadius.circular(25)),
                 scrollable: true,
                 elevation: 5,
-                title: const Text('Selecciona un cultivo'),
+                title: Text(translate('feedback.chooseCrop')),
                 actions: [
                   MaterialButton(
                     onPressed: () => Navigator.of(context).pop(),
                     color: Colors.red,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
-                    child: const Text('Cancelar',
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(translate('titles.cancel'),
+                        style: const TextStyle(color: Colors.white)),
                   ),
                 ],
                 content: SizedBox(
@@ -479,11 +493,6 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   sownDate: DateTime.now(),
                                   wateringIntervalDays:
                                       selectedCrop.wateringNotification ?? 0,
-                                  // wateringNotification:
-                                  //     selectedCrop.wateringNotification !=
-                                  //             null
-                                  //         ? true
-                                  //         : false,
                                   wateringNotification: false,
                                   transplantNotification:
                                       selectedCrop.transplantNotification !=
@@ -508,9 +517,9 @@ class _OrchardFormState extends State<_OrchardForm> {
             });
         setState(() {});
       },
-      child: const Text(
-        'Añadir',
-        style: TextStyle(color: Colors.white),
+      child: Text(
+        translate('titles.add'),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -532,14 +541,16 @@ class _DescriptionInput extends StatelessWidget {
       width: screenSize.width * 0.9,
       child: TextFormField(
         decoration: InputDecorations.inputDecoration(
-            isRequired: false, labelText: 'Descripción'),
+            isRequired: false, labelText: translate('titles.description')),
         keyboardType: TextInputType.multiline,
         maxLength: 250,
         initialValue: orchard.description,
         onChanged: (description) => orchard.description = description,
         validator: (description) {
           if (description != null && description.length > 250) {
-            return 'Este campo no debe superar los 250 caracteres';
+            return translate('validation.charLimit', args: {
+              "value": 250
+            }); // 'Este campo no debe superar los 250 caracteres'
           }
           return null;
         },
@@ -564,16 +575,18 @@ class _NameInput extends StatelessWidget {
       width: screenSize.width * 0.9,
       child: TextFormField(
         decoration: InputDecorations.inputDecoration(
-            isRequired: true, labelText: 'Nombre'),
+            isRequired: true, labelText: translate('titles.name')),
         maxLines: 1,
         initialValue: orchard.name,
         onChanged: (name) => orchard.name = name,
         validator: (name) {
           if (name == null || name.isEmpty) {
-            return 'El nombre es obligatorio';
+            return translate('validation.required');
           }
           if (name.length > 32) {
-            return 'Este campo no debe superar los 32 caracteres';
+            return translate('validation.charLimit', args: {
+              "value": 32
+            });
           }
           return null;
         },

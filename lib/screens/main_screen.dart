@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
               tabs: [
                 GButton(
                   icon: FontAwesomeIcons.carrot,
-                  text: translate('gnav.crops'),
+                  text: translate('titles.crops'),
                 ),
                 GButton(
                   icon: FontAwesomeIcons.seedling,

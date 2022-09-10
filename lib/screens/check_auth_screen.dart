@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:huertapp/helpers/helpers.dart';
-import 'package:huertapp/models/models.dart';
 import 'package:huertapp/screens/loading_screen.dart';
 import 'package:huertapp/screens/main_screen.dart';
 import 'package:huertapp/screens/login_screen.dart';

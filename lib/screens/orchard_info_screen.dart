@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/theme_provider.dart';
@@ -74,10 +75,10 @@ class _InfoColumn extends StatelessWidget {
     final orchardNotification = NotificationService();
     return Column(
       children: [
-        InfoCard(title: 'Información general', rows: [
+        InfoCard(title: translate('titles.generalInfo'), rows: [
           InfoRow(
               title: Text(
-                'Nombre',
+                translate('titles.name'),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               image: const Image(
@@ -86,7 +87,7 @@ class _InfoColumn extends StatelessWidget {
           if (orchard.description != null)
             InfoRow(
                 title: Text(
-                  'Descripción',
+                  translate('titles.description'),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 image: const Image(
@@ -96,8 +97,9 @@ class _InfoColumn extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
+        if (orchardService.relations.isNotEmpty)
         InfoCard(
-          title: 'Cultivos',
+          title: translate('titles.crops'),
           rows: orchardService.relations.where((element) => element.orchardUid == orchard.uid).toList().asMap().entries.map((e) {
             Crop crop = cropsService.crops
                 .firstWhere((element) => element.uid == e.value.cropUid);
@@ -127,15 +129,13 @@ class _InfoColumn extends StatelessWidget {
               value: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Fecha de germinación: ${notification.dateGermination}"),
-                  Text("Fecha de recogida: ${notification.dateHarvest}"),
+                  Text(translate('orchard.dateGermination', args: {"value": notification.dateGermination})),
+                  Text(translate('orchard.dateHarvest', args: {"value": notification.dateHarvest})),
                   if (notification.dateTransplant != null)
-                    Text(
-                        "Fecha de transplante: ${notification.dateTransplant}"),
+                  Text(translate('orchard.dateTransplant', args: {"value": notification.dateTransplant})),
                   if (notification.nextWatering != null &&
                       notification.nextWatering!.isNotEmpty)
-                    Text(
-                        'Fecha siguiente regado: ${notification.nextWatering}'),
+                       Text(translate('orchard.nextWatering', args: {"value": notification.nextWatering})),
                 ],
               ),
             );

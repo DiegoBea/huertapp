@@ -9,6 +9,7 @@ import 'package:huertapp/shared_preferences/preferences.dart';
 
 class WeatherService extends ChangeNotifier {
   List<Province> lstProvinces = [];
+  List<Township> lstTownships = [];
   static final Map<String, Map<String, dynamic>> predictions = {};
   final String _baseUrlProvinces = "www.el-tiempo.net";
   final String _baseUrlAemet = "opendata.aemet.es";
@@ -46,6 +47,8 @@ class WeatherService extends ChangeNotifier {
   Future<List<Province>> loadProvinces() async {
     isProvincesloading = true;
     notifyListeners();
+    lstProvinces = [];
+    lstTownships = [];
     final url = Uri.https(_baseUrlProvinces, '/api/json/v2/provincias');
     final response = await http.get(url);
     final Map<String, dynamic> provincesMap = json.decode(response.body);
@@ -55,7 +58,7 @@ class WeatherService extends ChangeNotifier {
         for (var provinceValue in province.value) {
           final tmpProvince = Province.fromMap(provinceValue);
           await getTownships(tmpProvince.provCod).then((value) {
-            tmpProvince.townships.addAll(value);
+            lstTownships.addAll(value);
           });
           lstProvinces.add(tmpProvince);
           PrintHelper.printValue(tmpProvince.toJson());
@@ -64,6 +67,7 @@ class WeatherService extends ChangeNotifier {
     }
 
     Preferences.provinces = lstProvinces;
+    Preferences.townships = lstTownships;
 
     isProvincesloading = false;
     notifyListeners();

@@ -5,40 +5,83 @@
         "weather": "Weather",
         "settings": "Settings"
     },
-	"app_bar": 
-	{
-		"title": "Bienvenido a la página de inicio"
+	"langs": {
+		"en": "English",
+		"es": "Spanish",
+		"fr": "France"
 	},
-	"button": 
-	{
-		"cancel": "Cancelar",
-		"change_language": "Cambiar idioma"
+	"titles": {
+		"lang": "Language",
+		"info": "Information",
+		"edit" : "Edit",
+		"share": "Share",
+		"delete": "Delete",
+		"name": "Name",
+		"description": "Description",
+		"day": "day",
+		"days": "days",
+		"title": "Title",
+		"darkmode": "Dark mode",
+		"logout": "Logout",
+		"crops": "Crops",
+		"generalInfo": "General info",
+		"image": "Image",
+		"cropList": "Crop list",
+		"add": "Add",
+		"cancel": "Cancel",
+		"notifications": "Notifications",
+		"today": "Today",
+		"tomorrow": "Tomorrow",
+		"email": "Email",
+		"password": "Password",
+		"login": "Login",
+		"register": "Register",
+		"loginWithEmail": "Login with email",
+		"loginWithGoogle": "Login with Google",
+		"createNewAccount": "Create new account",
+		"registerWithEmail": "Register with email"
 	},
-	"language": 
-	{
-		"name": 
-		{
-			"en": "Inglés",
-			"es": "Español",
-			"fa": "Persa",
-			"ar": "Arábica",
-			"ru": "Ruso"
-		},
-		"selected_message": "El idioma seleccionado actualmente es {language}",
-		"selection": 
-		{
-			"message": "Por favor seleccione un idioma de la lista",
-			"title": "Selección de idioma"
-		}
+    "feedback": {
+        "removeOrchard": "Do you want to remove {name}? This action cannot be reversed",
+        "removeItem": "Remove {name}",
+		"chooseCrop": "Choose a crop",
+		"chooseProvince": "Choose a province",
+		"chooseTownship": "Choose a township",
+		"aemetSource": "Data obtained from: © Aemet.",
+		"accountExistQuestion": "Do you already have an account? Log in"
+    },
+	"crop": {
+		"harvest": "Harvest",
+		"germination": "Germination",
+		"watering": "Watering",
+		"temperature": "Temperature",
+		"min_temperature": "Min temperature",
+		"max_temperature": "Max temperature",
+		"optimal_temperature": "Optimal temperature",
+		"sown": "Sown",
+		"sownDate": "Sown date",
+		"sownType": "Sown type",
+		"seedsNumber": "Seeds number",
+		"transplant": "Transplant",
+		"depth": "Depth",
+		"container": "Container",
+		"plantingFrame": "Planting frame",
+		"title": "Crops",
+		"info": "Crop info",
+		"removeTitle": "Remove crop",
+		"remove": "Do you want to remove this crop?"
+
 	},
-	"plural": 
-	{
-		"demo": 
-		{
-			"zero": "Por favor, comience a presionar el botón 'más'.",
-			"one": "Has pulsado el botón una vez.",
-			"two": "Has pulsado el botón dos veces.",
-			"other": "Ha pulsado el botón {{value}} veces."
-		}
+	"orchard": {
+		"dateGermination": "Date germination {value}",
+		"dateHarvest": "Date harvest {value}",
+		"dateTransplant": "Date transplant {value}",
+		"nextWatering": "Next watering {value}"
+	},
+	"validation": {
+		"emailFormat": "Wrong email format",
+		"charLimit": "This field has a limit of {value} characters",
+		"required": "This field is required",
+		"minChars": "This field requires al least {value} characters"
 	}
 }

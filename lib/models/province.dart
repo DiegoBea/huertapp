@@ -20,7 +20,6 @@ class Province {
   String autonCod;
   String communityAutonomousCity;
   String capitalProvince;
-  List<Township> townships = [];
 
   factory Province.fromJson(String str) => Province.fromMap(json.decode(str));
 

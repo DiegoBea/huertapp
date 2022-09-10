@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,7 +10,6 @@ import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/services.dart';
 import 'package:huertapp/shared_preferences/preferences.dart';
-import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,8 @@ class OrchardPage extends StatelessWidget {
                 menuItemExtent: 45,
                 menuBoxDecoration: BoxDecoration(
                     color: ThemeProvider.withoutColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(25.0))),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(25.0))),
                 duration: const Duration(milliseconds: 300),
                 animateMenuItems: true,
                 blurBackgroundColor: Colors.black54,
@@ -62,17 +63,27 @@ class OrchardPage extends StatelessWidget {
                 menuItems: [
                   FocusedMenuItem(
                       backgroundColor: ThemeProvider.withoutColor,
-                      title: Text("Información", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black)),
-                      trailingIcon:
-                          Icon(FontAwesomeIcons.info, color: ThemeProvider.primary),
+                      title: Text(translate('titles.info'),
+                          style: TextStyle(
+                              color: Preferences.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black)),
+                      trailingIcon: Icon(FontAwesomeIcons.info,
+                          color: ThemeProvider.primary),
                       onPressed: () {
                         Navigator.pushNamed(context, '/orchardInfo',
                             arguments: orchard);
                       }),
                   if (orchard.owner)
                     FocusedMenuItem(
-                      backgroundColor: ThemeProvider.withoutColor,
-                        title: Text("Editar", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black),),
+                        backgroundColor: ThemeProvider.withoutColor,
+                        title: Text(
+                          translate('titles.edit'),
+                          style: TextStyle(
+                              color: Preferences.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
                         trailingIcon: Icon(FontAwesomeIcons.edit,
                             color: ThemeProvider.primary),
                         onPressed: () {
@@ -90,8 +101,14 @@ class OrchardPage extends StatelessWidget {
                         }),
                   if (orchard.owner)
                     FocusedMenuItem(
-                      backgroundColor: ThemeProvider.withoutColor,
-                        title: Text("Compartir", style: TextStyle(color: Preferences.isDarkMode ? Colors.white : Colors.black),),
+                        backgroundColor: ThemeProvider.withoutColor,
+                        title: Text(
+                          translate('titles.share'),
+                          style: TextStyle(
+                              color: Preferences.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black),
+                        ),
                         trailingIcon: Icon(
                           Icons.share,
                           color: ThemeProvider.primary,
@@ -101,9 +118,9 @@ class OrchardPage extends StatelessWidget {
                         }),
                   FocusedMenuItem(
                       backgroundColor: ThemeProvider.withoutColor,
-                      title: const Text(
-                        "Eliminar",
-                        style: TextStyle(color: Colors.redAccent),
+                      title: Text(
+                        translate('titles.delete'),
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
                       trailingIcon: const Icon(
                         Icons.delete,
@@ -117,11 +134,18 @@ class OrchardPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(25)),
                                   scrollable: true,
                                   elevation: 5,
+                                  // content: Text(
+                                  //     '¿Deseas eliminar "${orchard.name}"? Esta acción es irreversible',
+                                  //     style: const TextStyle(fontSize: 15)),
                                   content: Text(
-                                      '¿Deseas eliminar "${orchard.name}"? Esta acción es irreversible',
+                                      translate('feedback.removeOrchard',
+                                          args: {"name": orchard.name}),
                                       style: const TextStyle(fontSize: 15)),
                                   title: Center(
-                                      child: Text('Eliminar ${orchard.name}')),
+                                      // child: Text('Eliminar ${orchard.name}')),
+                                      child: Text(translate(
+                                          'feedback.removeItem',
+                                          args: {"name": orchard.name}))),
                                   actions: [
                                     MaterialButton(
                                       onPressed: () {
@@ -132,9 +156,9 @@ class OrchardPage extends StatelessWidget {
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(15)),
-                                      child: const Text('Eliminar',
+                                      child: Text(translate('titles.delete'),
                                           style:
-                                              TextStyle(color: Colors.white)),
+                                              const TextStyle(color: Colors.white)),
                                     ),
                                     MaterialButton(
                                       onPressed: () =>

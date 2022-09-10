@@ -5,40 +5,82 @@
         "weather": "Tiempo",
         "settings": "Ajustes"
     },
-	"app_bar": 
-	{
-		"title": "Bienvenido a la página de inicio"
+    "langs": {
+		"en": "Inglés",
+		"es": "Español",
+		"fr": "Francés"
 	},
-	"button": 
-	{
+	"titles": {
+		"lang": "Idioma",
+        "info": "Información",
+        "edit" : "Editar",
+        "share": "Compartir",
+        "delete": "Eliminar",
+        "name": "Nombre",
+        "description": "Descripción",
+        "day": "día",
+        "days": "días",
+        "title": "Título",
+        "darkmode": "Modo oscuro",
+        "logout": "Cerrar sesión",
+        "crops": "Cultivos",
+        "generalInfo": "Información general",
+        "image": "Imagen",
+		"cropList": "Lista de cultivos",
+		"add": "Add",
 		"cancel": "Cancelar",
-		"change_language": "Cambiar idioma"
+		"notifications": "Notificaciones",
+		"today": "Hoy",
+		"tomorrow": "Mañana",
+        "email": "Correo electrónico",
+		"password": "Contraseña",
+        "login": "Iniciar sesión",
+        "register": "Registrarse",
+		"loginWithEmail": "Iniciar sesión con el email",
+		"loginWithGoogle": "Iniciar sesión con google",
+		"createNewAccount": "Crear nueva cuenta",
+		"registerWithEmail": "Registrarse con el correo electrónico"
 	},
-	"language": 
-	{
-		"name": 
-		{
-			"en": "Inglés",
-			"es": "Español",
-			"fa": "Persa",
-			"ar": "Arábica",
-			"ru": "Ruso"
-		},
-		"selected_message": "El idioma seleccionado actualmente es {language}",
-		"selection": 
-		{
-			"message": "Por favor seleccione un idioma de la lista",
-			"title": "Selección de idioma"
-		}
+    "feedback": {
+        "removeOrchard": "¿Deseas eliminar {name}? Esta acción es irreversible",
+        "removeItem": "Eliminar {name}",
+        "chooseCrop": "Elige un cultivo",
+		"chooseProvince": "Elige una provincia",
+		"chooseTownship": "Elige un municipio",
+		"aemetSource": "Datos obtenidos de: © AEMET.",
+		"accountExistQuestion": "¿Ya tienes una cuenta? Inicia sesión"
+    },
+    "crop": {
+		"harvest": "Cosecha",
+        "germination": "Germinación",
+        "watering": "Regadío",
+        "temperature": "Temperatura",
+        "min_temperature": "Temperatura mínima",
+        "max_temperature": "Temperatura máxima",
+        "optimal_temperature": "Temperatura óptima",
+        "sown": "Sembrado",
+        "sownDate": "Fecha de sembrado",
+        "sownType": "Tipo de sembrado",
+        "seedsNumber": "Número de semillas",
+        "transplant": "Transplante",
+        "depth": "Profundidad",
+        "container": "Recipiente",
+        "plantingFrame": "Marco de plantación",
+        "title": "Cultivo",
+		"info": "Información del cultivo",
+		"removeTitle": "Eliminar cultivo",
+		"remove": "¿Deseas eliminar este cultivo?"
 	},
-	"plural": 
-	{
-		"demo": 
-		{
-			"zero": "Por favor, comience a presionar el botón 'más'.",
-			"one": "Has pulsado el botón una vez.",
-			"two": "Has pulsado el botón dos veces.",
-			"other": "Ha pulsado el botón {{value}} veces."
-		}
+	"orchard": {
+		"dateGermination": "Fecha germinación {value}",
+        "dateHarvest": "Fecha cosecha {value}",
+        "dateTransplant": "Fecha de transplante {value}",
+		"nextWatering": "Siguiente regado {value}"
+	},
+	"validation": {
+		"emailFormat": "Formato de email inválido",
+		"charLimit": "Este campo tiene un límite de {value} caracteres",
+		"required": "Este campo es requerido",
+		"minChars": "Este campo requiere de {value} caracteres como mínimo"
 	}
 }

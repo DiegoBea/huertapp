@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
@@ -29,7 +30,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 builder: (_) => _ProvinceDialog(
                     weatherService: weatherService, userService: userService));
           },
-          backgroundColor: Colors.white,
+          backgroundColor: ThemeProvider.withoutColor,
           child: weatherService.isProvincesloading
               ? CircularProgressIndicator(color: ThemeProvider.primary)
               : Icon(
@@ -92,7 +93,7 @@ class _ProvinceDialog extends StatelessWidget {
           ),
         ),
       ),
-      title: const Center(child: Text('Selecciona una provincia')),
+      title: Center(child: Text(translate('feedback.chooseProvince'))),
     );
   }
 }
@@ -119,7 +120,7 @@ class _TownshipDialog extends StatelessWidget {
         height: 300,
         child: SingleChildScrollView(
           child: Column(
-            children: province.townships
+            children: Preferences.townships.where((element) => element.codprov == province.provCod).toList()
                 .asMap()
                 .entries
                 .map((e) => CardItem(
@@ -140,7 +141,7 @@ class _TownshipDialog extends StatelessWidget {
           ),
         ),
       ),
-      title: const Center(child: Text('Selecciona un municipio')),
+      title: Center(child: Text(translate('feedback.chooseTownship'))),
     );
   }
 }
@@ -191,10 +192,10 @@ class _WeatherBodyState extends State<_WeatherBody> {
                         ?.removeWhere((element) => element == widget.code);
                     widget.userService.updateUser(UserService.user!);
                   },
-                  child: Row(children: const [
-                    Text('Eliminar  ',
-                        style: TextStyle(color: Colors.red, fontSize: 17)),
-                    Icon(
+                  child: Row(children: [
+                    Text("${translate('titles.delete')}  ",
+                        style: const TextStyle(color: Colors.red, fontSize: 17)),
+                    const Icon(
                       FontAwesomeIcons.trash,
                       size: 17,
                       color: Colors.red,
@@ -234,9 +235,9 @@ class _WeatherBodyState extends State<_WeatherBody> {
                             prediction: e.value,
                             precipitation: daily.probPrecipitation[e.key],
                             day: e.key == 0
-                                ? 'Hoy'
+                                ? translate('titles.today')
                                 : e.key == 1
-                                    ? 'Mañana'
+                                    ? translate('titles.tomorrow')
                                     : DateHelper.getDynamicDayName(
                                         DateTime.now()
                                             .add(Duration(days: e.key))
@@ -263,8 +264,8 @@ class _WeatherBodyState extends State<_WeatherBody> {
             ),
           ),
           const SizedBox(height: 100),
-          const Text('Datos obtenidos de: © AEMET.',
-              style: TextStyle(color: Colors.white), textAlign: TextAlign.end),
+          Text(translate('feedback.aemetSource'), //'Datos obtenidos de: © AEMET.'
+              style: const TextStyle(color: Colors.white), textAlign: TextAlign.end),
         ],
       ),
     );

@@ -1,0 +1,85 @@
+{
+    "gnav":{
+        "orchards": "Vergers",
+        "weather": "Météo",
+        "settings": "Paramètres"
+    },
+	"langs": {
+		"en": "Anglais",
+		"es": "Espagnol",
+		"fr": "Français"
+	},
+	"titles": {
+		"lang": "Langage",
+		"info": "Information",
+		"edit" : "Éditer",
+		"share": "Partager",
+		"delete": "Supprimer",
+		"name": "Nom",
+		"description": "Description",
+		"day": "jour",
+		"days": "jours",
+		"title": "Titre",
+		"darkmode": "Mode sombre",
+		"logout": "Se déconnecter",
+		"crops": "Récoltes",
+		"generalInfo": "Informations générales",
+		"image": "Image",
+		"cropList": "Liste de cultures",
+		"add": "Ajouter",
+		"cancel": "Annuler",
+		"notifications": "Notifications",
+		"today": "Aujourd'hui",
+		"tomorrow": "Demain",
+		"email": "Courrier électronique",
+		"password": "Mot de passe",
+		"login": "S'identifier",
+		"register": "Enregistrement",
+		"loginWithEmail": "Entrez avec e-mail",
+		"loginWithGoogle": "Entrez avec Google",
+		"createNewAccount": "Créer un nouveau compte",
+		"registerWithEmail": "Inscrivez-vous avec e-mail"
+	},
+    "feedback": {
+        "removeOrchard": "Voulez-vous supprimer {name}? Cette action est irréversible",
+        "removeItem": "Supprimer {name}",
+		"chooseCrop": "Choisissez une récolte",
+		"chooseProvince": "Choisissez une province",
+		"chooseTownship": "Choisissez une municipalité",
+		"aemetSource": "Données obtenues à partir de: © AEMET.",
+		"accountExistQuestion": "Avez-vous déjà un compte? S'identifier"
+    },
+	"crop": {
+		"harvest": "Récolte",
+		"germination": "Germination",
+		"watering": "Arrosage",
+		"temperature": "Température",
+		"min_temperature": "Température minimale",
+		"max_temperature": "Température maximale",
+		"optimal_temperature": "Température optimale",
+		"sown": "Semé",
+		"sownDate": "Date de semis",
+		"sownType":"Type de plantation",
+		"seedsNumber": "Nombre de graines",
+		"transplant": "Transplant",
+		"depth": "Profondeur",
+		"container": "Bol",
+		"plantingFrame": "Cadre de plantation",
+		"title": "Récolte",
+		"info": "Informations sur la culture",
+		"removeTitle": "Éliminer la culture",
+		"remove": "Voulez-vous éliminer cette récolte?"
+	},
+	"orchard": {
+		"dateGermination": "Date de germination {value}",
+		"dateHarvest": "Date de récolte {value}",
+		"dateTransplant": "Date de transplantation {value}",
+		"nextWatering": "Arrosage suivant {value}"
+	},
+	"validation": {
+		"emailFormat": "Format d'email invalide",
+		"charLimit": "Ce champ a une limite de {value} caractères",
+		"required": "Ce champ est requis",
+		"minChars": "Ce champ nécessite au moins {value} caractères"
+	}
+}

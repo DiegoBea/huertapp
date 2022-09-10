@@ -21,7 +21,7 @@ void main() async {
 
   // Inicializar i18n
   var delegate = await LocalizationDelegate.create(
-      fallbackLocale: 'es', supportedLocales: ['es']);
+      fallbackLocale: 'es', supportedLocales: ['es', 'en_UK', 'fr']);
 
   initializeDateFormatting('es');
 
@@ -35,6 +35,7 @@ class AppState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    changeLocale(context, Preferences.lang);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
@@ -49,7 +50,8 @@ class AppState extends StatelessWidget {
           create: (_) => UserService(),
           lazy: false,
         ),
-        ChangeNotifierProvider(create: (_) => ThemeProvider(isDarkMode: Preferences.isDarkMode))
+        ChangeNotifierProvider(
+            create: (_) => ThemeProvider(isDarkMode: Preferences.isDarkMode))
       ],
       child: const MyApp(),
     );
