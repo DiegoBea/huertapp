@@ -3,6 +3,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/theme_provider.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/widgets/widgets.dart';
 
 class CropInfoScreen extends StatelessWidget {
@@ -48,7 +49,7 @@ class _InfoColumn extends StatelessWidget {
               ),
               image: const Image(
                   image: AssetImage('assets/images/icons/name.png')),
-              value: Text(crop.name)),
+              value: Text(crop.name[Preferences.lang]!)),
           InfoRow(
               title: Text(
                 translate('titles.description'),
@@ -56,7 +57,7 @@ class _InfoColumn extends StatelessWidget {
               ),
               image: const Image(
                   image: AssetImage('assets/images/icons/description.png')),
-              value: Text(crop.description)),
+              value: Text(crop.description[Preferences.lang]!)),
         ]),
         const SizedBox(
           height: 10,
@@ -70,7 +71,7 @@ class _InfoColumn extends StatelessWidget {
               image: const Image(
                   image: AssetImage('assets/images/icons/harvest.png')),
               value: crop.harvest != null
-                  ? Text(crop.harvest!)
+                  ? Text(crop.harvest![Preferences.lang]!)
                   : crop.harvestNotification > 30
                       ? Text(
                           "${DaysHelper.daysToMonths(crop.harvestNotification)} ${DaysHelper.daysToMonths(crop.harvestNotification) == 1 ? translate('titles.month') : translate('titles.months')}")
@@ -95,7 +96,7 @@ class _InfoColumn extends StatelessWidget {
               ),
               image: const Image(
                   image: AssetImage('assets/images/icons/watered.png')),
-              value: Text(crop.watering)),
+              value: Text(crop.watering[Preferences.lang]!)),
         ]),
         const SizedBox(
           height: 10,
@@ -138,7 +139,7 @@ class _InfoColumn extends StatelessWidget {
                 ),
                 image: const Image(
                     image: AssetImage('assets/images/icons/calendar.png')),
-                value: Text(crop.sown!)),
+                value: Text(crop.sown![Preferences.lang]!)),
           if (crop.sownType != null)
             InfoRow(
                 title: Text(
@@ -147,7 +148,7 @@ class _InfoColumn extends StatelessWidget {
                 ),
                 image: const Image(
                     image: AssetImage('assets/images/icons/sown_type.png')),
-                value: Text(crop.sownType!)),
+                value: Text(crop.sownType![Preferences.lang]!)),
           if (crop.seedsNumber != null)
             InfoRow(
                 title: Text(
@@ -166,7 +167,7 @@ class _InfoColumn extends StatelessWidget {
                 image: const Image(
                     image: AssetImage('assets/images/icons/transplant.png')),
                 value: crop.transplant != null
-                    ? Text(crop.transplant!)
+                    ? Text(crop.transplant![Preferences.lang]!)
                     : crop.transplantNotification! > 30
                         ? Text(
                             "${DaysHelper.daysToMonths(crop.transplantNotification!)} ${DaysHelper.daysToMonths(crop.transplantNotification!) == 1 ? translate('titles.month') : translate('titles.months')}")
@@ -203,7 +204,7 @@ class _InfoColumn extends StatelessWidget {
                     image:
                         AssetImage('assets/images/icons/planting_frame.png')),
                 value: Text(translate('crop.plantingFrameValue', args: {
-                  "value": crop.plantingFrame
+                  "value": crop.plantingFrame![Preferences.lang]!
                 }))), //"${crop.plantingFrame} en adelante"
         ]),
         const SizedBox(

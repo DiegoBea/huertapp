@@ -68,7 +68,9 @@
 		"title": "Récolte",
 		"info": "Informations sur la culture",
 		"removeTitle": "Éliminer la culture",
-		"remove": "Voulez-vous éliminer cette récolte?"
+		"remove": "Voulez-vous éliminer cette récolte?",
+		"containerValue": "{value}l et plus",
+		"plantingFrameValue": "{value} et plus"
 	},
 	"orchard": {
 		"dateGermination": "Date de germination {value}",

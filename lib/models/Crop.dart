@@ -35,16 +35,16 @@ class Crop {
 
   late String uid;
 
-  String name;
+  Map<String, String> name;
   String notificationName;
-  String description;
+  Map<String, String> description;
 
   String iconUrl;
   String imageUrl;
 
   int germination;
 
-  String? harvest;
+  Map<String, String>? harvest;
   int harvestNotification;
 
   int maxTemperature;
@@ -54,18 +54,18 @@ class Crop {
   int? maxWatering;
   int? minWatering;
   int? wateringNotification;
-  String watering;
+  Map<String, String> watering;
 
   int? container;
-  String? plantingFrame;
+  Map<String, String>? plantingFrame;
   int? depth;
   bool seedbed;
   int? seedsNumber;
   int? transplantNotification;
-  String? transplant;
+  Map<String, String>? transplant;
 
-  String? sown;
-  String? sownType;
+  Map<String, String>? sown;
+  Map<String, String>? sownType;
 
   factory Crop.fromJson(String str) => Crop.fromMap(json.decode(str));
 
@@ -74,12 +74,12 @@ class Crop {
   factory Crop.fromMap(Map<String, dynamic> json) => Crop(
         uid: json["uid"] ?? '',
         notificationName: json["notification_name"],
-        name: json["name"],
-        description: json["description"],
+        name: Map<String, String>.from(json["name"]),
+        description: Map<String, String>.from(json["description"]),
         iconUrl: json["icon_url"],
         imageUrl: json["image_url"],
         germination: json["germination"],
-        harvest: json["harvest"],
+        harvest: json["harvest"] != null ? Map<String, String>.from(json["harvest"]) : null,
         harvestNotification: json["harvest_notification"],
         maxTemperature: json["max_temperature"],
         minTemperature: json["min_temperature"],
@@ -87,16 +87,16 @@ class Crop {
         maxWatering: json["max_watering"],
         minWatering: json["min_watering"],
         wateringNotification: json["watering_notification"],
-        watering: json["watering"],
+        watering: Map<String, String>.from(json["watering"]),
         container: json["container"],
-        plantingFrame: json["planting_frame"],
+        plantingFrame: Map<String, String>.from(json["planting_frame"]),
         seedbed: json["seedbed"],
         depth: json["depth"],
         seedsNumber: json["seeds_number"],
         transplantNotification: json["transplant_notification"],
-        transplant: json["transplant"],
-        sown: json["sown"],
-        sownType: json["sown_type"],
+        transplant: json["transplant"] != null ? Map<String, String>.from(json["transplant"]) : null,
+        sown: json["sown"] != null ? Map<String, String>.from((json["sown"])) : null,
+        sownType: Map<String, String>.from(json["sown_type"]),
       );
 
   Map<String, dynamic> toMap() => {

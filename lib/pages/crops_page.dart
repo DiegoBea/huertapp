@@ -3,7 +3,7 @@ import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/screens/screens.dart';
 import 'package:huertapp/services/crops_service.dart';
-import 'package:huertapp/themes/app_theme.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/widgets/card_item.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class CropsPage extends StatelessWidget {
           children: [
             for (Crop crop in cropsService.crops)
               CardItem(
-                title: crop.name,
+                title: crop.name[Preferences.lang]!,
                 onTap: () {
                   Navigator.pushNamed(context, '/cropInfo', arguments: crop);
                 },

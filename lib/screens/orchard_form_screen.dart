@@ -10,6 +10,7 @@ import 'package:huertapp/models/models.dart';
 import 'package:huertapp/providers/orchard_form_provider.dart';
 import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
@@ -293,7 +294,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                                   cropsService
                                       .getCropByUid(
                                           orchardCropRelations[index].cropUid)
-                                      .name,
+                                      .name[Preferences.lang]!,
                                   style: const TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.bold),
@@ -476,7 +477,7 @@ class _OrchardFormState extends State<_OrchardForm> {
                       children: [
                         for (Crop crop in cropsService.crops)
                           CardItem(
-                            title: crop.name,
+                            title: crop.name[Preferences.lang]!,
                             trailingIcon: FadeInImage(
                                 placeholder:
                                     const AssetImage('assets/images/icon.png'),

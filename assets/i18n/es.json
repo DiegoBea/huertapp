@@ -69,7 +69,9 @@
         "title": "Cultivo",
 		"info": "Información del cultivo",
 		"removeTitle": "Eliminar cultivo",
-		"remove": "¿Deseas eliminar este cultivo?"
+		"remove": "¿Deseas eliminar este cultivo?",
+        "containerValue": "{value}l en adelante",
+		"plantingFrameValue": "{value} en adelante"
 	},
 	"orchard": {
 		"dateGermination": "Fecha germinación {value}",

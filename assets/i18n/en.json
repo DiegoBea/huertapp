@@ -69,8 +69,9 @@
 		"title": "Crops",
 		"info": "Crop info",
 		"removeTitle": "Remove crop",
-		"remove": "Do you want to remove this crop?"
-
+		"remove": "Do you want to remove this crop?",
+		"containerValue": "{value}l onwards",
+		"plantingFrameValue": "{value} onwards"
 	},
 	"orchard": {
 		"dateGermination": "Date germination {value}",

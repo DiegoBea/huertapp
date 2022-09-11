@@ -6,6 +6,7 @@ import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/crops_service.dart';
 import 'package:huertapp/services/notification_service.dart';
 import 'package:huertapp/services/orchards_service.dart';
+import 'package:huertapp/shared_preferences/preferences.dart';
 import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:intl/intl.dart';
@@ -125,7 +126,7 @@ class _InfoColumn extends StatelessWidget {
             return InfoRow(
               image:
                   Image(image: NetworkImage(crop.iconUrl), fit: BoxFit.cover),
-              title: Text(crop.name),
+              title: Text(crop.name[Preferences.lang]!),
               value: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
