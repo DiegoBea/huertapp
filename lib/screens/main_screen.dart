@@ -38,44 +38,42 @@ class _MainScreenState extends State<MainScreen> {
             )
           ],
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[200]!,
-              hoverColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[100]!,
-              gap: 8,
-              activeColor: Preferences.isDarkMode ? Colors.green.shade700 : Colors.green,
-              iconSize: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: const Duration(milliseconds: 400),
-              tabBackgroundColor: Preferences.isDarkMode ? Colors.grey[500]! : Colors.grey[100]!,
-              color: ThemeProvider.primary,
-              tabs: [
-                GButton(
-                  icon: FontAwesomeIcons.carrot,
-                  text: translate('titles.crops'),
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.seedling,
-                  text: translate('gnav.orchards')
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.cloudSun,
-                  text: translate('gnav.weather')
-                ),
-                GButton(
-                  icon: FontAwesomeIcons.cog,
-                  text: translate('gnav.settings')
-                ),
-              ],
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+          child: GNav(
+            rippleColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[200]!,
+            hoverColor: Preferences.isDarkMode ? Colors.grey : Colors.grey[100]!,
+            gap: 8,
+            activeColor: Preferences.isDarkMode ? Colors.green.shade700 : Colors.green,
+            iconSize: 24,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            duration: const Duration(milliseconds: 400),
+            tabBackgroundColor: Preferences.isDarkMode ? Colors.grey[500]! : Colors.grey[100]!,
+            color: ThemeProvider.primary,
+            tabs: [
+              GButton(
+                icon: FontAwesomeIcons.carrot,
+                text: translate('titles.crops'),
+              ),
+              GButton(
+                icon: FontAwesomeIcons.seedling,
+                text: translate('gnav.orchards')
+              ),
+              GButton(
+                icon: FontAwesomeIcons.cloudSun,
+                text: translate('gnav.weather')
+              ),
+              GButton(
+                icon: FontAwesomeIcons.cog,
+                text: translate('gnav.settings')
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
           ),
         ),
       ),

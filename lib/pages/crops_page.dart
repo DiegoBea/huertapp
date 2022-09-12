@@ -16,30 +16,29 @@ class CropsPage extends StatelessWidget {
 
     if (cropsService.isLoading) return const LoadingScreen();
 
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       backgroundColor: ThemeProvider.primary,
       body: Container(
-        margin: const EdgeInsets.all(10),
-        child: ListView(
-          children: [
-            for (Crop crop in cropsService.crops)
-              CardItem(
-                title: crop.name[Preferences.lang]!,
-                onTap: () {
-                  Navigator.pushNamed(context, '/cropInfo', arguments: crop);
-                },
-                leadingIcon: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: FadeInImage(
-                    image: NetworkImage(crop.iconUrl),
-                    placeholder: const AssetImage('assets/images/icon.png'),
-                  ),
-                ),
+    margin: const EdgeInsets.all(10),
+    child: ListView(
+      children: [
+        for (Crop crop in cropsService.crops)
+          CardItem(
+            title: crop.name[Preferences.lang]!,
+            onTap: () {
+              Navigator.pushNamed(context, '/cropInfo', arguments: crop);
+            },
+            leadingIcon: CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: FadeInImage(
+                image: NetworkImage(crop.iconUrl),
+                placeholder: const AssetImage('assets/images/placeholder_icon.png'),
               ),
-          ],
-        ),
+            ),
+          ),
+      ],
+    ),
       ),
-    ));
+    );
   }
 }

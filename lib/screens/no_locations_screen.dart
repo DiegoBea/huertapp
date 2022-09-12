@@ -14,8 +14,8 @@ class NoLocationsScreen extends StatelessWidget {
          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
            children: [
-            const SizedBox(height: 200, child: Image(image: AssetImage('assets/images/no_location.png'), fit: BoxFit.cover)),
-            Text(translate('feedback.noLocation'), textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 25)), //  'Aún no has añadido ninguna ubicación, pulse "+" para añadir'
+            const SizedBox(height: 100, child: Image(image: AssetImage('assets/images/no_location.png'), fit: BoxFit.cover)),
+            Text(translate('feedback.noLocation'), textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 25)), //  
            ],
          ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:huertapp/models/firestore_user.dart';
 import 'package:huertapp/providers/theme_provider.dart';
 import 'package:huertapp/services/services.dart';
@@ -67,10 +68,18 @@ class _SettingsPageState extends State<SettingsPage> {
                                     'assets/images/default_profile_icon.png'),
                               ),
                         const SizedBox(height: 20),
-                        Text(
-                          user.name,
-                          style: const TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Expanded(
+                              child:
+                                Text(
+                                  user.name,
+                                  style: const TextStyle(
+                                      fontSize: 25, fontWeight: FontWeight.bold),
+                                ),
+                            ),
+                            IconButton(onPressed: (){}, icon: const Icon(FontAwesomeIcons.edit))
+                          ],
                         ),
                         const SizedBox(height: 5),
                         Text(

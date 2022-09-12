@@ -48,7 +48,8 @@
 		"chooseProvince": "Choose a province",
 		"chooseTownship": "Choose a township",
 		"aemetSource": "Data obtained from: © Aemet.",
-		"accountExistQuestion": "Do you already have an account? Log in"
+		"accountExistQuestion": "Do you already have an account? Log in",
+		"noLocation": "You haven't added any location yet, press \"+\" to add"
     },
 	"crop": {
 		"harvest": "Harvest",
@@ -83,6 +84,7 @@
 		"emailFormat": "Wrong email format",
 		"charLimit": "This field has a limit of {value} characters",
 		"required": "This field is required",
-		"minChars": "This field requires al least {value} characters"
+		"minChars": "This field requires al least {value} characters",
+        "googleFailed": "Failed to start with Google"
 	}
 }

@@ -47,7 +47,8 @@
 		"chooseProvince": "Choisissez une province",
 		"chooseTownship": "Choisissez une municipalité",
 		"aemetSource": "Données obtenues à partir de: © AEMET.",
-		"accountExistQuestion": "Avez-vous déjà un compte? S'identifier"
+		"accountExistQuestion": "Avez-vous déjà un compte? S'identifier",
+		"noLocation": "Vous n'avez pas encore ajouté d'emplacement, appuyez sur \"+\" pour ajouter"
     },
 	"crop": {
 		"harvest": "Récolte",
@@ -82,6 +83,7 @@
 		"emailFormat": "Format d'email invalide",
 		"charLimit": "Ce champ a une limite de {value} caractères",
 		"required": "Ce champ est requis",
-		"minChars": "Ce champ nécessite au moins {value} caractères"
+		"minChars": "Ce champ nécessite au moins {value} caractères",
+        "googleFailed": "Échec du démarrage avec Google"
 	}
 }

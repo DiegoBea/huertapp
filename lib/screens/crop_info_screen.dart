@@ -193,7 +193,7 @@ class _InfoColumn extends StatelessWidget {
                     image: AssetImage('assets/images/icons/container.png')),
                 value: Text(translate('crop.containerValue', args: {
                   "value": crop.container
-                }))), //"${crop.container}l en adelante"
+                }))),
           if (crop.plantingFrame != null)
             InfoRow(
                 title: Text(
@@ -205,7 +205,7 @@ class _InfoColumn extends StatelessWidget {
                         AssetImage('assets/images/icons/planting_frame.png')),
                 value: Text(translate('crop.plantingFrameValue', args: {
                   "value": crop.plantingFrame![Preferences.lang]!
-                }))), //"${crop.plantingFrame} en adelante"
+                }))),
         ]),
         const SizedBox(
           height: 10,

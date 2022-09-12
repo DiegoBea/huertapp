@@ -203,8 +203,7 @@ class _LoginFormState extends State<_LoginForm> {
                               weatherService.loadLocations();
                               Navigator.pushReplacementNamed(context, '/main');
                             } else {
-                              ToastHelper.showToast(
-                                  'No se ha podido iniciar con Google');
+                              ToastHelper.showToast(translate('validation.googleFailed'));
                               loginForm.isLoading = false;
                             }
                           });

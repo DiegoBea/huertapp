@@ -48,7 +48,8 @@
 		"chooseProvince": "Elige una provincia",
 		"chooseTownship": "Elige un municipio",
 		"aemetSource": "Datos obtenidos de: © AEMET.",
-		"accountExistQuestion": "¿Ya tienes una cuenta? Inicia sesión"
+		"accountExistQuestion": "¿Ya tienes una cuenta? Inicia sesión",
+		"noLocation": "Aún no has añadido ninguna ubicación, pulse \"+\" para añadir"
     },
     "crop": {
 		"harvest": "Cosecha",
@@ -83,6 +84,7 @@
 		"emailFormat": "Formato de email inválido",
 		"charLimit": "Este campo tiene un límite de {value} caracteres",
 		"required": "Este campo es requerido",
-		"minChars": "Este campo requiere de {value} caracteres como mínimo"
+		"minChars": "Este campo requiere de {value} caracteres como mínimo",
+        "googleFailed": "No se ha podido iniciar con Google"
 	}
 }
