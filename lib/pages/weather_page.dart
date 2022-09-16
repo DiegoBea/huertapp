@@ -22,6 +22,7 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     final weatherService = Provider.of<WeatherService>(context);
     final userService = Provider.of<UserService>(context);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -120,7 +121,9 @@ class _TownshipDialog extends StatelessWidget {
         height: 300,
         child: SingleChildScrollView(
           child: Column(
-            children: Preferences.townships.where((element) => element.codprov == province.provCod).toList()
+            children: Preferences.townships
+                .where((element) => element.codprov == province.provCod)
+                .toList()
                 .asMap()
                 .entries
                 .map((e) => CardItem(
@@ -178,6 +181,7 @@ class _WeatherBodyState extends State<_WeatherBody> {
               opacity: 0.9)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 30),
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -194,7 +198,8 @@ class _WeatherBodyState extends State<_WeatherBody> {
                   },
                   child: Row(children: [
                     Text("${translate('titles.delete')}  ",
-                        style: const TextStyle(color: Colors.red, fontSize: 17)),
+                        style:
+                            const TextStyle(color: Colors.red, fontSize: 17)),
                     const Icon(
                       FontAwesomeIcons.trash,
                       size: 17,
@@ -217,7 +222,7 @@ class _WeatherBodyState extends State<_WeatherBody> {
                   color: Colors.white)),
           Text(widget.weatherService.getSkyType(hourly.currentSkyValue),
               style: const TextStyle(
-                  fontSize: 30,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
           const SizedBox(height: 30),
@@ -263,9 +268,11 @@ class _WeatherBodyState extends State<_WeatherBody> {
                       .toList()),
             ),
           ),
-          const SizedBox(height: 100),
-          Text(translate('feedback.aemetSource'), //'Datos obtenidos de: © AEMET.'
-              style: const TextStyle(color: Colors.white), textAlign: TextAlign.end),
+          Text(
+              translate(
+                  'feedback.aemetSource'), //'Datos obtenidos de: © AEMET.'
+              style: const TextStyle(color: Colors.white),
+              textAlign: TextAlign.end),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/models/models.dart';
 import 'package:http/http.dart' as http;
@@ -191,106 +192,107 @@ class WeatherService extends ChangeNotifier {
   }
 
   String getSkyType(String value) {
-    switch (value) {
-      case "11":
-      case "11n":
-        return "Despejado";
-      case "12":
-      case "12n":
-        return "Poco nuboso";
-      case "13":
-      case "13n":
-        return "Intervalos nubosos";
-      case "14":
-      case "14n":
-        return "Nuboso";
-      case "15":
-      case "15n":
-        return "Muy nuboso";
-      case "16":
-      case "16n":
-        return "Cubierto";
-      case "17":
-      case "17n":
-        return "Nubes altas";
-      case "23":
-      case "23n":
-        return "Intervalos nubosos con lluvia escasa";
-      case "24":
-      case "24n":
-        return "Nuboso con lluvia";
-      case "25":
-      case "25n":
-        return "Cubierto con lluvia";
-      case "26":
-      case "26n":
-        return "Muy nuboso con lluvia";
-      case "33":
-      case "33n":
-        return "Intervalos nubosos con nieve";
-      case "34":
-      case "34n":
-        return "Nuboso con nieve";
-      case "35":
-      case "35n":
-        return "Muy nuboso con nieve";
-      case "36":
-      case "36n":
-        return "Cubierto con nieve";
-      case "43":
-      case "43n":
-        return "Intervalos nubosos con lluvia escasa";
-      case "46":
-      case "46n":
-        return "Cubierto con lluvia escasa";
-      case "51":
-      case "51n":
-        return "Intervalos nubosos con tormenta";
-      case "52":
-      case "52n":
-        return "Nuboso con tormenta";
-      case "53":
-      case "53n":
-        return "Muy nuboso con tormenta";
-      case "54":
-      case "54n":
-        return "Cubierto con tormenta";
-      case "61":
-      case "61n":
-        return "Intervalos nubosos con tormenta y lluvia escasa";
-      case "62":
-      case "62n":
-        return "Nuboso con tormenta y lluvia escasa";
-      case "63":
-      case "63n":
-        return "Muy nuboso con tormenta y lluvia escasa";
-      case "64":
-      case "64n":
-        return "Cubierto con tormenta y lluvia escasa";
-      case "71":
-      case "71n":
-        return "Intervalos nubosos con nieve escasa";
-      case "72":
-      case "72n":
-        return "Nubosos con nieve escasa";
-      case "73":
-      case "73n":
-        return "Muy nuboso con nieve escasa";
-      case "74":
-      case "74n":
-        return "Cubierto con nieve escasa";
-      case "81":
-      case "81n":
-        return "Niebla";
-      case "82":
-      case "82n":
-        return "Bruma";
-      case "83":
-      case "83n":
-        return "Niebla";
-      default:
-        return "despejado";
-    }
+    return translate("weather.${value.substring(0, 2)}");
+    // switch (value) {
+    //   case "11":
+    //   case "11n":
+    //     return "Despejado";
+    //   case "12":
+    //   case "12n":
+    //     return "Poco nuboso";
+    //   case "13":
+    //   case "13n":
+    //     return "Intervalos nubosos";
+    //   case "14":
+    //   case "14n":
+    //     return "Nuboso";
+    //   case "15":
+    //   case "15n":
+    //     return "Muy nuboso";
+    //   case "16":
+    //   case "16n":
+    //     return "Cubierto";
+    //   case "17":
+    //   case "17n":
+    //     return "Nubes altas";
+    //   case "23":
+    //   case "23n":
+    //     return "Intervalos nubosos con lluvia escasa";
+    //   case "24":
+    //   case "24n":
+    //     return "Nuboso con lluvia";
+    //   case "25":
+    //   case "25n":
+    //     return "Cubierto con lluvia";
+    //   case "26":
+    //   case "26n":
+    //     return "Muy nuboso con lluvia";
+    //   case "33":
+    //   case "33n":
+    //     return "Intervalos nubosos con nieve";
+    //   case "34":
+    //   case "34n":
+    //     return "Nuboso con nieve";
+    //   case "35":
+    //   case "35n":
+    //     return "Muy nuboso con nieve";
+    //   case "36":
+    //   case "36n":
+    //     return "Cubierto con nieve";
+    //   case "43":
+    //   case "43n":
+    //     return "Intervalos nubosos con lluvia escasa";
+    //   case "46":
+    //   case "46n":
+    //     return "Cubierto con lluvia escasa";
+    //   case "51":
+    //   case "51n":
+    //     return "Intervalos nubosos con tormenta";
+    //   case "52":
+    //   case "52n":
+    //     return "Nuboso con tormenta";
+    //   case "53":
+    //   case "53n":
+    //     return "Muy nuboso con tormenta";
+    //   case "54":
+    //   case "54n":
+    //     return "Cubierto con tormenta";
+    //   case "61":
+    //   case "61n":
+    //     return "Intervalos nubosos con tormenta y lluvia escasa";
+    //   case "62":
+    //   case "62n":
+    //     return "Nuboso con tormenta y lluvia escasa";
+    //   case "63":
+    //   case "63n":
+    //     return "Muy nuboso con tormenta y lluvia escasa";
+    //   case "64":
+    //   case "64n":
+    //     return "Cubierto con tormenta y lluvia escasa";
+    //   case "71":
+    //   case "71n":
+    //     return "Intervalos nubosos con nieve escasa";
+    //   case "72":
+    //   case "72n":
+    //     return "Nubosos con nieve escasa";
+    //   case "73":
+    //   case "73n":
+    //     return "Muy nuboso con nieve escasa";
+    //   case "74":
+    //   case "74n":
+    //     return "Cubierto con nieve escasa";
+    //   case "81":
+    //   case "81n":
+    //     return "Niebla";
+    //   case "82":
+    //   case "82n":
+    //     return "Bruma";
+    //   case "83":
+    //   case "83n":
+    //     return "Niebla";
+    //   default:
+    //     return "despejado";
+    // }
   }
 
   _sortList() {
