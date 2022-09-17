@@ -27,7 +27,7 @@
         "generalInfo": "Información general",
         "image": "Imagen",
 		"cropList": "Lista de cultivos",
-		"add": "Add",
+		"add": "Añadir",
 		"cancel": "Cancelar",
 		"notifications": "Notificaciones",
 		"today": "Hoy",
@@ -39,7 +39,7 @@
 		"loginWithEmail": "Iniciar sesión con el email",
 		"loginWithGoogle": "Iniciar sesión con google",
 		"createNewAccount": "Crear nueva cuenta",
-		"registerWithEmail": "Registrarse con el correo electrónico"
+		"registerWithEmail": "Registrarse con email"
 	},
     "feedback": {
         "removeOrchard": "¿Deseas eliminar {name}? Esta acción es irreversible",
@@ -49,7 +49,9 @@
 		"chooseTownship": "Elige un municipio",
 		"aemetSource": "Datos obtenidos de: © AEMET.",
 		"accountExistQuestion": "¿Ya tienes una cuenta? Inicia sesión",
-		"noLocation": "Aún no has añadido ninguna ubicación, pulse \"+\" para añadir"
+		"noLocation": "Aún no has añadido ninguna ubicación, pulse \"+\" para añadir",
+        "edit": "Editar {name}",
+		"noImage": "Imagen no seleccionada"
     },
     "crop": {
 		"harvest": "Cosecha",

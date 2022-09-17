@@ -7,7 +7,6 @@ import 'package:huertapp/services/crops_service.dart';
 import 'package:huertapp/services/notification_service.dart';
 import 'package:huertapp/services/orchards_service.dart';
 import 'package:huertapp/shared_preferences/preferences.dart';
-import 'package:huertapp/themes/app_theme.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -98,7 +97,7 @@ class _InfoColumn extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        if (orchardService.relations.isNotEmpty)
+        if (orchardService.relations.where((element) => element.orchardUid == orchard.uid).isNotEmpty)
         InfoCard(
           title: translate('titles.crops'),
           rows: orchardService.relations.where((element) => element.orchardUid == orchard.uid).toList().asMap().entries.map((e) {

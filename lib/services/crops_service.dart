@@ -18,14 +18,16 @@ class CropsService extends ChangeNotifier {
 
   Future<List<Crop>> loadCrops() async {
     PrintHelper.printInfo("Cargando cultivos...");
+    // Avisar a los "listeners" que se está cargando datos
     isLoading = true;
     notifyListeners();
 
+    // Crear url para la petición http y obtener la respuesta
     final url = Uri.https(_baseUrl, 'crops.json');
     final response = await http.get(url);
 
+    // Obtener y recorrer los resultados, añadiendolos a la lista
     final Map<String, dynamic> cropsMap = json.decode(response.body);
-
     cropsMap.forEach((key, value) {
       final tmpCrop = Crop.fromMap(value);
       tmpCrop.uid = key;
@@ -39,6 +41,7 @@ class CropsService extends ChangeNotifier {
 
     PrintHelper.printInfo("********Final lectura de cultivos********");
 
+    // Avisar a los "listeners" que se ha terminado de cargar los datos
     isLoading = false;
     notifyListeners();
 

@@ -48,7 +48,9 @@
 		"chooseTownship": "Choisissez une municipalité",
 		"aemetSource": "Données obtenues à partir de: © AEMET.",
 		"accountExistQuestion": "Avez-vous déjà un compte? S'identifier",
-		"noLocation": "Vous n'avez pas encore ajouté d'emplacement, appuyez sur \"+\" pour ajouter"
+		"noLocation": "Vous n'avez pas encore ajouté d'emplacement, appuyez sur \"+\" pour ajouter",
+		"edit": "Éditer {name}",
+		"noImage": "Image non sélectionnée"
     },
 	"crop": {
 		"harvest": "Récolte",

@@ -47,6 +47,7 @@ class AuthService extends ChangeNotifier {
       PrintHelper.printInfo("Token: ${decodedResp['localId']}");
       await checkUser(FirestoreUser(
           email: email, name: name ?? email, uid: decodedResp['localId']));
+      // Escribir el token en el almacenamiento
       await storage.write(key: 'token', value: decodedResp['localId']);
       return null;
     } else {
@@ -129,16 +130,7 @@ class AuthService extends ChangeNotifier {
       }
     } catch (e) {
       ToastHelper.showToast('No se ha podido iniciar con Google');
-      print(e);
     }
-
-    // User(displayName: Diego Bea, email: diegobeagomez1@gmail.com, emailVerified: true,
-    // isAnonymous: false, metadata: UserMetadata(creationTime: 2022-08-13 08:36:56.050Z,
-    // lastSignInTime: 2022-08-13 08:39:46.183Z), phoneNumber: null,
-    // photoURL: https://lh3.googleusercontent.com/a/AItbvmkDr7Cl2ZC3avHwoO-VLf0N39_mJIqp80_m-nUa=s96-c,
-    // providerData, [UserInfo(displayName: Diego Bea, email: diegobeagomez1@gmail.com, phoneNumber: null,
-    // photoURL: https://lh3.googleusercontent.com/a/AItbvmkDr7Cl2ZC3avHwoO-VLf0N39_mJIqp80_m-nUa=s96-c,
-    // providerId: google.com, uid: 104860667456916370509)], refreshToken: , tenantId: null, uid: QeII2HQW7xboszKNjxlYbMepXRd2)
 
     return user;
   }
@@ -173,6 +165,7 @@ class AuthService extends ChangeNotifier {
   Future<String> readToken() async {
     PrintHelper.printInfo('Leyendo token...');
     storage.readAll().then((value) => PrintHelper.printValue(value.toString()));
+    // Leer token, si no se obtiene se devuelve un string vacío
     return await storage.read(key: 'token') ?? '';
   }
 

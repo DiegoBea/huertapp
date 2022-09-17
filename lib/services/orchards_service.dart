@@ -33,6 +33,7 @@ class OrchardService extends ChangeNotifier {
   Future<List<Orchard>> loadOrchards() async {
     PrintHelper.printInfo("Cargando huertos...");
 
+    // Obtener el uid del usuario
     String? uid;
     await AuthService().readToken().then((value) => uid = value);
 
@@ -42,10 +43,13 @@ class OrchardService extends ChangeNotifier {
 
     if (uid == null) return [];
 
+    // Obtener los huertos de los cuales eres propietario
+    // y almacenarlos en la lista de huertos
     final QuerySnapshot ownerOrchards = await FirebaseFirestore.instance
         .collection('orchards')
         .where('owners', arrayContains: uid!)
         .get();
+
     for (var element in ownerOrchards.docs) {
       Orchard orchard = Orchard(
         uid: element.get('uid'),
@@ -57,6 +61,9 @@ class OrchardService extends ChangeNotifier {
       orchards.add(orchard);
     }
 
+
+    // Obtener los huertos de los cuales eres invitado
+    // y almacenarlos en la lista de huertos, indicando que no eres propietario
     final QuerySnapshot guestOrchards = await FirebaseFirestore.instance
         .collection('orchards')
         .where('guests', arrayContains: uid!)
@@ -73,6 +80,7 @@ class OrchardService extends ChangeNotifier {
       orchards.add(orchard);
     }
 
+    // Obtener relaciones de ese huerto y añadirlas
     for (Orchard orchard in orchards) {
       PrintHelper.printValue(orchard.name);
       await loadRelations(orchard.uid ?? '');
@@ -81,6 +89,7 @@ class OrchardService extends ChangeNotifier {
     PrintHelper.printInfo(
         "********Final lectura de cultivos relacionados********");
 
+    // Ordernar la lista
     orchards.sort(
       (a, b) => a.name.compareTo(b.name),
     );
@@ -112,30 +121,36 @@ class OrchardService extends ChangeNotifier {
       Orchard orchard, List<OrchardCropRelation> relations, File? image) async {
     PrintHelper.printInfo('Añadiendo ${orchard.name}...');
     String? uid;
+    // Obtener uid del usuario a través del token
     await AuthService().readToken().then((value) => uid = value);
 
     if (uid == null) return;
 
+    // Añadir el usuario a la lista de propietarios
     orchard.owners.add(uid!);
     orchard.guests = [];
     orchard.uid = const Uuid().v1();
 
+    // Añadir imagen del huerto, si la tiene
     if (image != null) {
       await imageService
           .uploadImage(image, orchard.uid!)
           .then((value) => orchard.imageUrl = value);
     }
 
+    // Insertar huerto en firebase
     await FirebaseFirestore.instance
         .collection('orchards')
         .add(orchard.toMap());
     orchards.add(orchard);
 
+    // Guardar relationes
     for (var relation in relations) {
       relation.orchardUid = orchard.uid;
       await saveCropRelations(relation);
     }
 
+    // Reordenar huertos
     _refreshOrder();
     PrintHelper.printInfo('${orchard.name} añadido correctamente');
     notifyListeners();
@@ -179,7 +194,6 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future deleteOrchard(Orchard orchard) async {
-    // TODO: Probar multiusuario
     PrintHelper.printInfo('Eliminando ${orchard.name}...');
     if (orchard.owners.length == 1) {
       await FirebaseFirestore.instance
@@ -229,11 +243,14 @@ class OrchardService extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Cargar todas las relaciones de un huerto
   Future loadRelations(String orchardUid) async {
+    // Obtener las relaciones cuando la relación pertenecta al huerto
     final QuerySnapshot relations = await FirebaseFirestore.instance
         .collection('orchard_crop_relations')
         .where('orchard_uid', isEqualTo: orchardUid)
         .get();
+    // Recorrer las relaciones y guardarlas
     for (var relation in relations.docs) {
       PrintHelper.printValue(relation.data().toString());
       OrchardCropRelation cropRelation = OrchardCropRelation(
@@ -267,11 +284,14 @@ class OrchardService extends ChangeNotifier {
   }
 
   Future<void> addRelation(OrchardCropRelation relation) async {
+    // Generar UID
     relation.uid = const Uuid().v1();
+    // Añadir relación a Firebase y a la lista
     await FirebaseFirestore.instance
         .collection('orchard_crop_relations')
         .add(relation.toMap());
     relations.add(relation);
+    // Guardar notificación
     notificationService.saveNotification(relation);
     PrintHelper.printInfo('Relación añadida correctamente');
   }

@@ -10,23 +10,33 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  // Asegurarse de que todo lo que se tenga que inicializar,
+  // se ha inicializado
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Bloquear rotación de pantalla
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
-  ]); // Bloquear rotación de pantalla
+  ]); 
 
   // Cargar las sharedPreferences
   await Preferences.init();
 
-  // Inicializar i18n
+  // Inicializar i18n para las traducciones
   var delegate = await LocalizationDelegate.create(
       fallbackLocale: 'es', supportedLocales: ['es', 'en_UK', 'fr']);
 
+  // Definir la localización de las fechas
   initializeDateFormatting('es');
 
-  await Firebase.initializeApp(); // Iniciar Firebase
+  // Iniciar Firebase
+  await Firebase.initializeApp();
+   
+  // Inicializar notificaciones
   NotificationService();
+
+  // Iniciar app con localización
   runApp(LocalizedApp(delegate, const AppState()));
 }
 
@@ -35,13 +45,18 @@ class AppState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Cambiar idioma
     changeLocale(context, Preferences.lang);
+
+    // Cargar todos los "Providers"
+    // para utilizarlos en cualquier momento
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => CropsService()),
         ChangeNotifierProvider(create: (_) => OrchardService()),
         ChangeNotifierProvider(create: (_) => ImageService()),
+        // Providers en modo "lazy" para cargarlos únicamente cuando se necesiten
         ChangeNotifierProvider(
           create: (_) => WeatherService(),
           lazy: false,
@@ -50,6 +65,7 @@ class AppState extends StatelessWidget {
           create: (_) => UserService(),
           lazy: false,
         ),
+        // Provider del tema, actualizado al modo recibido de las SharedPreferences
         ChangeNotifierProvider(
             create: (_) => ThemeProvider(isDarkMode: Preferences.isDarkMode))
       ],

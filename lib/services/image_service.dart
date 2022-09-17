@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +20,7 @@ class ImageService extends ChangeNotifier {
     if (permissionStatus.isGranted) {
       image = await imagePicker.pickImage(source: ImageSource.gallery);
       if (image == null) {
-        ToastHelper.showToast('Imagen no seleccionada');
+        ToastHelper.showToast(translate('feedback.noImage'));
         return null;
       }
     } else {
@@ -32,8 +33,10 @@ class ImageService extends ChangeNotifier {
   Future<String> uploadImage(File image, String uid) async {
     PrintHelper.printInfo("Subiendo imagen con uid $uid");
     final firebaseStorage = FirebaseStorage.instance;
+    // Añadir referencia por uid y añadir el archivo de la imagen
     var snapshot =
         await firebaseStorage.ref().child('orchards/$uid').putFile(image);
+    // Obtener url para la imagen
     var downloadUrl = await snapshot.ref.getDownloadURL();
     PrintHelper.printValue(downloadUrl);
     PrintHelper.printInfo('Imagen añadida correctamente');

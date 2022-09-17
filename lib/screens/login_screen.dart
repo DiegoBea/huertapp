@@ -142,6 +142,7 @@ class _LoginFormState extends State<_LoginForm> {
                   onPressed: loginForm.isLoading
                       ? () {}
                       : () async {
+                        // Obtener los diferentes servicios del contexto
                           final authService =
                               Provider.of<AuthService>(context, listen: false);
                           final userService =
@@ -154,14 +155,17 @@ class _LoginFormState extends State<_LoginForm> {
 
                           FocusScope.of(context).unfocus();
 
+                          // Validación del formulario
                           if (!loginForm.isValidForm()) return;
 
+                          // Iniciar sesión con los datos del formulario
                           final String? errorMsg = await authService.signIn(
                               email: loginForm.email,
                               password: loginForm.password);
 
                           loginForm.isLoading = true;
-
+                          // Si se ha realizado correctamente el inicio de sesión se cargan
+                          // los datos y se pasa a la pantalla principal
                           if (errorMsg == null) {
                             orchardService.loadOrchards();
                             weatherService.loadLocations();
@@ -169,6 +173,7 @@ class _LoginFormState extends State<_LoginForm> {
 
                             Navigator.pushReplacementNamed(context, '/main');
                           } else {
+                            // En caso de error se muestra un aviso traducido al idioma seleccionado
                             ToastHelper.showToast(translate('feedback.wrongData'));
                             print(errorMsg);
                             loginForm.isLoading = false;

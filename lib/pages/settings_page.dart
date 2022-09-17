@@ -100,15 +100,20 @@ class _SettingsPageState extends State<SettingsPage> {
                           translate('titles.darkmode'),
                           style: const TextStyle(fontSize: 17),
                         ),
+                        // Switch para cambiar el valor
                         Switch.adaptive(
+                          // El valor por defecto es el de las sharedPreferences
                           value: Preferences.isDarkMode,
                           onChanged: (value) {
+                            // se activa/desactiva el modo oscuro
+                            // dependiendo de cual esté activo
                             Preferences.isDarkMode = value;
 
                             value
                                 ? themeProvider.setDarkMode()
                                 : themeProvider.setLightMode();
-
+                            
+                            // Actualizar el estado de los widgets
                             setState(() {});
                           },
                           activeColor: ThemeProvider.primary,

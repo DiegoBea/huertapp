@@ -11,18 +11,20 @@ class ChechAuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Obtener el servicio de autenticación
     final authService = Provider.of<AuthService>(context, listen: false);
-    PrintHelper.printValue('Checkeando usuario');
 
     return Scaffold(
       body: Center(
         child: FutureBuilder(
+          // Leer el token de inicio de sesión
           future: authService.readToken(),
           builder: (context, AsyncSnapshot<String> snapshot) {
             if (!snapshot.hasData) {
               return const LoadingScreen();
             }
 
+            // Si no se obtiene un token se envía al login
             if (snapshot.data == '') {
               Future.microtask(() {
                 Navigator.pushReplacement(
@@ -31,6 +33,7 @@ class ChechAuthScreen extends StatelessWidget {
                         pageBuilder: (_, __, ___) => const LoginScreen(),
                         transitionDuration: const Duration(seconds: 0)));
               });
+              // En caso contrario se inicia sesión
             } else {
               Future.microtask(() {
                 Navigator.pushReplacement(

@@ -158,6 +158,7 @@ class WeatherService extends ChangeNotifier {
   }
 
   Future<HourlyPrediction?> getWeatherHourly(String code) async {
+    // Crear primera url y obtener la respuesta
     final url = Uri.https(
         _baseUrlAemet,
         '/opendata/api/prediccion/especifica/municipio/horaria/$code/',
@@ -165,24 +166,29 @@ class WeatherService extends ChangeNotifier {
     final response = await http.get(url);
     if (response.statusCode != 200) return null;
 
+    // Leer de la respuesta, la propiedad "datos", que contiene la url de la información
     String urlInfo = json.decode(response.body)["datos"];
 
     Map<String, String> urlBody = _getAemetUrl(urlInfo);
 
+    // Obtenemos la url y realizamos la petición
     final urlData = Uri.https(urlBody["base_url"]!, urlBody["path"]!);
-
     PrintHelper.printInfo(urlData.toString());
-
     final responseData = await http.get(urlData);
 
+    // Creamos la predicción diaria
     var body = jsonDecode(responseData.body);
     HourlyPrediction aemet = HourlyPrediction.fromMap(body[0]);
-    // aemet.temperaturaActual = aemet.prediccion.dia[0].temperatura.dato.where((element) => element.)
     return aemet;
   }
 
   Map<String, String> _getAemetUrl(String url) {
+    // Ejemplo url: https://opendata.aemet.es/opendata/sh/{id_autogenerado}
+
+    // Quitamos el inicio de la url
     url = url.replaceAll("https://", '');
+    // Separamos la url y concatenamos en path, el resto de la url,
+    // quitando la url base que sería opendata.aemet.es
     List<String> tmpUrl = url.split('/');
     String path = '/';
     for (var i = 1; i < tmpUrl.length; i++) {
