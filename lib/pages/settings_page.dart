@@ -72,13 +72,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: [
                             Expanded(
                               child:
-                                Text(
-                                  user.name,
-                                  style: const TextStyle(
-                                      fontSize: 25, fontWeight: FontWeight.bold),
+                                Center(
+                                  child: Text(
+                                    user.name,
+                                    style: const TextStyle(
+                                        fontSize: 25, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                             ),
-                            IconButton(onPressed: (){}, icon: const Icon(FontAwesomeIcons.edit))
                           ],
                         ),
                         const SizedBox(height: 5),
@@ -169,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   Container(
                     width: 200,
-                    height: MediaQuery.of(context).size.height * 0.2,
+                    height: MediaQuery.of(context).size.height * 0.1,
                     margin: const EdgeInsets.all(15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,

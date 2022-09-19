@@ -131,7 +131,7 @@ class _LoginFormState extends State<_LoginForm> {
               onChanged: (value) => loginForm.password = value,
               validator: (value) {
                 if (value != null && value.length >= 8) return null;
-                return translate('feedback.minChars', args: {"value": 8}); // 'La contraseña debe tener 8 caracteres'
+                return translate('validation.minChars', args: {"value": 8}); // 'La contraseña debe tener 8 caracteres'
               },
             ),
             const SizedBox(height: 30),

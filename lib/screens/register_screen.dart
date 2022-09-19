@@ -3,7 +3,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:huertapp/helpers/helpers.dart';
 import 'package:huertapp/providers/login_form_provider.dart';
-import 'package:huertapp/services/auth_service.dart';
+import 'package:huertapp/services/services.dart';
 import 'package:huertapp/ui/input_decorations.dart';
 import 'package:huertapp/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -130,6 +130,8 @@ class _LoginForm extends StatelessWidget {
                       : () async {
                           final authService =
                               Provider.of<AuthService>(context, listen: false);
+                          final weatherService =
+                              Provider.of<WeatherService>(context, listen: false);
 
                           FocusScope.of(context).unfocus();
 
@@ -142,6 +144,8 @@ class _LoginForm extends StatelessWidget {
                           loginForm.isLoading = true;
 
                           if (errorMsg == null) {
+                            
+                            weatherService.loadLocations();
                             Navigator.pushReplacementNamed(context, '/main');
                           } else {
                             ToastHelper.showToast(translate('feedback.accountExist')); // 'La cuenta ya existe'
